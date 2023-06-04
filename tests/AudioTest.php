@@ -52,6 +52,7 @@ it('can read file', function (string $path) {
 
 it('can extract cover', function (string $path) {
     $audio = Audio::read($path);
+    $ext = pathinfo($path, PATHINFO_EXTENSION);
     $cover = $audio->cover();
 
     if ($audio->hasCover()) {
@@ -65,7 +66,7 @@ it('can extract cover', function (string $path) {
             expect($cover->height())->toBeInt();
         }
 
-        $path = 'tests/output/cover.jpg';
+        $path = "tests/output/cover-{$ext}.jpg";
         file_put_contents($path, $cover->content());
         expect(file_exists($path))->toBeTrue();
         expect($path)->toBeReadableFile();
