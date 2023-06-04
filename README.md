@@ -8,39 +8,39 @@
 [![tests][tests-src]][tests-href]
 [![codecov][codecov-src]][codecov-href]
 
-PHP package to parse audio files, with [JamesHeinrich/getID3](https://github.com/JamesHeinrich/getID3).
+PHP package to parse audio files metadata, with [JamesHeinrich/getID3](https://github.com/JamesHeinrich/getID3).
 
 ## Supported formats
 
-| Format | Supported |                About                 |    ID3 type     |        Notes         |
-| :----: | :-------: | :----------------------------------: | :-------------: | :------------------: |
-|  AAC   |    ❌     |        Advanced Audio Coding         |                 |                      |
-|  ALAC  |    ❌     |      Apple Lossless Audio Codec      |                 |                      |
-|  AIF   |    ❌     | Audio Interchange File Format (aif)  |                 |                      |
-|  AIFC  |    ❌     | Audio Interchange File Format (aifc) |                 |                      |
-|  AIFF  |    ❌     | Audio Interchange File Format (aiff) |                 |                      |
-|  DSF   |    ❌     |     Direct Stream Digital Audio      |                 |                      |
-|  FLAC  |    ✅     |      Free Lossless Audio Codec       | `vorbiscomment` |                      |
-|  MKA   |    ❌     |               Matroska               |                 |                      |
-|  MKV   |    ❌     |               Matroska               |                 |                      |
-|  APE   |    ❌     |            Monkey's Audio            |                 |                      |
-|  MP3   |    ✅     |          MPEG audio layer 3          | `id3v1`,`id3v2` |                      |
-|  MP4   |    ✅     | Digital multimedia container format  |   `quicktime`   |                      |
-|  M4A   |    ✅     |             mpeg-4 audio             |   `quicktime`   |                      |
-|  M4B   |    ✅     |              Audiobook               |   `quicktime`   |                      |
-|  M4V   |    ❌     |             mpeg-4 video             |                 |                      |
-|  MPC   |    ❌     |               Musepack               |                 |                      |
-|  OGG   |    ❌     |        Open container format         |                 |                      |
-|  OPUS  |    ❌     |           IETF Opus audio            |                 |                      |
-|  OFR   |    ❌     |              OptimFROG               |                 |                      |
-|  OFS   |    ❌     |              OptimFROG               |                 |                      |
-|  SPX   |    ❌     |                Speex                 |                 |                      |
-|  TAK   |    ❌     |        Tom's Audio Kompressor        |                 |                      |
-|  TTA   |    ❌     |              True Audio              |                 |                      |
-|  WMA   |    ✅     |         Windows Media Audio          |      `asf`      | Cover will not work. |
-|   WV   |    ❌     |               WavPack                |                 |                      |
-|  WAV   |    ✅     |            Waveform Audio            | `id3v2`,`riff`  |                      |
-|  WEBM  |    ❌     |                 WebM                 |                 |                      |
+| Format | Supported |                About                 |    ID3 type     |      Notes       |
+| :----: | :-------: | :----------------------------------: | :-------------: | :--------------: |
+|  AAC   |    ❌     |        Advanced Audio Coding         |                 |                  |
+|  ALAC  |    ❌     |      Apple Lossless Audio Codec      |                 |                  |
+|  AIF   |    ❌     | Audio Interchange File Format (aif)  |                 |                  |
+|  AIFC  |    ❌     | Audio Interchange File Format (aifc) |                 |                  |
+|  AIFF  |    ❌     | Audio Interchange File Format (aiff) |                 |                  |
+|  DSF   |    ❌     |     Direct Stream Digital Audio      |                 |                  |
+|  FLAC  |    ✅     |      Free Lossless Audio Codec       | `vorbiscomment` |                  |
+|  MKA   |    ❌     |               Matroska               |                 |                  |
+|  MKV   |    ❌     |               Matroska               |                 |                  |
+|  APE   |    ❌     |            Monkey's Audio            |                 |                  |
+|  MP3   |    ✅     |          MPEG audio layer 3          | `id3v1`,`id3v2` |                  |
+|  MP4   |    ✅     | Digital multimedia container format  |   `quicktime`   |                  |
+|  M4A   |    ✅     |             mpeg-4 audio             |   `quicktime`   |                  |
+|  M4B   |    ✅     |              Audiobook               |   `quicktime`   |                  |
+|  M4V   |    ❌     |             mpeg-4 video             |                 |                  |
+|  MPC   |    ❌     |               Musepack               |                 |                  |
+|  OGG   |    ❌     |        Open container format         |                 |                  |
+|  OPUS  |    ❌     |           IETF Opus audio            |                 |                  |
+|  OFR   |    ❌     |              OptimFROG               |                 |                  |
+|  OFS   |    ❌     |              OptimFROG               |                 |                  |
+|  SPX   |    ❌     |                Speex                 |                 |                  |
+|  TAK   |    ❌     |        Tom's Audio Kompressor        |                 |                  |
+|  TTA   |    ❌     |              True Audio              |                 |                  |
+|  WMA   |    ✅     |         Windows Media Audio          |      `asf`      | _Cover not work_ |
+|   WV   |    ❌     |               WavPack                |                 |                  |
+|  WAV   |    ✅     |            Waveform Audio            | `id3v2`,`riff`  |                  |
+|  WEBM  |    ❌     |                 WebM                 |                 |                  |
 
 ## Requirements
 
@@ -63,8 +63,6 @@ composer require kiwilan/php-audio
 ```php
 $audio = Audio::read('path/to/audio.mp3');
 
-$audio->path(); // `string` to get path
-$audio->extension(); // `string` to get extension
 $audio->title(); // `?string` to get title
 $audio->artist(); // `?string` to get artist
 $audio->album(); // `?string` to get album
@@ -83,7 +81,10 @@ $audio->description(); // `?string` to get description (audiobook)
 $audio->lyrics(); // `?string` (audiobook)
 $audio->stik(); // `?string` (audiobook)
 $audio->duration(); // `?float` to get duration in seconds
-$audio->extras(); // `array` with raw metadata
+$audio->extras(); // `array` with raw metadata (could contains some metadata not parsed)
+
+$audio->path(); // `string` to get path
+$audio->extension(); // `string` to get extension
 $audio->hasCover(); // `bool` to know if has cover
 $audio->isValid(); // `bool` to know if file is valid audio file
 
@@ -144,6 +145,7 @@ composer test
 
 ## Tools
 
+-   [ffmpeg](https://ffmpeg.org/)
 -   [MP3TAG](https://www.mp3tag.de/en/): powerful and easy-to-use tool to edit metadata of audio files (free on Windows).
 -   [Audiobook Builder](https://www.splasm.com/audiobookbuilder/): makes it easy to turn audio CDs and files into audiobooks (only macOS and paid).
 
