@@ -1,4 +1,4 @@
-# PHP OPDS
+# PHP Audio
 
 [![php][php-version-src]][php-version-href]
 [![version][version-src]][version-href]
