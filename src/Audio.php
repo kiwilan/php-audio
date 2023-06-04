@@ -9,8 +9,6 @@ use Kiwilan\Audio\Models\Id3AudioTag;
 
 class Audio
 {
-    protected ?string $type = null;
-
     protected ?string $title = null;
 
     protected ?string $artist = null;
@@ -47,8 +45,6 @@ class Audio
 
     protected ?float $duration = null;
 
-    protected bool $isValid = false;
-
     protected array $extras = [];
 
     protected ?AudioMetadata $audio = null;
@@ -56,6 +52,10 @@ class Audio
     protected bool $hasCover = false;
 
     protected ?AudioCover $cover = null;
+
+    protected bool $isValid = false;
+
+    protected ?string $type = null;
 
     protected function __construct(
         protected string $path,
