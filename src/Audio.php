@@ -47,6 +47,8 @@ class Audio
 
     protected ?float $duration = null;
 
+    protected bool $isValid = false;
+
     protected array $extras = [];
 
     protected ?AudioMetadata $audio = null;
@@ -172,6 +174,11 @@ class Audio
         return $this->duration;
     }
 
+    public function isValid(): bool
+    {
+        return $this->isValid;
+    }
+
     public function extras(): array
     {
         return $this->extras;
@@ -240,10 +247,12 @@ class Audio
             $this->composer = $v2?->composer() ?? null;
             $this->discNumber = $v2?->part_of_a_set() ?? null;
             $this->isCompilation = $v2?->part_of_a_compilation() ?? false;
+            $this->isValid = true;
         }
 
         if ($this->type === 'quicktime') {
             $this->parseQuicktime($tags);
+            $this->isValid = true;
         }
 
         if ($this->type === 'vorbiscomment') {
@@ -262,6 +271,7 @@ class Audio
             $this->year = (int) $vorbis->date();
             $this->encoding = $vorbis->encoder();
             $this->comment = $vorbis->description();
+            $this->isValid = true;
         }
 
         if ($this->type === 'asf') {
@@ -277,6 +287,7 @@ class Audio
             $this->trackNumber = $asf->track_number();
             $this->year = (int) $asf->year();
             $this->encoding = $asf->encodingsettings();
+            $this->isValid = true;
         }
 
         $this->extras = $raw['tags'] ?? [];

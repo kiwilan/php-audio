@@ -2,6 +2,7 @@
 
 define('MP3_NO_META', __DIR__.'/media/test-no-meta.mp3');
 define('AUDIOBOOK', __DIR__.'/media/audiobook.m4b');
+define('MD', __DIR__.'/media/test.md');
 
 define('AAC', __DIR__.'/media/test.aac');
 define('FLAC', __DIR__.'/media/test.flac');

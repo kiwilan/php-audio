@@ -27,26 +27,27 @@ it('can read file', function (string $path) {
     expect($audio->duration())->toBeGreaterThanOrEqual(11.0);
     expect($audio->extras())->toBeArray();
 
-    $audio = $audio->audio();
-    expect($audio->filesize())->toBeInt();
-    expect($audio->extension())->toBeString();
-    expect($audio->encoding())->toBeString();
-    expect($audio->mimeType())->toBeString();
-    expect($audio->durationSeconds())->toBeFloat();
-    expect($audio->durationReadable())->toBeString();
-    expect($audio->bitrate())->toBeInt();
-    if ($audio->bitrateMode()) {
-        expect($audio->bitrateMode())->toBeString();
+    $metadata = $audio->audio();
+    expect($metadata->filesize())->toBeInt();
+    expect($metadata->extension())->toBeString();
+    expect($metadata->encoding())->toBeString();
+    expect($metadata->mimeType())->toBeString();
+    expect($metadata->durationSeconds())->toBeFloat();
+    expect($metadata->durationReadable())->toBeString();
+    expect($metadata->bitrate())->toBeInt();
+    if ($metadata->bitrateMode()) {
+        expect($metadata->bitrateMode())->toBeString();
     }
-    expect($audio->sampleRate())->toBeInt();
-    expect($audio->channels())->toBeInt();
-    if ($audio->channelMode()) {
-        expect($audio->channelMode())->toBeString();
+    expect($metadata->sampleRate())->toBeInt();
+    expect($metadata->channels())->toBeInt();
+    if ($metadata->channelMode()) {
+        expect($metadata->channelMode())->toBeString();
     }
-    expect($audio->lossless())->toBeBool();
-    if ($audio->compressionRatio()) {
-        expect($audio->compressionRatio())->toBeFloat();
+    expect($metadata->lossless())->toBeBool();
+    if ($metadata->compressionRatio()) {
+        expect($metadata->compressionRatio())->toBeFloat();
     }
+    expect($audio->isValid())->toBeTrue();
 })->with([...AUDIO]);
 
 it('can extract cover', function (string $path) {
@@ -112,4 +113,11 @@ it('can read mp3 stream', function () {
     expect($streams[0]->lossless())->toBeFalse();
     expect($streams[0]->encoder_options())->toBe('CBR128');
     expect($streams[0]->compression_ratio())->toBe(0.09070294784580499);
+});
+
+it('can read wrong audio file', function () {
+    $audio = Audio::read(MD);
+    ray($audio);
+
+    expect($audio->isValid())->toBeFalse();
 });

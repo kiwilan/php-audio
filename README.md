@@ -46,7 +46,7 @@ PHP package to read audio files with ID3, parser uses [JamesHeinrich/getID3](htt
 
 ## About
 
-Audio files can use different formats, this package aims to provide a simple way to read them with [JamesHeinrich/getID3](https://github.com/JamesHeinrich/getID3). The `JamesHeinrich/getID3` package is excellent to read metadata from audio files, but output is just an array, current package aims to provide a simple way to read audio files with a simple API.
+Audio files can use different formats, this package aims to provide a simple way to read them with [JamesHeinrich/getID3](https://github.com/JamesHeinrich/getID3). The `JamesHeinrich/getID3` package is excellent to read metadata from audio files, but output is just an array, current package aims to provide a simple way to read audio files with a beautiful API.
 
 ## Installation
 
@@ -83,6 +83,7 @@ $audio->stik(); // ?string (audiobook)
 $audio->duration(); // ?float to get duration in seconds
 $audio->extras(); // array with raw metadata
 $audio->hasCover(); // bool to know if has cover
+$audio->isValid(); // bool to know if file is valid audio file
 
 $audio->id3(); // Id3 metadata
 $audio->stat(); // FileStat (from `stat` function)
