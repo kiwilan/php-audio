@@ -1,6 +1,6 @@
 {
     "name": "kiwilan/php-audio",
-    "description": "PHP package to read audio files.",
+    "description": "PHP package to parse audio files.",
     "version": "0.2.0",
     "keywords": [
         "audio",

@@ -8,7 +8,7 @@
 [![tests][tests-src]][tests-href]
 [![codecov][codecov-src]][codecov-href]
 
-PHP package to read audio files, parser uses [JamesHeinrich/getID3](https://github.com/JamesHeinrich/getID3).
+PHP package to parse audio files, with [JamesHeinrich/getID3](https://github.com/JamesHeinrich/getID3).
 
 | Format | Supported |                 Type                 | Notes |
 | :----: | :-------: | :----------------------------------: | :---: |
