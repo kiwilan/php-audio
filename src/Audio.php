@@ -5,9 +5,12 @@ namespace Kiwilan\Audio;
 use Kiwilan\Audio\Models\AudioCover;
 use Kiwilan\Audio\Models\AudioMetadata;
 use Kiwilan\Audio\Models\FileStat;
+use Kiwilan\Audio\Models\Id3AudioTag;
 
 class Audio
 {
+    protected ?string $type = null;
+
     protected ?string $title = null;
 
     protected ?string $artist = null;
@@ -34,19 +37,21 @@ class Audio
 
     protected ?string $copyright = null;
 
-    protected ?string $encodedBy = null;
-
-    protected ?string $encodingTool = null;
+    protected ?string $encoding = null;
 
     protected ?string $description = null;
-
-    protected ?string $descriptionLong = null;
 
     protected ?string $lyrics = null;
 
     protected ?string $stik = null;
 
-    protected ?AudioMetadata $metadata = null;
+    protected ?float $duration = null;
+
+    protected array $extras = [];
+
+    protected ?AudioMetadata $audio = null;
+
+    protected bool $hasCover = false;
 
     protected ?AudioCover $cover = null;
 
@@ -66,7 +71,7 @@ class Audio
             id3: Id3::make($path),
             stat: FileStat::make($path)
         );
-        $self->metadata = AudioMetadata::make($self->id3->item());
+        $self->audio = AudioMetadata::make($self->id3->item());
         $self->parse();
 
         return $self;
@@ -142,24 +147,14 @@ class Audio
         return $this->creationDate;
     }
 
-    public function encodedBy(): ?string
+    public function encoding(): ?string
     {
-        return $this->encodedBy;
-    }
-
-    public function encodingTool(): ?string
-    {
-        return $this->encodingTool;
+        return $this->encoding;
     }
 
     public function description(): ?string
     {
         return $this->description;
-    }
-
-    public function descriptionLong(): ?string
-    {
-        return $this->descriptionLong;
     }
 
     public function lyrics(): ?string
@@ -172,9 +167,24 @@ class Audio
         return $this->stik;
     }
 
-    public function metadata(): ?AudioMetadata
+    public function duration(): ?float
     {
-        return $this->metadata;
+        return $this->duration;
+    }
+
+    public function extras(): array
+    {
+        return $this->extras;
+    }
+
+    public function audio(): ?AudioMetadata
+    {
+        return $this->audio;
+    }
+
+    public function hasCover(): bool
+    {
+        return $this->hasCover;
     }
 
     public function cover(): ?AudioCover
@@ -192,19 +202,32 @@ class Audio
         return $this->extension;
     }
 
-    private function parse(): void
+    private function parse(): self
     {
+        $raw = $this->id3->raw();
         $item = $this->id3->item();
+
+        $this->type = match ($this->extension) {
+            'aac' => null,
+            'flac' => 'vorbiscomment',
+            'm4a' => 'quicktime',
+            'm4b' => 'quicktime',
+            'mp3' => 'id3',
+            'mp4' => 'quicktime',
+            'wav' => 'id3',
+            'wma' => 'asf',
+            default => null,
+        };
 
         $tags = $item->tags();
         if (! $tags) {
-            return;
+            return $this;
         }
-        $v1 = $tags->id3v1();
-        $v2 = $tags->id3v2();
-        $quicktime = $tags->quicktime();
 
-        if ($v1 || $v2) {
+        if ($this->type === 'id3') {
+            $v1 = $tags->id3v1();
+            $v2 = $tags->id3v2();
+
             $this->title = $v2?->title() ?? $v1?->title();
             $this->artist = $v2?->artist() ?? $v1?->artist();
             $this->album = $v2?->album() ?? $v1?->album();
@@ -218,24 +241,100 @@ class Audio
             $this->isCompilation = $v2?->part_of_a_compilation() ?? false;
         }
 
-        if ($quicktime) {
-            $this->title = $quicktime->title();
-            $this->artist = $quicktime->artist();
-            $this->album = $quicktime->album();
-            $this->genre = $quicktime->genre();
-            $this->trackNumber = $quicktime->track_number();
-            $this->comment = $quicktime->comment();
-            $this->albumArtist = $quicktime->album_artist();
-            $this->creationDate = $quicktime->creation_date();
-            $this->encodedBy = $quicktime->encoded_by();
-            $this->encodingTool = $quicktime->encoding_tool();
-            $this->description = $quicktime->description();
-            $this->descriptionLong = $quicktime->description_long();
-            $this->lyrics = $quicktime->lyrics();
-            $this->stik = $quicktime->stik();
+        if ($this->type === 'quicktime') {
+            $this->parseQuicktime($tags);
         }
 
-        $this->metadata = AudioMetadata::make($item);
+        if ($this->type === 'vorbiscomment') {
+            $vorbis = $tags->vorbiscomment();
+
+            $this->title = $vorbis->title();
+            $this->artist = $vorbis->artist();
+            $this->album = $vorbis->album();
+            $this->genre = $vorbis->genre();
+            $this->trackNumber = $vorbis->tracknumber();
+            $this->comment = $vorbis->comment();
+            $this->albumArtist = $vorbis->albumartist();
+            $this->composer = $vorbis->composer();
+            $this->discNumber = $vorbis->discnumber();
+            $this->isCompilation = $vorbis->compilation();
+            $this->year = $vorbis->date();
+            $this->encoding = $vorbis->encoder();
+            $this->comment = $vorbis->description();
+        }
+
+        if ($this->type === 'asf') {
+            $asf = $tags->asf();
+
+            $this->title = $asf->title();
+            $this->artist = $asf->artist();
+            $this->album = $asf->album();
+            $this->albumArtist = $asf->albumartist();
+            $this->composer = $asf->composer();
+            $this->discNumber = $asf->partofset();
+            $this->genre = $asf->genre();
+            $this->trackNumber = $asf->track_number();
+            $this->year = $asf->year();
+            $this->encoding = $asf->encodingsettings();
+        }
+
+        $this->extras = $raw['tags'] ?? [];
+
+        $this->audio = AudioMetadata::make($item);
         $this->cover = AudioCover::make($item->comments());
+
+        if ($this->cover?->content()) {
+            $this->hasCover = true;
+        }
+
+        $this->duration = number_format((float) $this->audio->durationSeconds(), 2, '.', '');
+
+        return $this;
+    }
+
+    private function parseQuicktime(Id3AudioTag $tags): self
+    {
+        $quicktime = $tags->quicktime();
+
+        $creation_date = $quicktime->creation_date();
+        $description = $quicktime->description();
+        $description_long = $quicktime->description_long();
+        $encoded_by = $quicktime->encoded_by();
+
+        if ($description_long && $description && strlen($description_long) > strlen($description)) {
+            $description = $description_long;
+        }
+
+        $this->title = $quicktime->title();
+        $this->artist = $quicktime->artist();
+        $this->album = $quicktime->album();
+        $this->genre = $quicktime->genre();
+        $this->trackNumber = $quicktime->track_number();
+        $this->discNumber = $quicktime->disc_number();
+        $this->composer = $quicktime->composer();
+        $this->isCompilation = $quicktime->compilation();
+        $this->comment = $quicktime->comment();
+        $this->albumArtist = $quicktime->album_artist();
+        $this->encoding = $quicktime->encoding_tool();
+        if ($encoded_by) {
+            $this->encoding = "{$this->encoding} ($encoded_by)";
+        }
+
+        if ($creation_date) {
+            if (strlen($creation_date) === 4) {
+                $this->year = $creation_date;
+            } else {
+                $creation_date = date_create_from_format('Y-m-d\TH:i:s\Z', $creation_date);
+                $this->creationDate = $creation_date?->format('Y-m-d\TH:i:s\Z');
+                $this->year = $creation_date?->format('Y');
+            }
+        }
+
+        $this->copyright = $quicktime->copyright();
+        $this->description = $description;
+        $this->lyrics = $quicktime->lyrics();
+        $this->stik = $quicktime->stik();
+
+        return $this;
     }
 }

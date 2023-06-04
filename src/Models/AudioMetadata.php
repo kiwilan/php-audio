@@ -9,8 +9,8 @@ class AudioMetadata
         protected ?string $extension = null,
         protected ?string $encoding = null,
         protected ?string $mimeType = null,
-        protected ?float $playtimeInSeconds = null,
-        protected ?string $playtimeHumanReadable = null,
+        protected ?float $durationSeconds = null,
+        protected ?string $durationReadable = null,
         protected ?int $bitrate = null,
         protected ?string $bitrateMode = null,
         protected ?int $sampleRate = null,
@@ -27,18 +27,18 @@ class AudioMetadata
 
         return new self(
             filesize: $item->filesize(),
-            extension: $audio->dataformat(),
+            extension: $audio?->dataformat(),
             encoding: $item->encoding(),
             mimeType: $item->mime_type(),
-            playtimeInSeconds: $item->playtime_seconds(),
-            playtimeHumanReadable: $item->playtime_string(),
+            durationSeconds: $item->playtime_seconds(),
+            durationReadable: $item->playtime_string(),
             bitrate: $item->bitrate(),
-            bitrateMode: $audio->bitrate_mode(),
-            sampleRate: $audio->sample_rate(),
-            channels: $audio->channels(),
-            channelMode: $audio->channelmode(),
-            lossless: $audio->lossless(),
-            compressionRatio: $audio->compression_ratio(),
+            bitrateMode: $audio?->bitrate_mode(),
+            sampleRate: $audio?->sample_rate(),
+            channels: $audio?->channels(),
+            channelMode: $audio?->channelmode(),
+            lossless: $audio?->lossless() ?? false,
+            compressionRatio: $audio?->compression_ratio(),
         );
     }
 
@@ -62,14 +62,14 @@ class AudioMetadata
         return $this->mimeType;
     }
 
-    public function playtimeInSeconds(): ?float
+    public function durationSeconds(): ?float
     {
-        return $this->playtimeInSeconds;
+        return $this->durationSeconds;
     }
 
-    public function playtimeHumanReadable(): ?string
+    public function durationReadable(): ?string
     {
-        return $this->playtimeHumanReadable;
+        return $this->durationReadable;
     }
 
     public function bitrate(): ?int
