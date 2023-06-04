@@ -13,7 +13,7 @@ it('can read file', function (string $path) {
     expect($audio->artist())->toBe('Mr Piouf');
     expect($audio->album())->toBe('P1PDD Le conclave de Troie');
     expect($audio->genre())->toBe('Roleplaying game');
-    expect($audio->year())->toBe('2016');
+    expect($audio->year())->toBe(2016);
     expect($audio->trackNumber())->toBe('1');
     if ($audio->comment()) {
         expect($audio->comment())->toBe('http://www.p1pdd.com');

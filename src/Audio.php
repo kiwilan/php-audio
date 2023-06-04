@@ -19,7 +19,7 @@ class Audio
 
     protected ?string $genre = null;
 
-    protected ?string $year = null;
+    protected ?int $year = null;
 
     protected ?string $trackNumber = null;
 
@@ -107,7 +107,7 @@ class Audio
         return $this->genre;
     }
 
-    public function year(): ?string
+    public function year(): ?int
     {
         return $this->year;
     }
@@ -228,11 +228,12 @@ class Audio
             $v1 = $tags->id3v1();
             $v2 = $tags->id3v2();
 
+            $year = $v2?->year() ?? $v1?->year();
             $this->title = $v2?->title() ?? $v1?->title();
             $this->artist = $v2?->artist() ?? $v1?->artist();
             $this->album = $v2?->album() ?? $v1?->album();
             $this->genre = $v2?->genre() ?? $v1?->genre();
-            $this->year = $v2?->year() ?? $v1?->year();
+            $this->year = $year ? (int) $year : null;
             $this->trackNumber = $v2?->track_number() ?? $v1?->track_number();
             $this->comment = $v2?->comment() ?? $v1?->comment();
             $this->albumArtist = $v2?->band() ?? null;
@@ -258,7 +259,7 @@ class Audio
             $this->composer = $vorbis->composer();
             $this->discNumber = $vorbis->discnumber();
             $this->isCompilation = $vorbis->compilation();
-            $this->year = $vorbis->date();
+            $this->year = (int) $vorbis->date();
             $this->encoding = $vorbis->encoder();
             $this->comment = $vorbis->description();
         }
@@ -274,7 +275,7 @@ class Audio
             $this->discNumber = $asf->partofset();
             $this->genre = $asf->genre();
             $this->trackNumber = $asf->track_number();
-            $this->year = $asf->year();
+            $this->year = (int) $asf->year();
             $this->encoding = $asf->encodingsettings();
         }
 
@@ -322,11 +323,11 @@ class Audio
 
         if ($creation_date) {
             if (strlen($creation_date) === 4) {
-                $this->year = $creation_date;
+                $this->year = (int) $creation_date;
             } else {
                 $creation_date = date_create_from_format('Y-m-d\TH:i:s\Z', $creation_date);
                 $this->creationDate = $creation_date?->format('Y-m-d\TH:i:s\Z');
-                $this->year = $creation_date?->format('Y');
+                $this->year = (int) $creation_date?->format('Y');
             }
         }
 

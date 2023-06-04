@@ -10,35 +10,35 @@
 
 PHP package to read audio files with ID3, parser uses [JamesHeinrich/getID3](https://github.com/JamesHeinrich/getID3).
 
-| Format | Supported |                 Type                 |
-| :----: | :-------: | :----------------------------------: |
-|  AAC   |    ❌     |        Advanced Audio Coding         |
-|  ALAC  |    ❌     |      Apple Lossless Audio Codec      |
-|  AIF   |    ❌     | Audio Interchange File Format (aif)  |
-|  AIFC  |    ❌     | Audio Interchange File Format (aifc) |
-|  AIFF  |    ❌     | Audio Interchange File Format (aiff) |
-|  DSF   |    ❌     |     Direct Stream Digital Audio      |
-|  FLAC  |    ✅     |      Free Lossless Audio Codec       |
-|  MKA   |    ❌     |               Matroska               |
-|  MKV   |    ❌     |               Matroska               |
-|  APE   |    ❌     |            Monkey's Audio            |
-|  MP3   |    ✅     |          MPEG audio layer 3          |
-|  MP4   |    ✅     | Digital multimedia container format  |
-|  M4A   |    ✅     |             mpeg-4 audio             |
-|  M4B   |    ✅     |              Audiobook               |
-|  M4V   |    ❌     |             mpeg-4 video             |
-|  MPC   |    ❌     |               Musepack               |
-|  OGG   |    ❌     |        Open container format         |
-|  OPUS  |    ❌     |           IETF Opus audio            |
-|  OFR   |    ❌     |              OptimFROG               |
-|  OFS   |    ❌     |              OptimFROG               |
-|  SPX   |    ❌     |                Speex                 |
-|  TAK   |    ❌     |        Tom's Audio Kompressor        |
-|  TTA   |    ❌     |              True Audio              |
-|  WMA   |    ✅     |         Windows Media Audio          |
-|   WV   |    ❌     |               WavPack                |
-|  WAV   |    ✅     |            Waveform Audio            |
-|  WEBM  |    ❌     |                 WebM                 |
+| Format | Supported |                 Type                 | Notes |
+| :----: | :-------: | :----------------------------------: | :---: |
+|  AAC   |    ❌     |        Advanced Audio Coding         |       |
+|  ALAC  |    ❌     |      Apple Lossless Audio Codec      |       |
+|  AIF   |    ❌     | Audio Interchange File Format (aif)  |       |
+|  AIFC  |    ❌     | Audio Interchange File Format (aifc) |       |
+|  AIFF  |    ❌     | Audio Interchange File Format (aiff) |       |
+|  DSF   |    ❌     |     Direct Stream Digital Audio      |       |
+|  FLAC  |    ✅     |      Free Lossless Audio Codec       |       |
+|  MKA   |    ❌     |               Matroska               |       |
+|  MKV   |    ❌     |               Matroska               |       |
+|  APE   |    ❌     |            Monkey's Audio            |       |
+|  MP3   |    ✅     |          MPEG audio layer 3          |       |
+|  MP4   |    ✅     | Digital multimedia container format  |       |
+|  M4A   |    ✅     |             mpeg-4 audio             |       |
+|  M4B   |    ✅     |              Audiobook               |       |
+|  M4V   |    ❌     |             mpeg-4 video             |       |
+|  MPC   |    ❌     |               Musepack               |       |
+|  OGG   |    ❌     |        Open container format         |       |
+|  OPUS  |    ❌     |           IETF Opus audio            |       |
+|  OFR   |    ❌     |              OptimFROG               |       |
+|  OFS   |    ❌     |              OptimFROG               |       |
+|  SPX   |    ❌     |                Speex                 |       |
+|  TAK   |    ❌     |        Tom's Audio Kompressor        |       |
+|  TTA   |    ❌     |              True Audio              |       |
+|  WMA   |    ✅     |         Windows Media Audio          |       |
+|   WV   |    ❌     |               WavPack                |       |
+|  WAV   |    ✅     |            Waveform Audio            |       |
+|  WEBM  |    ❌     |                 WebM                 |       |
 
 ## Requirements
 
@@ -61,32 +61,76 @@ composer require kiwilan/php-audio
 ```php
 $audio = Audio::read('path/to/audio.mp3');
 
-$audio->path(); // string
-$audio->extension(); // string
-$audio->id3(); // Id3 (from `JamesHeinrich/getID3` package)
-$audio->stat(); // FileStat (from `stat` function)
+$audio->path(); // string to get path
+$audio->extension(); // string to get extension
+$audio->title(); // ?string to get title
+$audio->artist(); // ?string to get artist
+$audio->album(); // ?string to get album
+$audio->genre(); // ?string to get genre
+$audio->year(); // ?int to get year
+$audio->trackNumber(); // ?string to get track number
+$audio->comment(); // ?string to get comment
+$audio->albumArtist(); // ?string to get album artist
+$audio->composer(); // ?string to get composer
+$audio->discNumber(); // ?string to get disc number
+$audio->isCompilation(); // bool to know if is compilation
+$audio->creationDate(); // ?string to get creation date (audiobook)
+$audio->copyright(); // ?string to get copyright (audiobook)
+$audio->encoding(); // ?string to get encoding
+$audio->description(); // ?string to get description (audiobook)
+$audio->lyrics(); // ?string (audiobook)
+$audio->stik(); // ?string (audiobook)
+$audio->duration(); // ?float to get duration in seconds
+$audio->extras(); // array with raw metadata
+$audio->hasCover(); // bool to know if has cover
 
-$audio->title(); // ?string
-$audio->artist(); // ?string
-$audio->album(); // ?string
-$audio->genre(); // ?string
-$audio->year(); // ?string
-$audio->trackNumber(); // ?string
-$audio->comment(); // ?string
-$audio->albumArtist(); // ?string
-$audio->composer(); // ?string
-$audio->discNumber(); // ?string
-$audio->isCompilation(); // bool
-$audio->creationDate(); // ?string
-$audio->copyright(); // ?string
-$audio->encodedBy(); // ?string
-$audio->encodingTool(); // ?string
-$audio->description(); // ?string
-$audio->descriptionLong(); // ?string
-$audio->lyrics(); // ?string
-$audio->stik(); // ?string
-$audio->metadata(); // ?AudioMetadata
-$audio->cover(); // ?AudioCover
+$audio->id3(); // Id3 metadata
+$audio->stat(); // FileStat (from `stat` function)
+$audio->audio(); // ?AudioMetadata with audio metadata
+$audio->cover(); // ?AudioCover with cover metadata
+```
+
+## Id3
+
+Data from `JamesHeinrich/getID3` package with formatting.
+
+```php
+$audio = Audio::read('path/to/audio.mp3');
+
+$audio->id3()->raw(); // array with raw metadata
+$audio->id3()->item(); // ?Id3Item with item metadata
+$audio->id3()->instance(); // getID3 instance
+```
+
+## AudioMetadata
+
+```php
+$audio = Audio::read('path/to/audio.mp3');
+
+$audio->audio()->filesize(); // ?int in bytes
+$audio->audio()->extension(); // ?string (mp3, m4a, ...)
+$audio->audio()->encoding(); // ?string (UTF-8...)
+$audio->audio()->mimeType(); // ?string (audio/mpeg, audio/mp4, ...)
+$audio->audio()->durationSeconds(); // ?float in seconds
+$audio->audio()->durationReadable(); // ?string (00:00:00)
+$audio->audio()->bitrate(); // ?int in kbps
+$audio->audio()->bitrateMode(); // ?string (cbr, vbr, ...)
+$audio->audio()->sampleRate(); // ?int in Hz
+$audio->audio()->channels(); // ?int (1, 2, ...)
+$audio->audio()->channelMode(); // ?string (mono, stereo, ...)
+$audio->audio()->lossless(); // bool to know if is lossless
+$audio->audio()->compressionRatio(); // ?float
+```
+
+## AudioCover
+
+```php
+$audio = Audio::read('path/to/audio.mp3');
+
+$audio->cover()->content(); // ?string raw file
+$audio->cover()->mimeType(); // ?string (image/jpeg, image/png, ...)
+$audio->cover()->width(); // ?int in pixels
+$audio->cover()->height(); // ?int in pixels
 ```
 
 ## Testing
