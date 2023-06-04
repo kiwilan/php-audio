@@ -455,6 +455,8 @@ class Id3AudioTag
         protected ?Id3TagAsf $asf = null,
         protected ?Id3TagVorbisComment $vorbiscomment = null,
         protected ?Id3TagRiff $riff = null,
+        protected ?Id3TagMatroska $matroska = null,
+        protected ?Id3TagApe $ape = null,
     ) {
     }
 
@@ -471,6 +473,8 @@ class Id3AudioTag
             asf: Id3TagAsf::make($metadata['asf'] ?? null),
             vorbiscomment: Id3TagVorbisComment::make($metadata['vorbiscomment'] ?? null),
             riff: Id3TagRiff::make($metadata['riff'] ?? null),
+            matroska: Id3TagMatroska::make($metadata['matroska'] ?? null),
+            ape: Id3TagApe::make($metadata['ape'] ?? null),
         );
 
         return $self;
@@ -504,6 +508,16 @@ class Id3AudioTag
     public function riff(): ?Id3TagRiff
     {
         return $this->riff;
+    }
+
+    public function matroska(): ?Id3TagMatroska
+    {
+        return $this->matroska;
+    }
+
+    public function ape(): ?Id3TagApe
+    {
+        return $this->ape;
     }
 }
 
@@ -1184,6 +1198,243 @@ class Id3TagRiff
     }
 }
 
+class Id3TagMatroska
+{
+    protected function __construct(
+        protected ?string $title = null,
+        protected ?string $muxingapp = null,
+        protected ?string $writingapp = null,
+        protected ?string $album = null,
+        protected ?string $artist = null,
+        protected ?string $album_artist = null,
+        protected ?string $comment = null,
+        protected ?string $composer = null,
+        protected ?string $disc = null,
+        protected ?string $genre = null,
+        protected bool $compilation = false,
+        protected ?string $part_number = null,
+        protected ?string $date = null,
+        protected ?string $encoder = null,
+        protected ?string $duration = null,
+    ) {
+    }
+
+    public static function make(?array $metadata): ?self
+    {
+        if (! $metadata) {
+            return null;
+        }
+
+        $compilation = $metadata['compilation'][0] ?? false;
+        if ($compilation === 1) {
+            $compilation = true;
+        }
+
+        $self = new self(
+            title: $metadata['title'][0] ?? null,
+            muxingapp: $metadata['muxingapp'][0] ?? null,
+            writingapp: $metadata['writingapp'][0] ?? null,
+            album: $metadata['album'][0] ?? null,
+            artist: $metadata['artist'][0] ?? null,
+            album_artist: $metadata['album_artist'][0] ?? null,
+            comment: $metadata['comment'][0] ?? null,
+            composer: $metadata['composer'][0] ?? null,
+            disc: $metadata['disc'][0] ?? null,
+            genre: $metadata['genre'][0] ?? null,
+            compilation: $compilation,
+            part_number: $metadata['part_number'][0] ?? null,
+            date: $metadata['date'][0] ?? null,
+            encoder: $metadata['encoder'][0] ?? null,
+            duration: $metadata['duration'][0] ?? null,
+        );
+
+        return $self;
+    }
+
+    public function title(): ?string
+    {
+        return $this->title;
+    }
+
+    public function muxingapp(): ?string
+    {
+        return $this->muxingapp;
+    }
+
+    public function writingapp(): ?string
+    {
+        return $this->writingapp;
+    }
+
+    public function album(): ?string
+    {
+        return $this->album;
+    }
+
+    public function artist(): ?string
+    {
+        return $this->artist;
+    }
+
+    public function album_artist(): ?string
+    {
+        return $this->album_artist;
+    }
+
+    public function comment(): ?string
+    {
+        return $this->comment;
+    }
+
+    public function composer(): ?string
+    {
+        return $this->composer;
+    }
+
+    public function disc(): ?string
+    {
+        return $this->disc;
+    }
+
+    public function genre(): ?string
+    {
+        return $this->genre;
+    }
+
+    public function compilation(): bool
+    {
+        return $this->compilation;
+    }
+
+    public function part_number(): ?string
+    {
+        return $this->part_number;
+    }
+
+    public function date(): ?string
+    {
+        return $this->date;
+    }
+
+    public function encoder(): ?string
+    {
+        return $this->encoder;
+    }
+
+    public function duration(): ?string
+    {
+        return $this->duration;
+    }
+}
+
+class Id3TagApe
+{
+    protected function __construct(
+        protected ?string $title = null,
+        protected ?string $artist = null,
+        protected ?string $album = null,
+        protected ?string $album_artist = null,
+        protected ?string $composer = null,
+        protected ?string $comment = null,
+        protected ?string $genre = null,
+        protected ?string $disc = null,
+        protected bool $compilation = false,
+        protected ?string $track = null,
+        protected ?string $date = null,
+        protected ?string $encoder = null,
+    ) {
+    }
+
+    public static function make(?array $metadata): ?self
+    {
+        if (! $metadata) {
+            return null;
+        }
+
+        $compilation = $metadata['compilation'][0] ?? false;
+        if ($compilation === 1) {
+            $compilation = true;
+        }
+
+        $self = new self(
+            title: $metadata['title'][0] ?? null,
+            artist: $metadata['artist'][0] ?? null,
+            album: $metadata['album'][0] ?? null,
+            album_artist: $metadata['album_artist'][0] ?? null,
+            composer: $metadata['composer'][0] ?? null,
+            comment: $metadata['comment'][0] ?? null,
+            genre: $metadata['genre'][0] ?? null,
+            disc: $metadata['disc'][0] ?? null,
+            compilation: $compilation,
+            track: $metadata['track'][0] ?? null,
+            date: $metadata['date'][0] ?? null,
+            encoder: $metadata['encoder'][0] ?? null,
+        );
+
+        return $self;
+    }
+
+    public function title(): ?string
+    {
+        return $this->title;
+    }
+
+    public function artist(): ?string
+    {
+        return $this->artist;
+    }
+
+    public function album(): ?string
+    {
+        return $this->album;
+    }
+
+    public function album_artist(): ?string
+    {
+        return $this->album_artist;
+    }
+
+    public function composer(): ?string
+    {
+        return $this->composer;
+    }
+
+    public function comment(): ?string
+    {
+        return $this->comment;
+    }
+
+    public function genre(): ?string
+    {
+        return $this->genre;
+    }
+
+    public function disc(): ?string
+    {
+        return $this->disc;
+    }
+
+    public function compilation(): bool
+    {
+        return $this->compilation;
+    }
+
+    public function track(): ?string
+    {
+        return $this->track;
+    }
+
+    public function date(): ?string
+    {
+        return $this->date;
+    }
+
+    public function encoder(): ?string
+    {
+        return $this->encoder;
+    }
+}
+
 class Id3TagsHtml
 {
     protected function __construct(
@@ -1193,6 +1444,8 @@ class Id3TagsHtml
         protected ?Id3TagAsf $asf = null,
         protected ?Id3TagVorbisComment $vorbiscomment = null,
         protected ?Id3TagRiff $riff = null,
+        protected ?Id3TagMatroska $matroska = null,
+        protected ?Id3TagApe $ape = null,
     ) {
     }
 
@@ -1209,6 +1462,8 @@ class Id3TagsHtml
             asf: Id3TagAsf::make($metadata['asf'] ?? null),
             vorbiscomment: Id3TagVorbisComment::make($metadata['vorbiscomment'] ?? null),
             riff: Id3TagRiff::make($metadata['riff'] ?? null),
+            matroska: Id3TagMatroska::make($metadata['matroska'] ?? null),
+            ape: Id3TagApe::make($metadata['ape'] ?? null),
         );
 
         return $self;
@@ -1242,5 +1497,15 @@ class Id3TagsHtml
     public function riff(): ?Id3TagRiff
     {
         return $this->riff;
+    }
+
+    public function matroska(): ?Id3TagMatroska
+    {
+        return $this->matroska;
+    }
+
+    public function ape(): ?Id3TagApe
+    {
+        return $this->ape;
     }
 }

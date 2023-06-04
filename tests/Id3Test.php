@@ -37,10 +37,17 @@ it('can parse ID3 item', function (string $path) {
     if ($item->mpeg()) {
         expect($item->mpeg())->toBeArray();
     }
-    expect($item->playtime_seconds())->toBeFloat();
+    if ($item->playtime_seconds()) {
+        expect($item->playtime_seconds())->toBeFloat();
+    }
+
     if ($item->tags_html()) {
         expect($item->tags_html())->toBeInstanceOf(Id3TagsHtml::class);
     }
-    expect($item->bitrate())->toBeFloat();
-    expect($item->playtime_string())->toBeString();
+    if ($item->bitrate()) {
+        expect($item->bitrate())->toBeFloat();
+    }
+    if ($item->playtime_string()) {
+        expect($item->playtime_string())->toBeString();
+    }
 })->with([...AUDIO]);

@@ -216,13 +216,25 @@ class Audio
 
         $this->type = match ($this->extension) {
             'aac' => null,
+            'aif' => 'id3',
+            'aifc' => 'id3',
+            'aiff' => 'id3',
             'flac' => 'vorbiscomment',
             'm4a' => 'quicktime',
             'm4b' => 'quicktime',
+            'm4v' => 'quicktime',
+            'mka' => 'matroska',
+            'mkv' => 'matroska',
             'mp3' => 'id3',
             'mp4' => 'quicktime',
+            'ogg' => 'vorbiscomment',
+            'opus' => 'vorbiscomment',
+            'spx' => 'vorbiscomment',
+            'tta' => 'ape',
             'wav' => 'id3',
+            'webm' => 'matroska',
             'wma' => 'asf',
+            'wv' => 'ape',
             default => null,
         };
 
@@ -232,21 +244,7 @@ class Audio
         }
 
         if ($this->type === 'id3') {
-            $v1 = $tags->id3v1();
-            $v2 = $tags->id3v2();
-
-            $year = $v2?->year() ?? $v1?->year();
-            $this->title = $v2?->title() ?? $v1?->title();
-            $this->artist = $v2?->artist() ?? $v1?->artist();
-            $this->album = $v2?->album() ?? $v1?->album();
-            $this->genre = $v2?->genre() ?? $v1?->genre();
-            $this->year = $year ? (int) $year : null;
-            $this->trackNumber = $v2?->track_number() ?? $v1?->track_number();
-            $this->comment = $v2?->comment() ?? $v1?->comment();
-            $this->albumArtist = $v2?->band() ?? null;
-            $this->composer = $v2?->composer() ?? null;
-            $this->discNumber = $v2?->part_of_a_set() ?? null;
-            $this->isCompilation = $v2?->part_of_a_compilation() ?? false;
+            $this->parseId3($tags);
             $this->isValid = true;
         }
 
@@ -256,37 +254,22 @@ class Audio
         }
 
         if ($this->type === 'vorbiscomment') {
-            $vorbis = $tags->vorbiscomment();
-
-            $this->title = $vorbis->title();
-            $this->artist = $vorbis->artist();
-            $this->album = $vorbis->album();
-            $this->genre = $vorbis->genre();
-            $this->trackNumber = $vorbis->tracknumber();
-            $this->comment = $vorbis->comment();
-            $this->albumArtist = $vorbis->albumartist();
-            $this->composer = $vorbis->composer();
-            $this->discNumber = $vorbis->discnumber();
-            $this->isCompilation = $vorbis->compilation();
-            $this->year = (int) $vorbis->date();
-            $this->encoding = $vorbis->encoder();
-            $this->comment = $vorbis->description();
+            $this->parseVorbisComment($tags);
             $this->isValid = true;
         }
 
         if ($this->type === 'asf') {
-            $asf = $tags->asf();
+            $this->parseAsf($tags);
+            $this->isValid = true;
+        }
 
-            $this->title = $asf->title();
-            $this->artist = $asf->artist();
-            $this->album = $asf->album();
-            $this->albumArtist = $asf->albumartist();
-            $this->composer = $asf->composer();
-            $this->discNumber = $asf->partofset();
-            $this->genre = $asf->genre();
-            $this->trackNumber = $asf->track_number();
-            $this->year = (int) $asf->year();
-            $this->encoding = $asf->encodingsettings();
+        if ($this->type === 'matroska') {
+            $this->parseMatroska($tags);
+            $this->isValid = true;
+        }
+
+        if ($this->type === 'ape') {
+            $this->parseApe($tags);
             $this->isValid = true;
         }
 
@@ -300,6 +283,48 @@ class Audio
         }
 
         $this->duration = number_format((float) $this->audio->durationSeconds(), 2, '.', '');
+
+        return $this;
+    }
+
+    private function parseId3(Id3AudioTag $tags): self
+    {
+        $v1 = $tags->id3v1();
+        $v2 = $tags->id3v2();
+
+        $year = $v2?->year() ?? $v1?->year();
+        $this->title = $v2?->title() ?? $v1?->title();
+        $this->artist = $v2?->artist() ?? $v1?->artist();
+        $this->album = $v2?->album() ?? $v1?->album();
+        $this->genre = $v2?->genre() ?? $v1?->genre();
+        $this->year = $year ? (int) $year : null;
+        $this->trackNumber = $v2?->track_number() ?? $v1?->track_number();
+        $this->comment = $v2?->comment() ?? $v1?->comment();
+        $this->albumArtist = $v2?->band() ?? null;
+        $this->composer = $v2?->composer() ?? null;
+        $this->discNumber = $v2?->part_of_a_set() ?? null;
+        $this->isCompilation = $v2?->part_of_a_compilation() ?? false;
+
+        return $this;
+    }
+
+    private function parseVorbisComment(Id3AudioTag $tags): self
+    {
+        $vorbis = $tags->vorbiscomment();
+
+        $this->title = $vorbis->title();
+        $this->artist = $vorbis->artist();
+        $this->album = $vorbis->album();
+        $this->genre = $vorbis->genre();
+        $this->trackNumber = $vorbis->tracknumber();
+        $this->comment = $vorbis->comment();
+        $this->albumArtist = $vorbis->albumartist();
+        $this->composer = $vorbis->composer();
+        $this->discNumber = $vorbis->discnumber();
+        $this->isCompilation = $vorbis->compilation();
+        $this->year = (int) $vorbis->date();
+        $this->encoding = $vorbis->encoder();
+        $this->comment = $vorbis->description();
 
         return $this;
     }
@@ -346,6 +371,64 @@ class Audio
         $this->description = $description;
         $this->lyrics = $quicktime->lyrics();
         $this->stik = $quicktime->stik();
+
+        return $this;
+    }
+
+    private function parseAsf(Id3AudioTag $tags): self
+    {
+        $asf = $tags->asf();
+
+        $this->title = $asf->title();
+        $this->artist = $asf->artist();
+        $this->album = $asf->album();
+        $this->albumArtist = $asf->albumartist();
+        $this->composer = $asf->composer();
+        $this->discNumber = $asf->partofset();
+        $this->genre = $asf->genre();
+        $this->trackNumber = $asf->track_number();
+        $this->year = (int) $asf->year();
+        $this->encoding = $asf->encodingsettings();
+
+        return $this;
+    }
+
+    private function parseMatroska(Id3AudioTag $tags): self
+    {
+        $matroska = $tags->matroska();
+
+        $this->title = $matroska->title();
+        $this->album = $matroska->album();
+        $this->artist = $matroska->artist();
+        $this->albumArtist = $matroska->album_artist();
+        $this->comment = $matroska->comment();
+        $this->composer = $matroska->composer();
+        $this->discNumber = $matroska->disc();
+        $this->genre = $matroska->genre();
+        $this->isCompilation = $matroska->compilation();
+        $this->trackNumber = $matroska->part_number();
+        $this->year = (int) $matroska->date();
+        $this->encoding = $matroska->encoder();
+
+        return $this;
+    }
+
+    private function parseApe(Id3AudioTag $tags): self
+    {
+        $ape = $tags->ape();
+
+        $this->album = $ape->album();
+        $this->artist = $ape->artist();
+        $this->albumArtist = $ape->album_artist();
+        $this->comment = $ape->comment();
+        $this->composer = $ape->composer();
+        $this->discNumber = $ape->disc();
+        $this->genre = $ape->genre();
+        $this->isCompilation = $ape->compilation();
+        $this->title = $ape->title();
+        $this->trackNumber = $ape->track();
+        $this->year = (int) $ape->date();
+        $this->encoding = $ape->encoder();
 
         return $this;
     }

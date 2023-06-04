@@ -15,32 +15,32 @@ PHP package to parse audio files metadata, with [JamesHeinrich/getID3](https://g
 | Format | Supported |                About                 |    ID3 type     |      Notes       |
 | :----: | :-------: | :----------------------------------: | :-------------: | :--------------: |
 |  AAC   |    ❌     |        Advanced Audio Coding         |                 |                  |
-|  ALAC  |    ❌     |      Apple Lossless Audio Codec      |                 |                  |
-|  AIF   |    ❌     | Audio Interchange File Format (aif)  |                 |                  |
-|  AIFC  |    ❌     | Audio Interchange File Format (aifc) |                 |                  |
-|  AIFF  |    ❌     | Audio Interchange File Format (aiff) |                 |                  |
+|  ALAC  |    ✅     |      Apple Lossless Audio Codec      |   `quicktime`   |                  |
+|  AIF   |    ✅     | Audio Interchange File Format (aif)  | `id3v2`,`riff`  |                  |
+|  AIFC  |    ✅     | Audio Interchange File Format (aifc) | `id3v2`,`riff`  |                  |
+|  AIFF  |    ✅     | Audio Interchange File Format (aiff) | `id3v2`,`riff`  |                  |
 |  DSF   |    ❌     |     Direct Stream Digital Audio      |                 |                  |
 |  FLAC  |    ✅     |      Free Lossless Audio Codec       | `vorbiscomment` |                  |
-|  MKA   |    ❌     |               Matroska               |                 |                  |
-|  MKV   |    ❌     |               Matroska               |                 |                  |
+|  MKA   |    ✅     |               Matroska               |   `matroska`    | _Cover not work_ |
+|  MKV   |    ✅     |               Matroska               |   `matroska`    | _Cover not work_ |
 |  APE   |    ❌     |            Monkey's Audio            |                 |                  |
 |  MP3   |    ✅     |          MPEG audio layer 3          | `id3v1`,`id3v2` |                  |
 |  MP4   |    ✅     | Digital multimedia container format  |   `quicktime`   |                  |
 |  M4A   |    ✅     |             mpeg-4 audio             |   `quicktime`   |                  |
 |  M4B   |    ✅     |              Audiobook               |   `quicktime`   |                  |
-|  M4V   |    ❌     |             mpeg-4 video             |                 |                  |
+|  M4V   |    ✅     |             mpeg-4 video             |   `quicktime`   |                  |
 |  MPC   |    ❌     |               Musepack               |                 |                  |
-|  OGG   |    ❌     |        Open container format         |                 |                  |
-|  OPUS  |    ❌     |           IETF Opus audio            |                 |                  |
+|  OGG   |    ✅     |        Open container format         | `vorbiscomment` |                  |
+|  OPUS  |    ✅     |           IETF Opus audio            | `vorbiscomment` |                  |
 |  OFR   |    ❌     |              OptimFROG               |                 |                  |
 |  OFS   |    ❌     |              OptimFROG               |                 |                  |
-|  SPX   |    ❌     |                Speex                 |                 |                  |
+|  SPX   |    ✅     |                Speex                 | `vorbiscomment` | _Cover not work_ |
 |  TAK   |    ❌     |        Tom's Audio Kompressor        |                 |                  |
-|  TTA   |    ❌     |              True Audio              |                 |                  |
+|  TTA   |    ✅     |              True Audio              |      `ape`      | _Cover not work_ |
 |  WMA   |    ✅     |         Windows Media Audio          |      `asf`      | _Cover not work_ |
-|   WV   |    ❌     |               WavPack                |                 |                  |
+|   WV   |    ✅     |               WavPack                |      `ape`      |                  |
 |  WAV   |    ✅     |            Waveform Audio            | `id3v2`,`riff`  |                  |
-|  WEBM  |    ❌     |                 WebM                 |                 |                  |
+|  WEBM  |    ✅     |                 WebM                 |   `matroska`    | _Cover not work_ |
 
 ## Requirements
 

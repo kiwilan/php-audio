@@ -1,7 +1,7 @@
 {
     "name": "kiwilan/php-audio",
     "description": "PHP package to parse audio files metadata.",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "keywords": [
         "audio",
         "php",
