@@ -12,35 +12,35 @@ PHP package to parse audio files metadata, with [JamesHeinrich/getID3](https://g
 
 ## Supported formats
 
-| Format | Supported |                About                 |    ID3 type     |      Notes       |
-| :----: | :-------: | :----------------------------------: | :-------------: | :--------------: |
-|  AAC   |    ❌     |        Advanced Audio Coding         |                 |                  |
-|  ALAC  |    ✅     |      Apple Lossless Audio Codec      |   `quicktime`   |                  |
-|  AIF   |    ✅     | Audio Interchange File Format (aif)  | `id3v2`,`riff`  |                  |
-|  AIFC  |    ✅     | Audio Interchange File Format (aifc) | `id3v2`,`riff`  |                  |
-|  AIFF  |    ✅     | Audio Interchange File Format (aiff) | `id3v2`,`riff`  |                  |
-|  DSF   |    ❌     |     Direct Stream Digital Audio      |                 |                  |
-|  FLAC  |    ✅     |      Free Lossless Audio Codec       | `vorbiscomment` |                  |
-|  MKA   |    ✅     |               Matroska               |   `matroska`    | _Cover not work_ |
-|  MKV   |    ✅     |               Matroska               |   `matroska`    | _Cover not work_ |
-|  APE   |    ❌     |            Monkey's Audio            |                 |                  |
-|  MP3   |    ✅     |          MPEG audio layer 3          | `id3v1`,`id3v2` |                  |
-|  MP4   |    ✅     | Digital multimedia container format  |   `quicktime`   |                  |
-|  M4A   |    ✅     |             mpeg-4 audio             |   `quicktime`   |                  |
-|  M4B   |    ✅     |              Audiobook               |   `quicktime`   |                  |
-|  M4V   |    ✅     |             mpeg-4 video             |   `quicktime`   |                  |
-|  MPC   |    ❌     |               Musepack               |                 |                  |
-|  OGG   |    ✅     |        Open container format         | `vorbiscomment` |                  |
-|  OPUS  |    ✅     |           IETF Opus audio            | `vorbiscomment` |                  |
-|  OFR   |    ❌     |              OptimFROG               |                 |                  |
-|  OFS   |    ❌     |              OptimFROG               |                 |                  |
-|  SPX   |    ✅     |                Speex                 | `vorbiscomment` | _Cover not work_ |
-|  TAK   |    ❌     |        Tom's Audio Kompressor        |                 |                  |
-|  TTA   |    ✅     |              True Audio              |      `ape`      | _Cover not work_ |
-|  WMA   |    ✅     |         Windows Media Audio          |      `asf`      | _Cover not work_ |
-|   WV   |    ✅     |               WavPack                |      `ape`      |                  |
-|  WAV   |    ✅     |            Waveform Audio            | `id3v2`,`riff`  |                  |
-|  WEBM  |    ✅     |                 WebM                 |   `matroska`    | _Cover not work_ |
+| Format | Supported |                About                 |    ID3 type     |         Notes         |
+| :----: | :-------: | :----------------------------------: | :-------------: | :-------------------: |
+|  AAC   |    ❌     |        Advanced Audio Coding         |                 |                       |
+|  ALAC  |    ✅     |      Apple Lossless Audio Codec      |   `quicktime`   |                       |
+|  AIF   |    ✅     | Audio Interchange File Format (aif)  | `id3v2`,`riff`  |                       |
+|  AIFC  |    ✅     | Audio Interchange File Format (aifc) | `id3v2`,`riff`  |                       |
+|  AIFF  |    ✅     | Audio Interchange File Format (aiff) | `id3v2`,`riff`  |                       |
+|  DSF   |    ❌     |     Direct Stream Digital Audio      |                 |                       |
+|  FLAC  |    ✅     |      Free Lossless Audio Codec       | `vorbiscomment` |                       |
+|  MKA   |    ✅     |               Matroska               |   `matroska`    | _Cover not supported_ |
+|  MKV   |    ✅     |               Matroska               |   `matroska`    | _Cover not supported_ |
+|  APE   |    ❌     |            Monkey's Audio            |                 |                       |
+|  MP3   |    ✅     |          MPEG audio layer 3          | `id3v1`,`id3v2` |                       |
+|  MP4   |    ✅     | Digital multimedia container format  |   `quicktime`   |                       |
+|  M4A   |    ✅     |             mpeg-4 audio             |   `quicktime`   |                       |
+|  M4B   |    ✅     |              Audiobook               |   `quicktime`   |                       |
+|  M4V   |    ✅     |             mpeg-4 video             |   `quicktime`   |                       |
+|  MPC   |    ❌     |               Musepack               |                 |                       |
+|  OGG   |    ✅     |        Open container format         | `vorbiscomment` |                       |
+|  OPUS  |    ✅     |           IETF Opus audio            | `vorbiscomment` |                       |
+|  OFR   |    ❌     |              OptimFROG               |                 |                       |
+|  OFS   |    ❌     |              OptimFROG               |                 |                       |
+|  SPX   |    ✅     |                Speex                 | `vorbiscomment` | _Cover not supported_ |
+|  TAK   |    ❌     |        Tom's Audio Kompressor        |                 |                       |
+|  TTA   |    ✅     |              True Audio              |      `ape`      | _Cover not supported_ |
+|  WMA   |    ✅     |         Windows Media Audio          |      `asf`      | _Cover not supported_ |
+|   WV   |    ✅     |               WavPack                |      `ape`      |                       |
+|  WAV   |    ✅     |            Waveform Audio            | `id3v2`,`riff`  |                       |
+|  WEBM  |    ✅     |                 WebM                 |   `matroska`    | _Cover not supported_ |
 
 ## Requirements
 
