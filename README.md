@@ -56,15 +56,15 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
-[version-src]: https://img.shields.io/packagist/v/kiwilan/php-opds.svg?style=flat-square&colorA=18181B&colorB=777BB4
-[version-href]: https://packagist.org/packages/kiwilan/steward-laravel
+[version-src]: https://img.shields.io/packagist/v/kiwilan/php-audio.svg?style=flat-square&colorA=18181B&colorB=777BB4
+[version-href]: https://packagist.org/packages/kiwilan/php-audio
 [php-version-src]: https://img.shields.io/static/v1?style=flat-square&label=PHP&message=v8.1&color=777BB4&logo=php&logoColor=ffffff&labelColor=18181b
 [php-version-href]: https://www.php.net/
-[downloads-src]: https://img.shields.io/packagist/dt/kiwilan/php-opds.svg?style=flat-square&colorA=18181B&colorB=777BB4
-[downloads-href]: https://packagist.org/packages/kiwilan/php-opds
-[license-src]: https://img.shields.io/github/license/kiwilan/php-opds.svg?style=flat-square&colorA=18181B&colorB=777BB4
-[license-href]: https://github.com/kiwilan/php-opds/blob/main/README.md
-[tests-src]: https://img.shields.io/github/actions/workflow/status/kiwilan/php-opds/run-tests.yml?branch=main&label=tests&style=flat-square&colorA=18181B
-[tests-href]: https://packagist.org/packages/kiwilan/php-opds
-[codecov-src]: https://codecov.io/gh/kiwilan/php-opds/branch/main/graph/badge.svg?token=UFISWRY4QW
-[codecov-href]: https://codecov.io/gh/kiwilan/php-opds
+[downloads-src]: https://img.shields.io/packagist/dt/kiwilan/php-audio.svg?style=flat-square&colorA=18181B&colorB=777BB4
+[downloads-href]: https://packagist.org/packages/kiwilan/php-audio
+[license-src]: https://img.shields.io/github/license/kiwilan/php-audio.svg?style=flat-square&colorA=18181B&colorB=777BB4
+[license-href]: https://github.com/kiwilan/php-audio/blob/main/README.md
+[tests-src]: https://img.shields.io/github/actions/workflow/status/kiwilan/php-audio/run-tests.yml?branch=main&label=tests&style=flat-square&colorA=18181B
+[tests-href]: https://packagist.org/packages/kiwilan/php-audio
+[codecov-src]: https://codecov.io/gh/kiwilan/php-audio/branch/main/graph/badge.svg?token=UFISWRY4QW
+[codecov-href]: https://codecov.io/gh/kiwilan/php-audio
