@@ -1,45 +1,57 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "kiwilan/php-audio",
+    "description": "PHP package to read audio files with JamesHeinrich/getID3 with improved DX.",
+    "version": "0.1.0",
     "keywords": [
-        ":vendor_name",
-        ":package_slug"
+        "audio",
+        "php",
+        "mp3",
+        "id3",
+        "id3v2",
+        "id3v1",
+        "audiobook"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/kiwilan/php-audio",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "Ewilan Rivière",
+            "email": "ewilan.riviere@gmail.com",
             "role": "Developer"
         }
     ],
     "require": {
-        "php": "^8.1"
+        "php": "^8.1",
+        "james-heinrich/getid3": "^1.9"
     },
     "require-dev": {
-        :require_dev_testing,
-        :require_dev_codestyle,
+        "pestphp/pest": "^1.20",
+        "laravel/pint": "^1.2",
         "spatie/ray": "^1.28"
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src"
+            "Kiwilan\\Audio\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests"
+            "Kiwilan\\Audio\\Tests\\": "tests"
         }
     },
     "scripts": {
-        :scripts_testing,
-        :scripts_codestyle
+        "test": "vendor/bin/pest",
+        "test-filter": "vendor/bin/pest --filter",
+        "test-parallel": "vendor/bin/pest --parallel",
+        "test-coverage": "vendor/bin/pest --coverage --min=90",
+        "test-coverage-parallel": "vendor/bin/pest --parallel --coverage",
+        "analyse": "vendor/bin/phpstan analyse",
+        "format": "vendor/bin/pint"
     },
     "config": {
         "sort-packages": true,
         "allow-plugins": {
-            :plugins_testing,
+            "pestphp/pest-plugin": true,
             "phpstan/extension-installer": true
         }
     },
