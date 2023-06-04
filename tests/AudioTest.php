@@ -117,7 +117,6 @@ it('can read mp3 stream', function () {
 
 it('can read wrong audio file', function () {
     $audio = Audio::read(MD);
-    ray($audio);
 
     expect($audio->isValid())->toBeFalse();
 });

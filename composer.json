@@ -1,6 +1,6 @@
 {
     "name": "kiwilan/php-audio",
-    "description": "PHP package to read audio files with ID3.",
+    "description": "PHP package to read audio files.",
     "version": "0.1.0",
     "keywords": [
         "audio",

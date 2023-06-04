@@ -8,7 +8,7 @@
 [![tests][tests-src]][tests-href]
 [![codecov][codecov-src]][codecov-href]
 
-PHP package to read audio files with ID3, parser uses [JamesHeinrich/getID3](https://github.com/JamesHeinrich/getID3).
+PHP package to read audio files, parser uses [JamesHeinrich/getID3](https://github.com/JamesHeinrich/getID3).
 
 | Format | Supported |                 Type                 | Notes |
 | :----: | :-------: | :----------------------------------: | :---: |
@@ -61,46 +61,46 @@ composer require kiwilan/php-audio
 ```php
 $audio = Audio::read('path/to/audio.mp3');
 
-$audio->path(); // string to get path
-$audio->extension(); // string to get extension
-$audio->title(); // ?string to get title
-$audio->artist(); // ?string to get artist
-$audio->album(); // ?string to get album
-$audio->genre(); // ?string to get genre
-$audio->year(); // ?int to get year
-$audio->trackNumber(); // ?string to get track number
-$audio->comment(); // ?string to get comment
-$audio->albumArtist(); // ?string to get album artist
-$audio->composer(); // ?string to get composer
-$audio->discNumber(); // ?string to get disc number
-$audio->isCompilation(); // bool to know if is compilation
-$audio->creationDate(); // ?string to get creation date (audiobook)
-$audio->copyright(); // ?string to get copyright (audiobook)
-$audio->encoding(); // ?string to get encoding
-$audio->description(); // ?string to get description (audiobook)
-$audio->lyrics(); // ?string (audiobook)
-$audio->stik(); // ?string (audiobook)
-$audio->duration(); // ?float to get duration in seconds
-$audio->extras(); // array with raw metadata
-$audio->hasCover(); // bool to know if has cover
-$audio->isValid(); // bool to know if file is valid audio file
+$audio->path(); // `string` to get path
+$audio->extension(); // `string` to get extension
+$audio->title(); // `?string` to get title
+$audio->artist(); // `?string` to get artist
+$audio->album(); // `?string` to get album
+$audio->genre(); // `?string` to get genre
+$audio->year(); // `?int` to get year
+$audio->trackNumber(); // `?string` to get track number
+$audio->comment(); // `?string` to get comment
+$audio->albumArtist(); // `?string` to get album artist
+$audio->composer(); // `?string` to get composer
+$audio->discNumber(); // `?string` to get disc number
+$audio->isCompilation(); // `bool` to know if is compilation
+$audio->creationDate(); // `?string` to get creation date (audiobook)
+$audio->copyright(); // `?string` to get copyright (audiobook)
+$audio->encoding(); // `?string` to get encoding
+$audio->description(); // `?string` to get description (audiobook)
+$audio->lyrics(); // `?string` (audiobook)
+$audio->stik(); // `?string` (audiobook)
+$audio->duration(); // `?float` to get duration in seconds
+$audio->extras(); // `array` with raw metadata
+$audio->hasCover(); // `bool` to know if has cover
+$audio->isValid(); // `bool` to know if file is valid audio file
 
-$audio->id3(); // Id3 metadata
-$audio->stat(); // FileStat (from `stat` function)
-$audio->audio(); // ?AudioMetadata with audio metadata
-$audio->cover(); // ?AudioCover with cover metadata
+$audio->id3(); // `Id3` metadata
+$audio->stat(); // `FileStat` (from `stat` function)
+$audio->audio(); // `?AudioMetadata` with audio metadata
+$audio->cover(); // `?AudioCover` with cover metadata
 ```
 
-## Id3
+## ID3
 
 Data from `JamesHeinrich/getID3` package with formatting.
 
 ```php
 $audio = Audio::read('path/to/audio.mp3');
 
-$audio->id3()->raw(); // array with raw metadata
-$audio->id3()->item(); // ?Id3Item with item metadata
-$audio->id3()->instance(); // getID3 instance
+$audio->id3()->raw(); // `array` with raw metadata
+$audio->id3()->item(); // `?Id3Item` with item metadata
+$audio->id3()->instance(); // `getID3` instance
 ```
 
 ## AudioMetadata
@@ -108,19 +108,19 @@ $audio->id3()->instance(); // getID3 instance
 ```php
 $audio = Audio::read('path/to/audio.mp3');
 
-$audio->audio()->filesize(); // ?int in bytes
-$audio->audio()->extension(); // ?string (mp3, m4a, ...)
-$audio->audio()->encoding(); // ?string (UTF-8...)
-$audio->audio()->mimeType(); // ?string (audio/mpeg, audio/mp4, ...)
-$audio->audio()->durationSeconds(); // ?float in seconds
-$audio->audio()->durationReadable(); // ?string (00:00:00)
-$audio->audio()->bitrate(); // ?int in kbps
-$audio->audio()->bitrateMode(); // ?string (cbr, vbr, ...)
-$audio->audio()->sampleRate(); // ?int in Hz
-$audio->audio()->channels(); // ?int (1, 2, ...)
-$audio->audio()->channelMode(); // ?string (mono, stereo, ...)
-$audio->audio()->lossless(); // bool to know if is lossless
-$audio->audio()->compressionRatio(); // ?float
+$audio->audio()->filesize(); // `?int` in bytes
+$audio->audio()->extension(); // `?string` (mp3, m4a, ...)
+$audio->audio()->encoding(); // `?string` (UTF-8...)
+$audio->audio()->mimeType(); // `?string` (audio/mpeg, audio/mp4, ...)
+$audio->audio()->durationSeconds(); // `?float` in seconds
+$audio->audio()->durationReadable(); // `?string` (00:00:00)
+$audio->audio()->bitrate(); // `?int` in kbps
+$audio->audio()->bitrateMode(); // `?string` (cbr, vbr, ...)
+$audio->audio()->sampleRate(); // `?int` in Hz
+$audio->audio()->channels(); // `?int` (1, 2, ...)
+$audio->audio()->channelMode(); // `?string` (mono, stereo, ...)
+$audio->audio()->lossless(); // `bool` to know if is lossless
+$audio->audio()->compressionRatio(); // `?float`
 ```
 
 ## AudioCover
@@ -128,10 +128,10 @@ $audio->audio()->compressionRatio(); // ?float
 ```php
 $audio = Audio::read('path/to/audio.mp3');
 
-$audio->cover()->content(); // ?string raw file
-$audio->cover()->mimeType(); // ?string (image/jpeg, image/png, ...)
-$audio->cover()->width(); // ?int in pixels
-$audio->cover()->height(); // ?int in pixels
+$audio->cover()->content(); // `?string` raw file
+$audio->cover()->mimeType(); // `?string` (image/jpeg, image/png, ...)
+$audio->cover()->width(); // `?int` in pixels
+$audio->cover()->height(); // `?int` in pixels
 ```
 
 ## Testing
