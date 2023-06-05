@@ -5,7 +5,11 @@ define('AUDIOBOOK', __DIR__.'/media/audiobook.m4b');
 define('MD', __DIR__.'/media/test.md');
 define('FOLDER', __DIR__.'/media/folder.jpg');
 
-exec('cd tests/media && ./convert-writer.sh');
+if (PHP_OS_FAMILY === 'Windows') {
+    exec('cd tests/media ; ./convert-writer.ps1');
+} else {
+    exec('cd tests/media && ./convert-writer.sh');
+}
 
 define('ALAC_WRITER', __DIR__.'/media/test-alac-writer.m4a');
 define('AAC_WRITER', __DIR__.'/media/test-writer.aac');

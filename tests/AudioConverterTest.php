@@ -5,7 +5,7 @@ use Kiwilan\Audio\AudioConverter;
 use Kiwilan\Audio\Models\AudioCore;
 use Kiwilan\Audio\Models\AudioCoreCover;
 
-it('can read audiobook file m4b', function () {
+it('can convert formats', function () {
     $audio = Audio::get(MP3);
     $core = new AudioCore(
         title: $audio->title(),
@@ -28,7 +28,6 @@ it('can read audiobook file m4b', function () {
         stik: $audio->stik(),
     );
 
-    ray($core);
     expect($core->title())->toBe('Introduction');
     expect($core->artist())->toBe('Mr Piouf');
     expect($core->album())->toBe('P1PDD Le conclave de Troie');

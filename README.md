@@ -58,11 +58,14 @@ You want to add a format? [See FAQ](#faq)
 > -   Ogg Vorbis comments (need `vorbis-tools`)
 > -   FLAC comments
 
-| Format |         Notes         |
-| :----: | :-------------------: |
-|  FLAC  | _Cover not supported_ |
-|  MP3   |                       |
-|  OGG   | _Cover not supported_ |
+| Format |         Notes         |    Requires    |
+| :----: | :-------------------: | :------------: |
+|  FLAC  | _Cover not supported_ |     `flac`     |
+|  MP3   |                       |                |
+|  OGG   | _Cover not supported_ | `vorbis-tools` |
+
+-   `flac`: with `apt`, `brew` or `scoop`
+-   `vorbis-tools`: with `apt`, `brew` or `scoop` (`extras/icecast`)
 
 ### Convert properties
 

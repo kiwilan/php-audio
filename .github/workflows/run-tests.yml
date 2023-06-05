@@ -25,6 +25,27 @@ jobs:
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, fileinfo
           coverage: none
 
+      - name: apt
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get install vorbis-tools flac
+        shell: bash
+
+      - name: scoop
+        if: runner.os == 'Windows'
+        run: |
+          [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+          iex "& {$(irm get.scoop.sh)} -RunAsAdmin"
+          [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+          scoop update
+          scoop install flac
+          scoop bucket add extras
+          scoop install extras/icecast
+          cd D:\a\php-audio\php-audio\tests\media
+          ./convert-writer.ps1
+          ls
+        shell: powershell
+
       - name: Setup problem matchers
         run: |
           echo "::add-matcher::${{ runner.tool_cache }}/php.json"
