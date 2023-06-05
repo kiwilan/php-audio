@@ -6,7 +6,7 @@ define('MD', __DIR__.'/media/test.md');
 define('FOLDER', __DIR__.'/media/folder.jpg');
 
 if (PHP_OS_FAMILY === 'Windows') {
-    exec('cd tests/media && ./convert-writer.ps1');
+    exec('cd tests/media ; ./convert-writer.ps1');
 } else {
     exec('cd tests/media && ./convert-writer.sh');
 }
