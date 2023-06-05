@@ -22,6 +22,7 @@ it('can read audiobook file m4b', function () {
     expect($audio->creationDate())->toBe('2023-06-04T12:00:00Z');
     expect($audio->encodingBy())->toBe('Mr Piouf');
     expect($audio->encoding())->toBe('Audiobook Builder 2.2.6 (www.splasm.com), macOS 13.4');
+    expect($audio->copyright())->toBeString();
     expect($audio->description())->toBe('Première campagne de P1PDD');
     expect($audio->lyrics())->toBe('P1PDD');
     expect($audio->stik())->toBe('Audiobook');

@@ -169,6 +169,8 @@ $tag = $audio->update()
   ->save();
 ```
 
+Some properties are not supported by all formats, for example `MP3` can't handle `lyrics` or `stik` properties, if you try to update these properties, they will be ignored.
+
 ### Extras
 
 Audio files format metadata with different methods, `JamesHeinrich/getID3` offer to check these metadatas by different methods. In `extras` property of `Audio::class`, you will find raw metadata from `JamesHeinrich/getID3` package, like `id3v2`, `id3v1`, `riff`, `asf`, `quicktime`, `matroska`, `ape`, `vorbiscomment`...

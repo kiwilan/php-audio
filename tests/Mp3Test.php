@@ -8,7 +8,7 @@ it('can read file mp3', function () {
     $audio = Audio::get(MP3);
 
     expect($audio)->toBeInstanceOf(Audio::class);
-    expect($audio->title())->toBe('P1PDD Le conclave de Troie');
+    expect($audio->title())->toBe('Introduction');
     expect($audio->artist())->toBe('Mr Piouf');
     expect($audio->album())->toBe('P1PDD Le conclave de Troie');
     expect($audio->genre())->toBe('Roleplaying game');

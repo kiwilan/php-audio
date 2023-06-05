@@ -183,6 +183,11 @@ class Audio
         return $this->encoding;
     }
 
+    public function copyright(): ?string
+    {
+        return $this->copyright;
+    }
+
     public function description(): ?string
     {
         return $this->description;
@@ -343,6 +348,7 @@ class Audio
         $this->creationDate = $core->creationDate();
         $this->encodingBy = $core->encodingBy();
         $this->encoding = $core->encoding();
+        $this->copyright = $core->copyright();
         $this->description = $core->description();
         $this->lyrics = $core->lyrics();
         $this->stik = $core->stik();

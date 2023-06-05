@@ -51,3 +51,16 @@ it('can parse ID3 reader', function (string $path) {
         expect($reader->playtime_string())->toBeString();
     }
 })->with([...AUDIO]);
+
+it('can parse with ID3 methods', function (string $path) {
+    $audio = Audio::get($path);
+    $type = $audio->type()->value;
+    $tags = $audio->reader()->tags();
+
+    if ($type === 'id3') {
+        $type = 'id3v2';
+    }
+
+    $metadata = $tags->{$type}();
+    expect($metadata->toArray())->toBeArray();
+})->with([...AUDIO]);

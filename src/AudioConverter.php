@@ -13,11 +13,6 @@ use Kiwilan\Audio\Models\Id3TagVorbisComment;
 
 class AudioConverter
 {
-    protected function __construct(
-        protected AudioCore $core,
-    ) {
-    }
-
     public static function toId3v2(AudioCore $core): Id3AudioTagV2
     {
         return new Id3AudioTagV2(
