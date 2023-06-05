@@ -1,24 +1,25 @@
 name: Codecov
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+on: [push, pull_request]
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
+#     branches:
+#       - main
 
 jobs:
   codecov:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: true
-      matrix:
-        os: [ubuntu-latest]
-        php: [8.1]
-        stability: [prefer-stable]
+    runs-on: ubuntu-latest
+    # strategy:
+    #   fail-fast: true
+    #   matrix:
+    #     os: [ubuntu-latest]
+    #     php: [8.1]
+    #     stability: [prefer-stable]
 
-    name: P${{ matrix.php }} - ${{ matrix.stability }} - ${{ matrix.os }}
+    # name: P${{ matrix.php }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
     steps:
       - name: Checkout code
@@ -27,29 +28,29 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, fileinfo
+          php-version: 8.1
+          # extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, fileinfo
           coverage: pcov
 
-      - name: apt
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get install vorbis-tools flac
-        shell: bash
+    #   - name: apt
+    #     if: runner.os == 'Linux'
+    #     run: |
+    #       sudo apt-get install vorbis-tools flac
+    #     shell: bash
 
-      - name: Setup problem matchers
-        run: |
-          echo "::add-matcher::${{ runner.tool_cache }}/php.json"
-          echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+    #   - name: Setup problem matchers
+    #     run: |
+    #       echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+    #       echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
-      - name: Install dependencies
-        run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction
+    #   - name: Install dependencies
+    #     run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
-      - name: Execute tests
-        run: vendor/bin/pest --coverage
+    #   - name: Execute tests
+    #     run: vendor/bin/pest --coverage
 
-      - name: Send code coverage
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          verbose: false
+    #   - name: Send code coverage
+    #     uses: codecov/codecov-action@v3
+    #     with:
+    #       token: ${{ secrets.CODECOV_TOKEN }}
+    #       verbose: false
