@@ -2,6 +2,10 @@
 
 All notable changes to `php-audio` will be documented in this file.
 
+## 1.0.1 - 2023-06-05
+
+- fix Windows bugs
+
 ## 1.0.0 - 2023-06-05
 
 Official version
