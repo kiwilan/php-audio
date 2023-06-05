@@ -32,6 +32,7 @@ jobs:
         shell: bash
 
       - name: scoop
+        if: runner.os == 'Windows'
         run: |
           [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
           iex "& {$(irm get.scoop.sh)} -RunAsAdmin"
