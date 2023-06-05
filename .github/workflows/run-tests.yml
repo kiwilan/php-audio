@@ -38,7 +38,9 @@ jobs:
           iex "& {$(irm get.scoop.sh)} -RunAsAdmin"
           [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
           scoop update
-          scoop install vorbis-tools flac
+          scoop install flac
+          scoop bucket add extras
+          scoop install extras/icecast
         shell: powershell
 
       - name: Setup problem matchers
