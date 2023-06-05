@@ -42,6 +42,8 @@ PHP package to parse audio files metadata, with [JamesHeinrich/getID3](https://g
 |  WAV   |    ✅     |            Waveform Audio            | `id3v2`,`riff`  |                       |
 |  WEBM  |    ✅     |                 WebM                 |   `matroska`    | _Cover not supported_ |
 
+You want to add a format? [See FAQ](#faq)
+
 ## Requirements
 
 -   PHP >= 8.1
@@ -81,17 +83,30 @@ $audio->description(); // `?string` to get description (audiobook)
 $audio->lyrics(); // `?string` (audiobook)
 $audio->stik(); // `?string` (audiobook)
 $audio->duration(); // `?float` to get duration in seconds
-$audio->extras(); // `array` with raw metadata (could contains some metadata not parsed)
 
 $audio->path(); // `string` to get path
 $audio->extension(); // `string` to get extension
 $audio->hasCover(); // `bool` to know if has cover
 $audio->isValid(); // `bool` to know if file is valid audio file
 
+$audio->extras(); // `array` with raw metadata (could contains some metadata not parsed)
 $audio->id3(); // `Id3` metadata
 $audio->stat(); // `FileStat` (from `stat` function)
 $audio->audio(); // `?AudioMetadata` with audio metadata
 $audio->cover(); // `?AudioCover` with cover metadata
+```
+
+### Extras
+
+Audio files format metadata with different methods, `JamesHeinrich/getID3` offer to check these metadatas by different methods. In `extras` property of `Audio::class`, you will find raw metadata from `JamesHeinrich/getID3` package, like `id3v2`, `id3v1`, `riff`, `asf`, `quicktime`, `matroska`, `ape`, `vorbiscomment`...
+
+If you want to extract specific field which can be skipped by `Audio::class`, you can use `extras` property.
+
+```php
+$audio = Audio::read('path/to/audio.mp3');
+$extras = $audio->extras();
+
+$id3v2 = $extras['id3v2'] ?? [];
 ```
 
 ### ID3
@@ -148,6 +163,36 @@ composer test
 -   [ffmpeg](https://ffmpeg.org/)
 -   [MP3TAG](https://www.mp3tag.de/en/): powerful and easy-to-use tool to edit metadata of audio files (free on Windows).
 -   [Audiobook Builder](https://www.splasm.com/audiobookbuilder/): makes it easy to turn audio CDs and files into audiobooks (only macOS and paid).
+
+## FAQ
+
+### I have a specific metadata field in my audio files, what can I do?
+
+In `Audio::class`, you have a property `extras` which contains all raw metadata, if `JamesHeinrich/getID3` support this field, you will find it in this property.
+
+```php
+$audio = Audio::read('path/to/audio.mp3');
+$extras = $audio->extras();
+
+$custom = null;
+$id3v2 = $extras['id3v2'] ?? [];
+
+if ($id3v2) {
+  $custom = $id3v2['custom'] ?? null;
+}
+```
+
+If your field could be added to global properties of `Audio::class`, you could create an [an issue](https://github.com/kiwilan/php-audio/issues/new/choose).
+
+### My favorite format is not supported, what can I do?
+
+You can create [an issue](https://github.com/kiwilan/php-audio/issues/new/choose) with the format name and a link to the format documentation. If `JamesHeinrich/getID3` support this format, I will add it to this package but if you want to contribute, you can create a pull request with the format implementation.
+
+**Please give me an example file to test the format.**
+
+### I have an issue with a supported format, what can I do?
+
+You can create [an issue](https://github.com/kiwilan/php-audio/issues/new/choose) with informations.
 
 ## Changelog
 
