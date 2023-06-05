@@ -15,7 +15,7 @@ class AudioCore
         protected ?string $albumArtist = null,
         protected ?string $composer = null,
         protected ?string $discNumber = null,
-        protected bool $isCompilation = false,
+        protected ?bool $isCompilation = false,
         protected ?string $creationDate = null,
         protected ?string $copyright = null,
         protected ?string $encodingBy = null,
@@ -23,6 +23,8 @@ class AudioCore
         protected ?string $description = null,
         protected ?string $lyrics = null,
         protected ?string $stik = null,
+        protected bool $hasCover = false,
+        protected ?AudioCoreCover $cover = null,
     ) {
     }
 
@@ -78,6 +80,10 @@ class AudioCore
 
     public function isCompilation(): bool
     {
+        if ($this->isCompilation === null) {
+            return false;
+        }
+
         return $this->isCompilation;
     }
 
@@ -114,6 +120,16 @@ class AudioCore
     public function stik(): ?string
     {
         return $this->stik;
+    }
+
+    public function hasCover(): bool
+    {
+        return $this->hasCover;
+    }
+
+    public function cover(): ?AudioCoreCover
+    {
+        return $this->cover;
     }
 
     public function setTitle(?string $title): self
@@ -242,6 +258,20 @@ class AudioCore
         return $this;
     }
 
+    public function setHasCover(bool $hasCover): self
+    {
+        $this->hasCover = $hasCover;
+
+        return $this;
+    }
+
+    public function setCover(string $pathOrData): self
+    {
+        $this->cover = AudioCoreCover::make($pathOrData);
+
+        return $this;
+    }
+
     public function toArray(): array
     {
         return [
@@ -262,6 +292,72 @@ class AudioCore
             'description' => $this->description,
             'lyrics' => $this->lyrics,
             'stik' => $this->stik,
+            'hasCover' => $this->hasCover,
+            'cover' => $this->cover?->toArray(),
+        ];
+    }
+}
+
+class AudioCoreCover
+{
+    public function __construct(
+        protected ?string $data = null,
+        protected ?string $picturetypeid = null,
+        protected ?string $description = null,
+        protected ?string $mime = null,
+    ) {
+    }
+
+    public static function make(string $pathOrData): self
+    {
+        $self = new self();
+
+        if (file_exists($pathOrData)) {
+            $image = getimagesize($pathOrData);
+            $self->data = base64_encode(file_get_contents($pathOrData));
+            $self->picturetypeid = $image[2];
+            $self->description = 'cover';
+            $self->mime = $image['mime'];
+
+            return $self;
+        }
+
+        $image = getimagesizefromstring($pathOrData);
+        $self->data = base64_encode($pathOrData);
+        $self->picturetypeid = $image[2];
+        $self->mime = $image['mime'];
+        $self->description = 'cover';
+
+        return $self;
+    }
+
+    public function data(): ?string
+    {
+        return $this->data;
+    }
+
+    public function picturetypeid(): ?string
+    {
+        return $this->picturetypeid;
+    }
+
+    public function description(): ?string
+    {
+        return $this->description;
+    }
+
+    public function mime(): ?string
+    {
+        return $this->mime;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'data' => $this->data,
+            'picturetypeid' => $this->picturetypeid,
+            'description' => $this->description,
+            'mime' => $this->mime,
         ];
     }
 }

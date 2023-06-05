@@ -8,9 +8,11 @@
 [![tests][tests-src]][tests-href]
 [![codecov][codecov-src]][codecov-href]
 
-PHP package to parse audio files metadata, with [`JamesHeinrich/getID3`](https://github.com/JamesHeinrich/getID3).
+PHP package to parse and update audio files metadata, with [`JamesHeinrich/getID3`](https://github.com/JamesHeinrich/getID3).
 
 ## Supported formats
+
+### Readable formats
 
 -   `id3v2` will be selected before `id3v1` or `riff` if both are available.
 
@@ -45,6 +47,22 @@ PHP package to parse audio files metadata, with [`JamesHeinrich/getID3`](https:/
 |  WEBM  |    ✅     |                 WebM                 |   `matroska`    | _Cover not supported_ |
 
 You want to add a format? [See FAQ](#faq)
+
+### Updatable formats
+
+`JamesHeinrich/getID3` can update some formats, but not all.
+
+> -   ID3v1 (v1 & v1.1)
+> -   ID3v2 (v2.3, v2.4)
+> -   APE (v2)
+> -   Ogg Vorbis comments (need `vorbis-tools`)
+> -   FLAC comments
+
+| Format |         Notes         |
+| :----: | :-------------------: |
+|  FLAC  | _Cover not supported_ |
+|  MP3   |                       |
+|  OGG   | _Cover not supported_ |
 
 ### Convert properties
 
@@ -96,12 +114,6 @@ $audio->description(); // `?string` to get description (audiobook)
 $audio->lyrics(); // `?string` (audiobook)
 $audio->stik(); // `?string` (audiobook)
 $audio->duration(); // `?float` to get duration in seconds
-
-$audio->path(); // `string` to get path
-$audio->extension(); // `string` to get extension
-$audio->hasCover(); // `bool` to know if has cover
-$audio->isValid(); // `bool` to know if file is valid audio file
-$audio->type(); // `?string` ID3 type (id3, riff, asf, quicktime, matroska, ape, vorbiscomment)
 ```
 
 Additional metadata:
@@ -109,12 +121,52 @@ Additional metadata:
 ```php
 $audio = Audio::get('path/to/audio.mp3');
 
+$audio->path(); // `string` to get path
+$audio->hasCover(); // `bool` to know if has cover
+$audio->isValid(); // `bool` to know if file is valid audio file
+$audio->format(); // `AudioFormatEnum` to get format (mp3, m4a, ...)
+$audio->type(); // `?AudioTypeEnum` ID3 type (id3, riff, asf, quicktime, matroska, ape, vorbiscomment)
+
 $audio->extras(); // `array` with raw metadata (could contains some metadata not parsed)
-$audio->id3()->reader(); // `?Id3Reader` reader based on `getID3`
-$audio->id3()->writer(); // `?Id3Writer` writer based on `getid3_writetags`
+$audio->reader(); // `?Id3Reader` reader based on `getID3`
+$audio->writer(); // `?Id3Writer` writer based on `getid3_writetags`
 $audio->stat(); // `FileStat` (from `stat` function)
 $audio->audio(); // `?AudioMetadata` with audio metadata
 $audio->cover(); // `?AudioCover` with cover metadata
+```
+
+### Update
+
+You can update audio files metadata with `Audio::class`, but not all formats are supported. [See supported formats](#updatable-formats)
+
+```php
+$audio = Audio::get('path/to/audio.mp3');
+
+// you can use file content
+$cover = file_get_contents('path/to/cover.jpg');
+// or file path
+$cover = 'path/to/cover.jpg';
+
+$tag = $audio->update()
+  ->setTitle('New Title')
+  ->setArtist('New Artist')
+  ->setAlbum('New Album')
+  ->setGenre('New Genre')
+  ->setYear('2022')
+  ->setTrackNumber('2/10')
+  ->setAlbumArtist('New Album Artist')
+  ->setComment('New Comment')
+  ->setComposer('New Composer')
+  ->setCreationDate('2021-01-01')
+  ->setDescription('New Description')
+  ->setDiscNumber('2/2')
+  ->setEncodingBy('New Encoding By')
+  ->setEncoding('New Encoding')
+  ->setIsCompilation(false)
+  ->setLyrics('New Lyrics')
+  ->setStik('New Stik')
+  ->setCover($cover)
+  ->save();
 ```
 
 ### Extras

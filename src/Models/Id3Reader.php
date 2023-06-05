@@ -589,6 +589,19 @@ class Id3AudioTagV1
     {
         return $this->track_number;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'title' => $this->title,
+            'artist' => $this->artist,
+            'album' => $this->album,
+            'year' => $this->year,
+            'genre' => $this->genre,
+            'comment' => $this->comment,
+            'track_number' => $this->track_number,
+        ];
+    }
 }
 
 class Id3AudioTagV2
@@ -686,6 +699,23 @@ class Id3AudioTagV2
     public function year(): ?string
     {
         return $this->year;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'album' => $this->album,
+            'artist' => $this->artist,
+            'band' => $this->band,
+            'comment' => $this->comment,
+            'composer' => $this->composer,
+            'part_of_a_set' => $this->part_of_a_set,
+            'genre' => $this->genre,
+            'part_of_a_compilation' => $this->part_of_a_compilation,
+            'title' => $this->title,
+            'track_number' => $this->track_number,
+            'year' => $this->year,
+        ];
     }
 }
 
@@ -936,6 +966,30 @@ class Id3TagQuicktime
     {
         return $this->stik;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'title' => $this->title,
+            'track_number' => $this->track_number,
+            'disc_number' => $this->disc_number,
+            'compilation' => $this->compilation,
+            'album' => $this->album,
+            'genre' => $this->genre,
+            'composer' => $this->composer,
+            'creation_date' => $this->creation_date,
+            'copyright' => $this->copyright,
+            'artist' => $this->artist,
+            'album_artist' => $this->album_artist,
+            'encoded_by' => $this->encoded_by,
+            'encoding_tool' => $this->encoding_tool,
+            'description' => $this->description,
+            'description_long' => $this->description_long,
+            'lyrics' => $this->lyrics,
+            'comment' => $this->comment,
+            'stik' => $this->stik,
+        ];
+    }
 }
 
 class Id3TagAsf
@@ -1023,6 +1077,22 @@ class Id3TagAsf
     public function encodingsettings(): ?string
     {
         return $this->encodingsettings;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'title' => $this->title,
+            'artist' => $this->artist,
+            'album' => $this->album,
+            'albumartist' => $this->albumartist,
+            'composer' => $this->composer,
+            'partofset' => $this->partofset,
+            'genre' => $this->genre,
+            'track_number' => $this->track_number,
+            'year' => $this->year,
+            'encodingsettings' => $this->encodingsettings,
+        ];
     }
 }
 
@@ -1133,6 +1203,25 @@ class Id3TagVorbisComment
     {
         return $this->encoder;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'description' => $this->description,
+            'encoder' => $this->encoder,
+            'title' => $this->title,
+            'artist' => $this->artist,
+            'album' => $this->album,
+            'genre' => $this->genre,
+            'comment' => $this->comment,
+            'albumartist' => $this->albumartist,
+            'composer' => $this->composer,
+            'discnumber' => $this->discnumber,
+            'compilation' => $this->compilation,
+            'date' => $this->date,
+            'tracknumber' => $this->tracknumber,
+        ];
+    }
 }
 
 class Id3TagRiff
@@ -1199,6 +1288,19 @@ class Id3TagRiff
     public function software(): ?string
     {
         return $this->software;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'artist' => $this->artist,
+            'comment' => $this->comment,
+            'creationdate' => $this->creationdate,
+            'genre' => $this->genre,
+            'title' => $this->title,
+            'product' => $this->product,
+            'software' => $this->software,
+        ];
     }
 }
 
@@ -1329,6 +1431,27 @@ class Id3TagMatroska
     {
         return $this->duration;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'title' => $this->title,
+            'muxingapp' => $this->muxingapp,
+            'writingapp' => $this->writingapp,
+            'album' => $this->album,
+            'artist' => $this->artist,
+            'album_artist' => $this->album_artist,
+            'comment' => $this->comment,
+            'composer' => $this->composer,
+            'disc' => $this->disc,
+            'genre' => $this->genre,
+            'compilation' => $this->compilation,
+            'part_number' => $this->part_number,
+            'date' => $this->date,
+            'encoder' => $this->encoder,
+            'duration' => $this->duration,
+        ];
+    }
 }
 
 class Id3TagApe
@@ -1436,6 +1559,24 @@ class Id3TagApe
     public function encoder(): ?string
     {
         return $this->encoder;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'title' => $this->title,
+            'artist' => $this->artist,
+            'album' => $this->album,
+            'album_artist' => $this->album_artist,
+            'composer' => $this->composer,
+            'comment' => $this->comment,
+            'genre' => $this->genre,
+            'disc' => $this->disc,
+            'compilation' => $this->compilation,
+            'track' => $this->track,
+            'date' => $this->date,
+            'encoder' => $this->encoder,
+        ];
     }
 }
 
