@@ -32,25 +32,25 @@ jobs:
           # extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, fileinfo
           coverage: pcov
 
-    #   - name: apt
-    #     if: runner.os == 'Linux'
-    #     run: |
-    #       sudo apt-get install vorbis-tools flac
-    #     shell: bash
+      - name: apt
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get install vorbis-tools flac
+        shell: bash
 
-    #   - name: Setup problem matchers
-    #     run: |
-    #       echo "::add-matcher::${{ runner.tool_cache }}/php.json"
-    #       echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+      - name: Setup problem matchers
+        run: |
+          echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+          echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
-    #   - name: Install dependencies
-    #     run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction
+      - name: Install dependencies
+        run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
-    #   - name: Execute tests
-    #     run: vendor/bin/pest --coverage
+      - name: Execute tests
+        run: vendor/bin/pest --coverage
 
-    #   - name: Send code coverage
-    #     uses: codecov/codecov-action@v3
-    #     with:
-    #       token: ${{ secrets.CODECOV_TOKEN }}
-    #       verbose: false
+      - name: Send code coverage
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: false
