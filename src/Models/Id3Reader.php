@@ -2,9 +2,15 @@
 
 namespace Kiwilan\Audio\Models;
 
-class Id3Item
+use getID3;
+
+class Id3Reader
 {
+    protected array $raw = [];
+
     protected function __construct(
+        protected getID3 $instance,
+        protected bool $is_writable = false,
         protected ?string $version = null,
         protected ?int $filesize = null,
         protected ?string $filepath = null,
@@ -18,10 +24,6 @@ class Id3Item
         protected ?Id3AudioTag $tags = null,
         protected ?Id3Comments $comments = null,
         protected ?string $encoding = null,
-        protected ?array $id3v2 = null,
-        protected ?array $id3v1 = null,
-        protected ?array $quicktime = null,
-        protected ?array $asf = null,
         protected ?string $mime_type = null,
         protected ?array $mpeg = null,
         protected ?float $playtime_seconds = null,
@@ -31,8 +33,14 @@ class Id3Item
     ) {
     }
 
-    public static function make(array $metadata): self
+    public static function make(string $path): self
     {
+        $self = new self(new getID3());
+
+        $self->raw = $self->instance->analyze($path);
+        $self->is_writable = $self->instance->is_writable($path);
+        $metadata = $self->raw;
+
         $audio = Id3Audio::make($metadata['audio'] ?? null);
         $video = Id3Video::make($metadata['video'] ?? null);
         $tags = Id3AudioTag::make($metadata['tags'] ?? null);
@@ -43,33 +51,32 @@ class Id3Item
             $bitrate = intval($bitrate);
         }
 
-        $self = new self(
-            version: $metadata['GETID3_VERSION'] ?? null,
-            filesize: $metadata['filesize'] ?? null,
-            filepath: $metadata['filepath'] ?? null,
-            filename: $metadata['filename'] ?? null,
-            filenamepath: $metadata['filenamepath'] ?? null,
-            avdataoffset: $metadata['avdataoffset'] ?? null,
-            avdataend: $metadata['avdataend'] ?? null,
-            fileformat: $metadata['fileformat'] ?? null,
-            audio: $audio,
-            video: $video,
-            tags: $tags,
-            comments: $comments,
-            encoding: $metadata['encoding'] ?? null,
-            id3v2: $metadata['id3v2'] ?? null,
-            id3v1: $metadata['id3v1'] ?? null,
-            quicktime: $metadata['quicktime'] ?? null,
-            asf: $metadata['asf'] ?? null,
-            mime_type: $metadata['mime_type'] ?? null,
-            mpeg: $metadata['mpeg'] ?? null,
-            playtime_seconds: $metadata['playtime_seconds'] ?? null,
-            tags_html: $tags_html,
-            bitrate: $bitrate,
-            playtime_string: $metadata['playtime_string'] ?? null,
-        );
+        $self->version = $metadata['GETID3_VERSION'] ?? null;
+        $self->filesize = $metadata['filesize'] ?? null;
+        $self->filepath = $metadata['filepath'] ?? null;
+        $self->filename = $metadata['filename'] ?? null;
+        $self->filenamepath = $metadata['filenamepath'] ?? null;
+        $self->avdataoffset = $metadata['avdataoffset'] ?? null;
+        $self->avdataend = $metadata['avdataend'] ?? null;
+        $self->fileformat = $metadata['fileformat'] ?? null;
+        $self->audio = $audio;
+        $self->video = $video;
+        $self->tags = $tags;
+        $self->comments = $comments;
+        $self->encoding = $metadata['encoding'] ?? null;
+        $self->mime_type = $metadata['mime_type'] ?? null;
+        $self->mpeg = $metadata['mpeg'] ?? null;
+        $self->playtime_seconds = $metadata['playtime_seconds'] ?? null;
+        $self->tags_html = $tags_html;
+        $self->bitrate = $bitrate;
+        $self->playtime_string = $metadata['playtime_string'] ?? null;
 
         return $self;
+    }
+
+    public function instance(): getID3
+    {
+        return $this->instance;
     }
 
     public function version(): ?string
@@ -132,21 +139,6 @@ class Id3Item
         return $this->encoding;
     }
 
-    public function id3v2(): ?array
-    {
-        return $this->id3v2;
-    }
-
-    public function id3v1(): ?array
-    {
-        return $this->id3v1;
-    }
-
-    public function quicktime(): ?array
-    {
-        return $this->quicktime;
-    }
-
     public function mime_type(): ?string
     {
         return $this->mime_type;
@@ -175,6 +167,16 @@ class Id3Item
     public function playtime_string(): ?string
     {
         return $this->playtime_string;
+    }
+
+    public function is_writable(): bool
+    {
+        return $this->is_writable;
+    }
+
+    public function raw(): array
+    {
+        return $this->raw;
     }
 }
 
@@ -523,7 +525,7 @@ class Id3AudioTag
 
 class Id3AudioTagV1
 {
-    protected function __construct(
+    public function __construct(
         protected ?string $title = null,
         protected ?string $artist = null,
         protected ?string $album = null,
@@ -587,11 +589,24 @@ class Id3AudioTagV1
     {
         return $this->track_number;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'title' => $this->title,
+            'artist' => $this->artist,
+            'album' => $this->album,
+            'year' => $this->year,
+            'genre' => $this->genre,
+            'comment' => $this->comment,
+            'track_number' => $this->track_number,
+        ];
+    }
 }
 
 class Id3AudioTagV2
 {
-    protected function __construct(
+    public function __construct(
         protected ?string $album = null,
         protected ?string $artist = null,
         protected ?string $band = null,
@@ -599,7 +614,7 @@ class Id3AudioTagV2
         protected ?string $composer = null,
         protected ?string $part_of_a_set = null,
         protected ?string $genre = null,
-        protected ?string $part_of_a_compilation = null,
+        protected bool $part_of_a_compilation = false,
         protected ?string $title = null,
         protected ?string $track_number = null,
         protected ?string $year = null,
@@ -612,6 +627,8 @@ class Id3AudioTagV2
             return null;
         }
 
+        $compilation = $metadata['part_of_a_compilation'][0] ?? null;
+
         $self = new self(
             album: $metadata['album'][0] ?? null,
             artist: $metadata['artist'][0] ?? null,
@@ -620,7 +637,7 @@ class Id3AudioTagV2
             composer: $metadata['composer'][0] ?? null,
             part_of_a_set: $metadata['part_of_a_set'][0] ?? null,
             genre: $metadata['genre'][0] ?? null,
-            part_of_a_compilation: $metadata['part_of_a_compilation'][0] ?? null,
+            part_of_a_compilation: $compilation === '1' ? true : false,
             title: $metadata['title'][0] ?? null,
             track_number: $metadata['track_number'][0] ?? null,
             year: $metadata['year'][0] ?? null,
@@ -664,7 +681,7 @@ class Id3AudioTagV2
         return $this->genre;
     }
 
-    public function part_of_a_compilation(): ?string
+    public function part_of_a_compilation(): bool
     {
         return $this->part_of_a_compilation;
     }
@@ -682,6 +699,23 @@ class Id3AudioTagV2
     public function year(): ?string
     {
         return $this->year;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'album' => $this->album,
+            'artist' => $this->artist,
+            'band' => $this->band,
+            'comment' => $this->comment,
+            'composer' => $this->composer,
+            'part_of_a_set' => $this->part_of_a_set,
+            'genre' => $this->genre,
+            'part_of_a_compilation' => $this->part_of_a_compilation,
+            'title' => $this->title,
+            'track_number' => $this->track_number,
+            'year' => $this->year,
+        ];
     }
 }
 
@@ -786,7 +820,7 @@ class Id3CommentsPicture
 
 class Id3TagQuicktime
 {
-    protected function __construct(
+    public function __construct(
         protected ?string $title = null,
         protected ?string $track_number = null,
         protected ?string $disc_number = null,
@@ -932,11 +966,35 @@ class Id3TagQuicktime
     {
         return $this->stik;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'title' => $this->title,
+            'track_number' => $this->track_number,
+            'disc_number' => $this->disc_number,
+            'compilation' => $this->compilation,
+            'album' => $this->album,
+            'genre' => $this->genre,
+            'composer' => $this->composer,
+            'creation_date' => $this->creation_date,
+            'copyright' => $this->copyright,
+            'artist' => $this->artist,
+            'album_artist' => $this->album_artist,
+            'encoded_by' => $this->encoded_by,
+            'encoding_tool' => $this->encoding_tool,
+            'description' => $this->description,
+            'description_long' => $this->description_long,
+            'lyrics' => $this->lyrics,
+            'comment' => $this->comment,
+            'stik' => $this->stik,
+        ];
+    }
 }
 
 class Id3TagAsf
 {
-    protected function __construct(
+    public function __construct(
         protected ?string $title = null,
         protected ?string $artist = null,
         protected ?string $album = null,
@@ -1020,11 +1078,27 @@ class Id3TagAsf
     {
         return $this->encodingsettings;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'title' => $this->title,
+            'artist' => $this->artist,
+            'album' => $this->album,
+            'albumartist' => $this->albumartist,
+            'composer' => $this->composer,
+            'partofset' => $this->partofset,
+            'genre' => $this->genre,
+            'track_number' => $this->track_number,
+            'year' => $this->year,
+            'encodingsettings' => $this->encodingsettings,
+        ];
+    }
 }
 
 class Id3TagVorbisComment
 {
-    protected function __construct(
+    public function __construct(
         protected ?string $description = null,
         protected ?string $encoder = null,
         protected ?string $title = null,
@@ -1129,11 +1203,30 @@ class Id3TagVorbisComment
     {
         return $this->encoder;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'description' => $this->description,
+            'encoder' => $this->encoder,
+            'title' => $this->title,
+            'artist' => $this->artist,
+            'album' => $this->album,
+            'genre' => $this->genre,
+            'comment' => $this->comment,
+            'albumartist' => $this->albumartist,
+            'composer' => $this->composer,
+            'discnumber' => $this->discnumber,
+            'compilation' => $this->compilation,
+            'date' => $this->date,
+            'tracknumber' => $this->tracknumber,
+        ];
+    }
 }
 
 class Id3TagRiff
 {
-    protected function __construct(
+    public function __construct(
         protected ?string $artist = null,
         protected ?string $comment = null,
         protected ?string $creationdate = null,
@@ -1196,11 +1289,24 @@ class Id3TagRiff
     {
         return $this->software;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'artist' => $this->artist,
+            'comment' => $this->comment,
+            'creationdate' => $this->creationdate,
+            'genre' => $this->genre,
+            'title' => $this->title,
+            'product' => $this->product,
+            'software' => $this->software,
+        ];
+    }
 }
 
 class Id3TagMatroska
 {
-    protected function __construct(
+    public function __construct(
         protected ?string $title = null,
         protected ?string $muxingapp = null,
         protected ?string $writingapp = null,
@@ -1325,11 +1431,32 @@ class Id3TagMatroska
     {
         return $this->duration;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'title' => $this->title,
+            'muxingapp' => $this->muxingapp,
+            'writingapp' => $this->writingapp,
+            'album' => $this->album,
+            'artist' => $this->artist,
+            'album_artist' => $this->album_artist,
+            'comment' => $this->comment,
+            'composer' => $this->composer,
+            'disc' => $this->disc,
+            'genre' => $this->genre,
+            'compilation' => $this->compilation,
+            'part_number' => $this->part_number,
+            'date' => $this->date,
+            'encoder' => $this->encoder,
+            'duration' => $this->duration,
+        ];
+    }
 }
 
 class Id3TagApe
 {
-    protected function __construct(
+    public function __construct(
         protected ?string $title = null,
         protected ?string $artist = null,
         protected ?string $album = null,
@@ -1432,6 +1559,24 @@ class Id3TagApe
     public function encoder(): ?string
     {
         return $this->encoder;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'title' => $this->title,
+            'artist' => $this->artist,
+            'album' => $this->album,
+            'album_artist' => $this->album_artist,
+            'composer' => $this->composer,
+            'comment' => $this->comment,
+            'genre' => $this->genre,
+            'disc' => $this->disc,
+            'compilation' => $this->compilation,
+            'track' => $this->track,
+            'date' => $this->date,
+            'encoder' => $this->encoder,
+        ];
     }
 }
 

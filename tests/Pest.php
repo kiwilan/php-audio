@@ -3,6 +3,31 @@
 define('MP3_NO_META', __DIR__.'/media/test-no-meta.mp3');
 define('AUDIOBOOK', __DIR__.'/media/audiobook.m4b');
 define('MD', __DIR__.'/media/test.md');
+define('FOLDER', __DIR__.'/media/folder.jpg');
+
+exec('cd tests/media && ./convert-writer.sh');
+
+define('ALAC_WRITER', __DIR__.'/media/test-alac-writer.m4a');
+define('AAC_WRITER', __DIR__.'/media/test-writer.aac');
+define('AIF_WRITER', __DIR__.'/media/test-writer.aif');
+define('AIFC_WRITER', __DIR__.'/media/test-writer.aifc');
+define('AIFF_WRITER', __DIR__.'/media/test-writer.aiff');
+define('FLAC_WRITER', __DIR__.'/media/test-writer.flac');
+define('M4A_WRITER', __DIR__.'/media/test-writer.m4a');
+define('M4B_WRITER', __DIR__.'/media/test-writer.m4b');
+define('M4V_WRITER', __DIR__.'/media/test-writer.m4v');
+define('MKA_WRITER', __DIR__.'/media/test-writer.mka');
+define('MKV_WRITER', __DIR__.'/media/test-writer.mkv');
+define('MP3_WRITER', __DIR__.'/media/test-writer.mp3');
+define('MP4_WRITER', __DIR__.'/media/test-writer.mp4');
+define('OGG_WRITER', __DIR__.'/media/test-writer.ogg');
+define('OPUS_WRITER', __DIR__.'/media/test-writer.opus');
+define('SPX_WRITER', __DIR__.'/media/test-writer.spx');
+define('TTA_WRITER', __DIR__.'/media/test-writer.tta');
+define('WAV_WRITER', __DIR__.'/media/test-writer.wav');
+define('WEBM_WRITER', __DIR__.'/media/test-writer.webm');
+define('WMA_WRITER', __DIR__.'/media/test-writer.wma');
+define('WV_WRITER', __DIR__.'/media/test-writer.wv');
 
 define('ALAC', __DIR__.'/media/test-alac.m4a');
 define('AAC', __DIR__.'/media/test.aac');
@@ -47,4 +72,27 @@ define('AUDIO', [
     WEBM,
     WMA,
     WV,
+]);
+
+define('AUDIO_WRITER', [
+    // ALAC_WRITER,
+    // AIF_WRITER,
+    // AIFC_WRITER,
+    // AIFF_WRITER,
+    FLAC_WRITER,
+    // M4A_WRITER,
+    // M4B_WRITER,
+    // M4V_WRITER,
+    // MKA_WRITER,
+    // MKV_WRITER,
+    MP3_WRITER,
+    // MP4_WRITER,
+    OGG_WRITER,
+    // OPUS_WRITER,
+    // SPX_WRITER,
+    // TTA_WRITER,
+    // WAV_WRITER,
+    // WEBM_WRITER,
+    // WMA_WRITER,
+    // WV_WRITER,
 ]);

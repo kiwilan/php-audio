@@ -1,14 +1,17 @@
 <?php
 
 use Kiwilan\Audio\Audio;
+use Kiwilan\Audio\Enums\AudioFormatEnum;
 use Kiwilan\Audio\Models\AudioCover;
 
 it('can read file', function (string $path) {
-    $audio = Audio::read($path);
+    $audio = Audio::get($path);
     $extension = pathinfo($path, PATHINFO_EXTENSION);
+    $format = AudioFormatEnum::tryFrom($extension);
 
+    // ray($audio);
     expect($audio)->toBeInstanceOf(Audio::class);
-    expect($audio->title())->toBe('P1PDD Le conclave de Troie');
+    expect($audio->title())->toBe('Introduction');
     expect($audio->artist())->toBe('Mr Piouf');
     expect($audio->album())->toBe('P1PDD Le conclave de Troie');
     expect($audio->genre())->toBe('Roleplaying game');
@@ -22,7 +25,7 @@ it('can read file', function (string $path) {
     expect($audio->discNumber())->toBeString();
     expect($audio->isCompilation())->toBeBool();
     expect($audio->path())->toBe($path);
-    expect($audio->extension())->toBe($extension);
+    expect($audio->format())->toBe($format);
     expect($audio->duration())->toBeFloat();
     expect($audio->extras())->toBeArray();
 
@@ -60,7 +63,7 @@ it('can read file', function (string $path) {
 })->with([...AUDIO]);
 
 it('can extract cover', function (string $path) {
-    $audio = Audio::read($path);
+    $audio = Audio::get($path);
     $ext = pathinfo($path, PATHINFO_EXTENSION);
     $cover = $audio->cover();
 
@@ -85,7 +88,7 @@ it('can extract cover', function (string $path) {
 })->with([...AUDIO]);
 
 it('can use stat data', function (string $path) {
-    $audio = Audio::read($path);
+    $audio = Audio::get($path);
     $stat = $audio->stat();
 
     expect($stat->path())->toBe($path);
@@ -107,8 +110,8 @@ it('can use stat data', function (string $path) {
 })->with([...AUDIO]);
 
 it('can read mp3 stream', function () {
-    $audio = Audio::read(MP3);
-    $streams = $audio->id3()->item()->audio()->streams();
+    $audio = Audio::get(MP3);
+    $streams = $audio->reader()->audio()->streams();
 
     expect($streams)->toBeArray();
     expect($streams)->toHaveCount(1);
@@ -126,7 +129,7 @@ it('can read mp3 stream', function () {
 });
 
 it('can read wrong audio file', function () {
-    $audio = Audio::read(MD);
+    $audio = Audio::get(MD);
 
     expect($audio->isValid())->toBeFalse();
 });
