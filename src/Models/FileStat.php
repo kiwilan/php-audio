@@ -27,6 +27,10 @@ class FileStat
     public static function make(string $path): self
     {
         $self = new self($path);
+
+        if (PHP_OS_FAMILY === 'Windows') {
+            $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
+        }
         $stat = stat($path);
 
         $self->deviceNumber = $stat['dev'] ?? null;
