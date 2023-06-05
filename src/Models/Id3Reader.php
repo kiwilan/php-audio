@@ -2,9 +2,15 @@
 
 namespace Kiwilan\Audio\Models;
 
-class Id3Item
+use getID3;
+
+class Id3Reader
 {
+    protected array $raw = [];
+
     protected function __construct(
+        protected getID3 $instance,
+        protected bool $is_writable = false,
         protected ?string $version = null,
         protected ?int $filesize = null,
         protected ?string $filepath = null,
@@ -18,10 +24,6 @@ class Id3Item
         protected ?Id3AudioTag $tags = null,
         protected ?Id3Comments $comments = null,
         protected ?string $encoding = null,
-        protected ?array $id3v2 = null,
-        protected ?array $id3v1 = null,
-        protected ?array $quicktime = null,
-        protected ?array $asf = null,
         protected ?string $mime_type = null,
         protected ?array $mpeg = null,
         protected ?float $playtime_seconds = null,
@@ -31,8 +33,14 @@ class Id3Item
     ) {
     }
 
-    public static function make(array $metadata): self
+    public static function make(string $path): self
     {
+        $self = new self(new getID3());
+
+        $self->raw = $self->instance->analyze($path);
+        $self->is_writable = $self->instance->is_writable($path);
+        $metadata = $self->raw;
+
         $audio = Id3Audio::make($metadata['audio'] ?? null);
         $video = Id3Video::make($metadata['video'] ?? null);
         $tags = Id3AudioTag::make($metadata['tags'] ?? null);
@@ -43,33 +51,32 @@ class Id3Item
             $bitrate = intval($bitrate);
         }
 
-        $self = new self(
-            version: $metadata['GETID3_VERSION'] ?? null,
-            filesize: $metadata['filesize'] ?? null,
-            filepath: $metadata['filepath'] ?? null,
-            filename: $metadata['filename'] ?? null,
-            filenamepath: $metadata['filenamepath'] ?? null,
-            avdataoffset: $metadata['avdataoffset'] ?? null,
-            avdataend: $metadata['avdataend'] ?? null,
-            fileformat: $metadata['fileformat'] ?? null,
-            audio: $audio,
-            video: $video,
-            tags: $tags,
-            comments: $comments,
-            encoding: $metadata['encoding'] ?? null,
-            id3v2: $metadata['id3v2'] ?? null,
-            id3v1: $metadata['id3v1'] ?? null,
-            quicktime: $metadata['quicktime'] ?? null,
-            asf: $metadata['asf'] ?? null,
-            mime_type: $metadata['mime_type'] ?? null,
-            mpeg: $metadata['mpeg'] ?? null,
-            playtime_seconds: $metadata['playtime_seconds'] ?? null,
-            tags_html: $tags_html,
-            bitrate: $bitrate,
-            playtime_string: $metadata['playtime_string'] ?? null,
-        );
+        $self->version = $metadata['GETID3_VERSION'] ?? null;
+        $self->filesize = $metadata['filesize'] ?? null;
+        $self->filepath = $metadata['filepath'] ?? null;
+        $self->filename = $metadata['filename'] ?? null;
+        $self->filenamepath = $metadata['filenamepath'] ?? null;
+        $self->avdataoffset = $metadata['avdataoffset'] ?? null;
+        $self->avdataend = $metadata['avdataend'] ?? null;
+        $self->fileformat = $metadata['fileformat'] ?? null;
+        $self->audio = $audio;
+        $self->video = $video;
+        $self->tags = $tags;
+        $self->comments = $comments;
+        $self->encoding = $metadata['encoding'] ?? null;
+        $self->mime_type = $metadata['mime_type'] ?? null;
+        $self->mpeg = $metadata['mpeg'] ?? null;
+        $self->playtime_seconds = $metadata['playtime_seconds'] ?? null;
+        $self->tags_html = $tags_html;
+        $self->bitrate = $bitrate;
+        $self->playtime_string = $metadata['playtime_string'] ?? null;
 
         return $self;
+    }
+
+    public function instance(): getID3
+    {
+        return $this->instance;
     }
 
     public function version(): ?string
@@ -132,21 +139,6 @@ class Id3Item
         return $this->encoding;
     }
 
-    public function id3v2(): ?array
-    {
-        return $this->id3v2;
-    }
-
-    public function id3v1(): ?array
-    {
-        return $this->id3v1;
-    }
-
-    public function quicktime(): ?array
-    {
-        return $this->quicktime;
-    }
-
     public function mime_type(): ?string
     {
         return $this->mime_type;
@@ -175,6 +167,16 @@ class Id3Item
     public function playtime_string(): ?string
     {
         return $this->playtime_string;
+    }
+
+    public function is_writable(): bool
+    {
+        return $this->is_writable;
+    }
+
+    public function raw(): array
+    {
+        return $this->raw;
     }
 }
 
@@ -523,7 +525,7 @@ class Id3AudioTag
 
 class Id3AudioTagV1
 {
-    protected function __construct(
+    public function __construct(
         protected ?string $title = null,
         protected ?string $artist = null,
         protected ?string $album = null,
@@ -591,7 +593,7 @@ class Id3AudioTagV1
 
 class Id3AudioTagV2
 {
-    protected function __construct(
+    public function __construct(
         protected ?string $album = null,
         protected ?string $artist = null,
         protected ?string $band = null,
@@ -599,7 +601,7 @@ class Id3AudioTagV2
         protected ?string $composer = null,
         protected ?string $part_of_a_set = null,
         protected ?string $genre = null,
-        protected ?string $part_of_a_compilation = null,
+        protected bool $part_of_a_compilation = false,
         protected ?string $title = null,
         protected ?string $track_number = null,
         protected ?string $year = null,
@@ -612,6 +614,8 @@ class Id3AudioTagV2
             return null;
         }
 
+        $compilation = $metadata['part_of_a_compilation'][0] ?? null;
+
         $self = new self(
             album: $metadata['album'][0] ?? null,
             artist: $metadata['artist'][0] ?? null,
@@ -620,7 +624,7 @@ class Id3AudioTagV2
             composer: $metadata['composer'][0] ?? null,
             part_of_a_set: $metadata['part_of_a_set'][0] ?? null,
             genre: $metadata['genre'][0] ?? null,
-            part_of_a_compilation: $metadata['part_of_a_compilation'][0] ?? null,
+            part_of_a_compilation: $compilation === '1' ? true : false,
             title: $metadata['title'][0] ?? null,
             track_number: $metadata['track_number'][0] ?? null,
             year: $metadata['year'][0] ?? null,
@@ -664,7 +668,7 @@ class Id3AudioTagV2
         return $this->genre;
     }
 
-    public function part_of_a_compilation(): ?string
+    public function part_of_a_compilation(): bool
     {
         return $this->part_of_a_compilation;
     }
@@ -786,7 +790,7 @@ class Id3CommentsPicture
 
 class Id3TagQuicktime
 {
-    protected function __construct(
+    public function __construct(
         protected ?string $title = null,
         protected ?string $track_number = null,
         protected ?string $disc_number = null,
@@ -936,7 +940,7 @@ class Id3TagQuicktime
 
 class Id3TagAsf
 {
-    protected function __construct(
+    public function __construct(
         protected ?string $title = null,
         protected ?string $artist = null,
         protected ?string $album = null,
@@ -1024,7 +1028,7 @@ class Id3TagAsf
 
 class Id3TagVorbisComment
 {
-    protected function __construct(
+    public function __construct(
         protected ?string $description = null,
         protected ?string $encoder = null,
         protected ?string $title = null,
@@ -1133,7 +1137,7 @@ class Id3TagVorbisComment
 
 class Id3TagRiff
 {
-    protected function __construct(
+    public function __construct(
         protected ?string $artist = null,
         protected ?string $comment = null,
         protected ?string $creationdate = null,
@@ -1200,7 +1204,7 @@ class Id3TagRiff
 
 class Id3TagMatroska
 {
-    protected function __construct(
+    public function __construct(
         protected ?string $title = null,
         protected ?string $muxingapp = null,
         protected ?string $writingapp = null,
@@ -1329,7 +1333,7 @@ class Id3TagMatroska
 
 class Id3TagApe
 {
-    protected function __construct(
+    public function __construct(
         protected ?string $title = null,
         protected ?string $artist = null,
         protected ?string $album = null,

@@ -1,10 +1,11 @@
 <?php
 
 use Kiwilan\Audio\Audio;
+use Kiwilan\Audio\Enums\AudioFormatEnum;
 use Kiwilan\Audio\Models\AudioCover;
 
 it('can read file mp3', function () {
-    $audio = Audio::read(MP3);
+    $audio = Audio::get(MP3);
 
     expect($audio)->toBeInstanceOf(Audio::class);
     expect($audio->title())->toBe('P1PDD Le conclave de Troie');
@@ -19,7 +20,7 @@ it('can read file mp3', function () {
     expect($audio->discNumber())->toBe('1');
     expect($audio->isCompilation())->toBe(true);
     expect($audio->path())->toBe(MP3);
-    expect($audio->extension())->toBe('mp3');
+    expect($audio->format())->toBe(AudioFormatEnum::mp3);
     expect($audio->duration())->toBe(11.05);
     expect($audio->extras())->toBeArray();
 
@@ -40,7 +41,7 @@ it('can read file mp3', function () {
 });
 
 it('can extract cover mp3', function () {
-    $audio = Audio::read(MP3);
+    $audio = Audio::get(MP3);
     $cover = $audio->cover();
 
     expect($cover)->toBeInstanceOf(AudioCover::class);
@@ -56,7 +57,7 @@ it('can extract cover mp3', function () {
 });
 
 it('can read file mp3 no meta', function () {
-    $audio = Audio::read(MP3_NO_META);
+    $audio = Audio::get(MP3_NO_META);
 
     expect($audio)->toBeInstanceOf(Audio::class);
     expect($audio->title())->toBeNull();

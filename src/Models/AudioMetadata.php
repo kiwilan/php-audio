@@ -2,6 +2,8 @@
 
 namespace Kiwilan\Audio\Models;
 
+use Kiwilan\Audio\Audio;
+
 class AudioMetadata
 {
     protected function __construct(
@@ -21,18 +23,19 @@ class AudioMetadata
     ) {
     }
 
-    public static function make(Id3Item $item): self
+    public static function make(Audio $audio): self
     {
-        $audio = $item->audio();
+        $reader = $audio->reader();
+        $audio = $reader->audio();
 
         return new self(
-            filesize: $item->filesize(),
+            filesize: $reader->filesize(),
             extension: $audio?->dataformat(),
-            encoding: $item->encoding(),
-            mimeType: $item->mime_type(),
-            durationSeconds: $item->playtime_seconds(),
-            durationReadable: $item->playtime_string(),
-            bitrate: $item->bitrate(),
+            encoding: $reader->encoding(),
+            mimeType: $reader->mime_type(),
+            durationSeconds: $reader->playtime_seconds(),
+            durationReadable: $reader->playtime_string(),
+            bitrate: $reader->bitrate(),
             bitrateMode: $audio?->bitrate_mode(),
             sampleRate: $audio?->sample_rate(),
             channels: $audio?->channels(),

@@ -4,6 +4,8 @@ define('MP3_NO_META', __DIR__.'/media/test-no-meta.mp3');
 define('AUDIOBOOK', __DIR__.'/media/audiobook.m4b');
 define('MD', __DIR__.'/media/test.md');
 
+define('MP3_WRITER', __DIR__.'/media/test-writer.mp3');
+
 define('ALAC', __DIR__.'/media/test-alac.m4a');
 define('AAC', __DIR__.'/media/test.aac');
 define('AIF', __DIR__.'/media/test.aif');

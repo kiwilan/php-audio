@@ -8,9 +8,11 @@
 [![tests][tests-src]][tests-href]
 [![codecov][codecov-src]][codecov-href]
 
-PHP package to parse audio files metadata, with [JamesHeinrich/getID3](https://github.com/JamesHeinrich/getID3).
+PHP package to parse audio files metadata, with [`JamesHeinrich/getID3`](https://github.com/JamesHeinrich/getID3).
 
 ## Supported formats
+
+-   `id3v2` will be selected before `id3v1` or `riff` if both are available.
 
 | Format | Supported |                About                 |    ID3 type     |         Notes         |
 | :----: | :-------: | :----------------------------------: | :-------------: | :-------------------: |
@@ -24,7 +26,7 @@ PHP package to parse audio files metadata, with [JamesHeinrich/getID3](https://g
 |  MKA   |    ✅     |               Matroska               |   `matroska`    | _Cover not supported_ |
 |  MKV   |    ✅     |               Matroska               |   `matroska`    | _Cover not supported_ |
 |  APE   |    ❌     |            Monkey's Audio            |                 |                       |
-|  MP3   |    ✅     |          MPEG audio layer 3          | `id3v1`,`id3v2` |                       |
+|  MP3   |    ✅     |          MPEG audio layer 3          | `id3v2`,`id3v1` |                       |
 |  MP4   |    ✅     | Digital multimedia container format  |   `quicktime`   |                       |
 |  M4A   |    ✅     |             mpeg-4 audio             |   `quicktime`   |                       |
 |  M4B   |    ✅     |              Audiobook               |   `quicktime`   |                       |
@@ -44,13 +46,22 @@ PHP package to parse audio files metadata, with [JamesHeinrich/getID3](https://g
 
 You want to add a format? [See FAQ](#faq)
 
-## Requirements
+### Convert properties
 
--   PHP >= 8.1
+`Audio::class` convert some properties to be more readable.
+
+| ID3 type |    Original    | New property  |
+| :------: | :------------: | :-----------: |
+| `id3v2`  |     `band`     | `albumArtist` |
+| `id3v2`  | `track_number` | `trackNumber` |
 
 ## About
 
-Audio files can use different formats, this package aims to provide a simple way to read them with [JamesHeinrich/getID3](https://github.com/JamesHeinrich/getID3). The `JamesHeinrich/getID3` package is excellent to read metadata from audio files, but output is just an array, current package aims to provide a simple way to read audio files with a beautiful API.
+Audio files can use different formats, this package aims to provide a simple way to read them with [`JamesHeinrich/getID3`](https://github.com/JamesHeinrich/getID3). The `JamesHeinrich/getID3` package is excellent to read metadata from audio files, but output is just an array, current package aims to provide a simple way to read audio files with a beautiful API.
+
+## Requirements
+
+-   PHP >= 8.1
 
 ## Installation
 
@@ -62,8 +73,10 @@ composer require kiwilan/php-audio
 
 ## Usage
 
+Core metadata:
+
 ```php
-$audio = Audio::read('path/to/audio.mp3');
+$audio = Audio::get('path/to/audio.mp3');
 
 $audio->title(); // `?string` to get title
 $audio->artist(); // `?string` to get artist
@@ -88,9 +101,17 @@ $audio->path(); // `string` to get path
 $audio->extension(); // `string` to get extension
 $audio->hasCover(); // `bool` to know if has cover
 $audio->isValid(); // `bool` to know if file is valid audio file
+$audio->type(); // `?string` ID3 type (id3, riff, asf, quicktime, matroska, ape, vorbiscomment)
+```
+
+Additional metadata:
+
+```php
+$audio = Audio::get('path/to/audio.mp3');
 
 $audio->extras(); // `array` with raw metadata (could contains some metadata not parsed)
-$audio->id3(); // `Id3` metadata
+$audio->id3()->reader(); // `?Id3Reader` reader based on `getID3`
+$audio->id3()->writer(); // `?Id3Writer` writer based on `getid3_writetags`
 $audio->stat(); // `FileStat` (from `stat` function)
 $audio->audio(); // `?AudioMetadata` with audio metadata
 $audio->cover(); // `?AudioCover` with cover metadata
@@ -103,28 +124,16 @@ Audio files format metadata with different methods, `JamesHeinrich/getID3` offer
 If you want to extract specific field which can be skipped by `Audio::class`, you can use `extras` property.
 
 ```php
-$audio = Audio::read('path/to/audio.mp3');
+$audio = Audio::get('path/to/audio.mp3');
 $extras = $audio->extras();
 
 $id3v2 = $extras['id3v2'] ?? [];
 ```
 
-### ID3
-
-Data from `JamesHeinrich/getID3` package with formatting.
-
-```php
-$audio = Audio::read('path/to/audio.mp3');
-
-$audio->id3()->raw(); // `array` with raw metadata
-$audio->id3()->item(); // `?Id3Item` with item metadata
-$audio->id3()->instance(); // `getID3` instance
-```
-
 ### AudioMetadata
 
 ```php
-$audio = Audio::read('path/to/audio.mp3');
+$audio = Audio::get('path/to/audio.mp3');
 
 $audio->audio()->filesize(); // `?int` in bytes
 $audio->audio()->extension(); // `?string` (mp3, m4a, ...)
@@ -144,7 +153,7 @@ $audio->audio()->compressionRatio(); // `?float`
 ### AudioCover
 
 ```php
-$audio = Audio::read('path/to/audio.mp3');
+$audio = Audio::get('path/to/audio.mp3');
 
 $audio->cover()->content(); // `?string` raw file
 $audio->cover()->mimeType(); // `?string` (image/jpeg, image/png, ...)
@@ -171,7 +180,7 @@ composer test
 In `Audio::class`, you have a property `extras` which contains all raw metadata, if `JamesHeinrich/getID3` support this field, you will find it in this property.
 
 ```php
-$audio = Audio::read('path/to/audio.mp3');
+$audio = Audio::get('path/to/audio.mp3');
 $extras = $audio->extras();
 
 $custom = null;

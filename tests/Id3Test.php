@@ -4,50 +4,50 @@ use Kiwilan\Audio\Audio;
 use Kiwilan\Audio\Models\Id3Audio;
 use Kiwilan\Audio\Models\Id3AudioTag;
 use Kiwilan\Audio\Models\Id3Comments;
-use Kiwilan\Audio\Models\Id3Item;
+use Kiwilan\Audio\Models\Id3Reader;
 use Kiwilan\Audio\Models\Id3TagsHtml;
 
-it('can parse ID3 item', function (string $path) {
-    $audio = Audio::read($path);
-    $id3 = $audio->id3();
-    $raw = $id3->raw();
-    $item = $id3->item();
+it('can parse ID3 reader', function (string $path) {
+    $audio = Audio::get($path);
 
-    expect($id3->instance())->toBeInstanceOf(getID3::class);
-    expect($item)->toBeInstanceOf(Id3Item::class);
+    $reader = $audio->reader();
+    $raw = $reader->raw();
+
+    expect($reader->instance())->toBeInstanceOf(getID3::class);
+    expect($reader)->toBeInstanceOf(Id3Reader::class);
 
     expect($raw)->toBeArray();
-    expect($item->version())->toBeString();
-    expect($item->filesize())->toBeInt();
-    expect($item->filepath())->toBeString();
-    expect($item->filename())->toBeString();
-    expect($item->filenamepath())->toBeString();
-    expect($item->avdataoffset())->toBeInt();
-    expect($item->avdataend())->toBeInt();
-    expect($item->fileformat())->toBeString();
-    expect($item->audio())->toBeInstanceOf(Id3Audio::class);
-    if ($item->tags()) {
-        expect($item->tags())->toBeInstanceOf(Id3AudioTag::class);
+    expect($reader->version())->toBeString();
+    expect($reader->filesize())->toBeInt();
+    expect($reader->filepath())->toBeString();
+    expect($reader->filename())->toBeString();
+    expect($reader->filenamepath())->toBeString();
+    expect($reader->avdataoffset())->toBeInt();
+    expect($reader->avdataend())->toBeInt();
+    expect($reader->fileformat())->toBeString();
+    expect($reader->audio())->toBeInstanceOf(Id3Audio::class);
+    if ($reader->tags()) {
+        expect($reader->tags())->toBeInstanceOf(Id3AudioTag::class);
     }
-    if ($item->comments()) {
-        expect($item->comments())->toBeInstanceOf(Id3Comments::class);
+    if ($reader->comments()) {
+        expect($reader->comments())->toBeInstanceOf(Id3Comments::class);
     }
-    expect($item->encoding())->toBeString();
-    expect($item->mime_type())->toBeString();
-    if ($item->mpeg()) {
-        expect($item->mpeg())->toBeArray();
+    expect($reader->encoding())->toBeString();
+    expect($reader->mime_type())->toBeString();
+    if ($reader->mpeg()) {
+        expect($reader->mpeg())->toBeArray();
     }
-    if ($item->playtime_seconds()) {
-        expect($item->playtime_seconds())->toBeFloat();
+    if ($reader->playtime_seconds()) {
+        expect($reader->playtime_seconds())->toBeFloat();
     }
 
-    if ($item->tags_html()) {
-        expect($item->tags_html())->toBeInstanceOf(Id3TagsHtml::class);
+    if ($reader->tags_html()) {
+        expect($reader->tags_html())->toBeInstanceOf(Id3TagsHtml::class);
     }
-    if ($item->bitrate()) {
-        expect($item->bitrate())->toBeFloat();
+    if ($reader->bitrate()) {
+        expect($reader->bitrate())->toBeFloat();
     }
-    if ($item->playtime_string()) {
-        expect($item->playtime_string())->toBeString();
+    if ($reader->playtime_string()) {
+        expect($reader->playtime_string())->toBeString();
     }
 })->with([...AUDIO]);

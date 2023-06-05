@@ -1,9 +1,10 @@
 <?php
 
 use Kiwilan\Audio\Audio;
+use Kiwilan\Audio\Enums\AudioFormatEnum;
 
 it('can read audiobook file m4b', function () {
-    $audio = Audio::read(AUDIOBOOK);
+    $audio = Audio::get(AUDIOBOOK);
 
     expect($audio->title())->toBe('P1PDD Saison 1');
     expect($audio->artist())->toBe('Mr Piouf');
@@ -17,9 +18,10 @@ it('can read audiobook file m4b', function () {
     expect($audio->discNumber())->toBeNull();
     expect($audio->isCompilation())->toBe(false);
     expect($audio->path())->toBe(AUDIOBOOK);
-    expect($audio->extension())->toBe('m4b');
+    expect($audio->format())->toBe(AudioFormatEnum::m4b);
     expect($audio->creationDate())->toBe('2023-06-04T12:00:00Z');
-    expect($audio->encoding())->toBe('Audiobook Builder 2.2.6 (www.splasm.com), macOS 13.4 (Mr Piouf)');
+    expect($audio->encodingBy())->toBe('Mr Piouf');
+    expect($audio->encoding())->toBe('Audiobook Builder 2.2.6 (www.splasm.com), macOS 13.4');
     expect($audio->description())->toBe('Première campagne de P1PDD');
     expect($audio->lyrics())->toBe('P1PDD');
     expect($audio->stik())->toBe('Audiobook');

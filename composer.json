@@ -1,6 +1,6 @@
 {
     "name": "kiwilan/php-audio",
-    "description": "PHP package to parse audio files metadata.",
+    "description": "PHP package to parse audio files metadata, with `JamesHeinrich/getID3`.",
     "version": "0.3.0",
     "keywords": [
         "audio",
