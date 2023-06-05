@@ -93,156 +93,249 @@ class Audio
         return $self;
     }
 
+    /**
+     * Update metadata of audio file.
+     */
     public function update(): Id3Writer
     {
         return $this->writer->write();
     }
 
+    /**
+     * Get the value of `stat` method.
+     */
     public function stat(): ?FileStat
     {
         return $this->stat;
     }
 
+    /**
+     * `Id3Reader` with metadata.
+     */
     public function reader(): Id3Reader
     {
         return $this->reader;
     }
 
+    /**
+     * `Id3Writer` to update metadata.
+     */
     public function writer(): ?Id3Writer
     {
         return $this->writer;
     }
 
+    /**
+     * Get `title` metadata.
+     */
     public function title(): ?string
     {
         return $this->title;
     }
 
+    /**
+     * Get `artist` metadata.
+     */
     public function artist(): ?string
     {
         return $this->artist;
     }
 
+    /**
+     * Get `album` metadata.
+     */
     public function album(): ?string
     {
         return $this->album;
     }
 
+    /**
+     * Get `genre` metadata.
+     */
     public function genre(): ?string
     {
         return $this->genre;
     }
 
+    /**
+     * Get `year` metadata.
+     */
     public function year(): ?int
     {
         return $this->year;
     }
 
+    /**
+     * Get `trackNumber` metadata.
+     */
     public function trackNumber(): ?string
     {
         return $this->trackNumber;
     }
 
+    /**
+     * Get `comment` metadata.
+     */
     public function comment(): ?string
     {
         return $this->comment;
     }
 
+    /**
+     * Get `albumArtist` metadata.
+     */
     public function albumArtist(): ?string
     {
         return $this->albumArtist;
     }
 
+    /**
+     * Get `composer` metadata.
+     */
     public function composer(): ?string
     {
         return $this->composer;
     }
 
+    /**
+     * Get `discNumber` metadata.
+     */
     public function discNumber(): ?string
     {
         return $this->discNumber;
     }
 
+    /**
+     * Know if audio file is a compilation.
+     */
     public function isCompilation(): bool
     {
         return $this->isCompilation;
     }
 
+    /**
+     * Get `creationDate` metadata for audiobook.
+     */
     public function creationDate(): ?string
     {
         return $this->creationDate;
     }
 
+    /**
+     * Get `encodingBy` metadata for audiobook.
+     */
     public function encodingBy(): ?string
     {
         return $this->encodingBy;
     }
 
+    /**
+     * Get `encoding` metadata for audiobook.
+     */
     public function encoding(): ?string
     {
         return $this->encoding;
     }
 
+    /**
+     * Get `encoding` metadata for audiobook.
+     */
     public function copyright(): ?string
     {
         return $this->copyright;
     }
 
+    /**
+     * Get `description` metadata for audiobook.
+     */
     public function description(): ?string
     {
         return $this->description;
     }
 
+    /**
+     * Get `lyrics` metadata for audiobook.
+     */
     public function lyrics(): ?string
     {
         return $this->lyrics;
     }
 
+    /**
+     * Get `stik` metadata for audiobook.
+     */
     public function stik(): ?string
     {
         return $this->stik;
     }
 
+    /**
+     * Get `duration` in seconds.
+     */
     public function duration(): ?float
     {
         return $this->duration;
     }
 
+    /**
+     * Know if audio file is valid.
+     */
     public function isValid(): bool
     {
         return $this->isValid;
     }
 
+    /**
+     * Get `extras` with raw metadata.
+     */
     public function extras(): array
     {
         return $this->extras;
     }
 
+    /**
+     * Get `audio` metadata with some audio information.
+     */
     public function audio(): ?AudioMetadata
     {
         return $this->audio;
     }
 
+    /**
+     * Know if audio file has cover.
+     */
     public function hasCover(): bool
     {
         return $this->hasCover;
     }
 
+    /**
+     * Get `cover` metadata with some cover information.
+     */
     public function cover(): ?AudioCover
     {
         return $this->cover;
     }
 
+    /**
+     * Get `path` of audio file.
+     */
     public function path(): string
     {
         return $this->path;
     }
 
+    /**
+     * Get `format` of audio file.
+     */
     public function format(): AudioFormatEnum
     {
         return $this->format;
     }
 
+    /**
+     * Get `type` of audio file.
+     */
     public function type(): ?AudioTypeEnum
     {
         return $this->type;
