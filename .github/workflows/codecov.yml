@@ -31,8 +31,11 @@ jobs:
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, fileinfo
           coverage: pcov
 
-      - name: Add vorbis-tools
-        run: sudo apt-get install vorbis-tools
+      - name: apt
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get install vorbis-tools flac
+        shell: bash
 
       - name: Setup problem matchers
         run: |
