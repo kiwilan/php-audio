@@ -74,6 +74,11 @@ class Audio
 
     public static function get(string $path): self
     {
+        $fileExists = file_exists($path);
+        if (! $fileExists) {
+            throw new \Exception("File not found: {$path}");
+        }
+
         $extension = pathinfo($path, PATHINFO_EXTENSION);
         $extension = strtolower($extension);
         $format = AudioFormatEnum::tryFrom($extension);

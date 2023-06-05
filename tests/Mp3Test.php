@@ -73,3 +73,7 @@ it('can read file mp3 no meta', function () {
     expect($audio->isCompilation())->toBeFalse();
     expect($audio->path())->toBe(MP3_NO_META);
 });
+
+it("can fail if file didn't exists", function () {
+    expect(fn () => Audio::get('tests/media/unknown.mp3'))->toThrow(Exception::class);
+});

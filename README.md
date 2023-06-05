@@ -56,7 +56,7 @@ You want to add a format? [See FAQ](#faq)
 > -   ID3v2 (v2.3, v2.4)
 > -   APE (v2)
 > -   Ogg Vorbis comments (need `vorbis-tools`)
-> -   FLAC comments
+> -   FLAC comments (need `flac`)
 
 | Format |         Notes         |    Requires    |
 | :----: | :-------------------: | :------------: |
@@ -65,16 +65,50 @@ You want to add a format? [See FAQ](#faq)
 |  OGG   | _Cover not supported_ | `vorbis-tools` |
 
 -   `flac`: with `apt`, `brew` or `scoop`
--   `vorbis-tools`: with `apt`, `brew` or `scoop` (`extras/icecast`)
+-   `vorbis-tools`: with `apt`, `brew` or `scoop`
+    -   With `scoop`, `vorbis-tools` is not available, you can use `extras/icecast` instead.
 
 ### Convert properties
 
 `Audio::class` convert some properties to be more readable.
 
-| ID3 type |    Original    | New property  |
-| :------: | :------------: | :-----------: |
-| `id3v2`  |     `band`     | `albumArtist` |
-| `id3v2`  | `track_number` | `trackNumber` |
+|    ID3 type     |        Original         |  New property   |
+| :-------------: | :---------------------: | :-------------: |
+|     `id3v2`     |         `band`          |  `albumArtist`  |
+|     `id3v2`     |     `track_number`      |  `trackNumber`  |
+|     `id3v2`     |     `part_of_a_set`     |  `discNumber`   |
+|     `id3v2`     | `part_of_a_compilation` | `isCompilation` |
+|   `quicktime`   |     `track_number`      |  `trackNumber`  |
+|   `quicktime`   |      `disc_number`      |  `discNumber`   |
+|   `quicktime`   |      `compilation`      | `isCompilation` |
+|   `quicktime`   |     `creation_date`     | `creationDate`  |
+|   `quicktime`   |     `album_artist`      |  `albumArtist`  |
+|   `quicktime`   |      `encoded_by`       |  `encodingBy`   |
+|   `quicktime`   |     `encoding_tool`     |   `encoding`    |
+|   `quicktime`   |   `description_long`    | `description`\* |
+|      `asf`      |      `albumartist`      |  `albumArtist`  |
+|      `asf`      |       `partofset`       |  `discNumber`   |
+|      `asf`      |     `track_number`      |  `trackNumber`  |
+|      `asf`      |   `encodingsettings`    |   `encoding`    |
+| `vorbiscomment` |        `encoder`        |   `encoding`    |
+| `vorbiscomment` |      `albumartist`      |  `albumArtist`  |
+| `vorbiscomment` |      `discnumber`       |  `discNumber`   |
+| `vorbiscomment` |      `compilation`      | `isCompilation` |
+| `vorbiscomment` |      `tracknumber`      |  `trackNumber`  |
+|   `matroska`    |     `album_artist`      |  `albumArtist`  |
+|   `matroska`    |         `disc`          |  `discNumber`   |
+|   `matroska`    |      `part_number`      |  `trackNumber`  |
+|   `matroska`    |         `date`          |     `year`      |
+|   `matroska`    |      `compilation`      | `isCompilation` |
+|   `matroska`    |        `encoder`        |   `encoding`    |
+|      `ape`      |     `album_artist`      |  `albumArtist`  |
+|      `ape`      |         `disc`          |  `discNumber`   |
+|      `ape`      |      `compilation`      | `isCompilation` |
+|      `ape`      |         `track`         |  `trackNumber`  |
+|      `ape`      |         `date`          |     `year`      |
+|      `ape`      |        `encoder`        |   `encoding`    |
+
+\*: if `description_long` has more content than `description`, it replaces `description`.
 
 ## About
 
@@ -144,11 +178,7 @@ You can update audio files metadata with `Audio::class`, but not all formats are
 
 ```php
 $audio = Audio::get('path/to/audio.mp3');
-
-// you can use file content
-$cover = file_get_contents('path/to/cover.jpg');
-// or file path
-$cover = 'path/to/cover.jpg';
+$audio->title(); // `Title`
 
 $tag = $audio->update()
   ->setTitle('New Title')
@@ -168,11 +198,64 @@ $tag = $audio->update()
   ->setIsCompilation(false)
   ->setLyrics('New Lyrics')
   ->setStik('New Stik')
-  ->setCover($cover)
+  ->setCover('path/to/cover.jpg') // you can use file content `file_get_contents('path/to/cover.jpg')`
   ->save();
+
+$audio = Audio::get('path/to/audio.mp3');
+$audio->title(); // `New Title`
 ```
 
-Some properties are not supported by all formats, for example `MP3` can't handle `lyrics` or `stik` properties, if you try to update these properties, they will be ignored.
+Some properties are not supported by all formats, for example `MP3` can't handle some properties like `lyrics` or `stik`, if you try to update these properties, they will be ignored.
+
+#### Set tags manually
+
+You can set tags manually with `setTags` method, but you need to know the format of the tag, you could use `setTagFormats` to set formats of tags (if you don't know the format, it will be automatically detected).
+
+**`noAutomatic` method is required to use `setTags` method.**
+
+```php
+$audio = Audio::get('path/to/audio.mp3');
+$audio->title(); // `Title`
+
+$tag = $audio->update()
+  ->noAutomatic()
+  ->setTags([
+    'title' => 'New Title',
+  ])
+  ->setTagFormats(['id3v1', 'id3v2.4']) // optional
+  ->save();
+
+$audio = Audio::get('path/to/audio.mp3');
+$audio->title(); // `New Title`
+```
+
+Of course you can add cover with `setTags` method.
+
+```php
+$audio = Audio::get('path/to/audio.mp3');
+$cover = 'path/to/cover.jpg';
+
+$image = getimagesize($cover);
+$coverData = file_get_contents($cover);
+$coverPicturetypeid = $image[2];
+$coverDescription = 'cover';
+$coverMime = $image['mime'];
+
+$tag = $audio->update()
+  ->noAutomatic()
+  ->setTags([
+    'title' => 'New Title',
+    'attached_picture' => [
+      [
+        'data' => $coverData,
+        'picturetypeid' => $coverPicturetypeid,
+        'description' => $coverDescription,
+        'mime' => $coverMime,
+      ],
+    ],
+  ])
+  ->save();
+```
 
 ### Extras
 
@@ -249,6 +332,19 @@ if ($id3v2) {
 ```
 
 If your field could be added to global properties of `Audio::class`, you could create an [an issue](https://github.com/kiwilan/php-audio/issues/new/choose).
+
+### Metadata are `null`, what can I do?
+
+You can check `extras` property to know if some metadata are available.
+
+```php
+$audio = Audio::get('path/to/audio.mp3');
+
+$extras = $audio->extras();
+var_dump($extras);
+```
+
+If you find metadata which are not parsed by `Audio::class`, you can create [an issue](https://github.com/kiwilan/php-audio/issues/new/choose), otherwise `JamesHeinrich/getID3` doesn't support this metadata.z
 
 ### My favorite format is not supported, what can I do?
 

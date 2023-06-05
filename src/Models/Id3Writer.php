@@ -19,7 +19,7 @@ class Id3Writer
     ];
 
     /**
-     * @var array<string, string>
+     * @var array<string, array>
      */
     protected array $tags = [];
 
@@ -30,6 +30,10 @@ class Id3Writer
     protected bool $overrideTags = true;
 
     protected bool $removeOldTags = false;
+
+    protected array $tagFormats = [];
+
+    protected bool $automatic = true;
 
     protected bool $success = false;
 
@@ -230,18 +234,137 @@ class Id3Writer
         return $this;
     }
 
+    /**
+     * Set manually tags.
+     *
+     * @param  array<string, string>  $tags
+     */
+    public function setTags(array $tags): self
+    {
+        $this->tags = $this->convertTags($tags);
+
+        return $this;
+    }
+
+    /**
+     * Set tag format.
+     *
+     * @param  string[]  $tags Options are `id3v1`, `id3v2.2`, `id2v2.3`, `id3v2.4`, `ape`, `vorbiscomment`, `metaflac`, `real`
+     */
+    public function setTagFormats(array $tags): self
+    {
+        $this->tagFormats = $tags;
+
+        return $this;
+    }
+
+    /**
+     * Skip automatic convert.
+     */
+    public function noAutomatic(): self
+    {
+        $this->automatic = false;
+
+        return $this;
+    }
+
     public function save(): bool
     {
-        /**
-         * - ID3v1 (v1 & v1.1)
-         * - ID3v2 (v2.3, v2.4)
-         * - APE (v2)
-         * - Ogg Vorbis comments (need `vorbis-tools`)
-         * - FLAC comments
-         *
-         * Options: `id3v1`, `id3v2.2`, `id2v2.3`, `id3v2.4`, `ape`, `vorbiscomment`, `metaflac`, `real`
-         */
-        $format = match ($this->audio->format()) {
+        if ($this->automatic) {
+            $this->automaticConvert();
+        }
+
+        $this->convertTagFormats();
+
+        $this->instance->overwrite_tags = $this->overrideTags;
+        $this->instance->remove_other_tags = $this->removeOldTags;
+        $this->instance->tagformats = $this->tagFormats;
+        $this->instance->tag_data = $this->tags;
+
+        $this->success = $this->instance->WriteTags();
+
+        $this->errors = $this->instance->errors;
+        $this->warnings = $this->instance->warnings;
+
+        if (! empty($this->errors)) {
+            $errors = implode(', ', $this->errors);
+            throw new \Exception($errors);
+        }
+
+        if (! empty($this->warnings)) {
+            $warnings = implode(', ', $this->warnings);
+            error_log($warnings);
+        }
+
+        return $this->success;
+    }
+
+    private function automaticConvert(): self
+    {
+        $this->convertTagFormats();
+
+        $convert = match ($this->audio->type()) {
+            AudioTypeEnum::id3 => AudioConverter::toId3v2($this->core),
+            AudioTypeEnum::vorbiscomment => AudioConverter::toVorbisComment($this->core),
+            AudioTypeEnum::quicktime => AudioConverter::toQuicktime($this->core),
+            AudioTypeEnum::matroska => AudioConverter::toMatroska($this->core),
+            AudioTypeEnum::ape => AudioConverter::toApe($this->core),
+            AudioTypeEnum::asf => AudioConverter::toAsf($this->core),
+            default => null,
+        };
+
+        $tags = [];
+        if ($convert) {
+            $tags = $convert->toArray();
+        }
+
+        $tags = $this->convertTags($tags);
+        $this->attachCover($tags);
+
+        $this->tags = $tags;
+
+        return $this;
+    }
+
+    /**
+     * @param  array<string, string>  $tags
+     * @return array<string, array>
+     */
+    private function convertTags(array $tags): array
+    {
+        $attached = $tags['attached_picture'] ?? null;
+        $items = [];
+        if (! empty($tags)) {
+            foreach ($tags as $key => $tag) {
+                if ($tag && gettype($tag) === 'string') {
+                    $items[$key] = [$tag];
+                }
+            }
+        }
+
+        if ($attached) {
+            $items['attached_picture'] = $attached;
+        }
+
+        return $items;
+    }
+
+    /**
+     * - ID3v1 (v1 & v1.1)
+     * - ID3v2 (v2.3, v2.4)
+     * - APE (v2)
+     * - Ogg Vorbis comments (need `vorbis-tools`)
+     * - FLAC comments
+     *
+     * Options: `id3v1`, `id3v2.2`, `id2v2.3`, `id3v2.4`, `ape`, `vorbiscomment`, `metaflac`, `real`
+     */
+    private function convertTagFormats(): self
+    {
+        if (! empty($this->tagFormats)) {
+            return $this;
+        }
+
+        $formats = match ($this->audio->format()) {
             AudioFormatEnum::aac => [],
             AudioFormatEnum::aif => ['id3v2.4'],
             AudioFormatEnum::aifc => ['id3v2.4'],
@@ -270,34 +393,13 @@ class Id3Writer
             AudioFormatEnum::wv => ['ape'],
             default => null,
         };
-        $this->instance->tagformats = $format;
+        $this->tagFormats = $formats;
 
-        $convert = match ($this->audio->type()) {
-            AudioTypeEnum::id3 => AudioConverter::toId3v2($this->core),
-            AudioTypeEnum::vorbiscomment => AudioConverter::toVorbisComment($this->core),
-            AudioTypeEnum::quicktime => AudioConverter::toQuicktime($this->core),
-            AudioTypeEnum::matroska => AudioConverter::toMatroska($this->core),
-            AudioTypeEnum::ape => AudioConverter::toApe($this->core),
-            AudioTypeEnum::asf => AudioConverter::toAsf($this->core),
-            default => null,
-        };
+        return $this;
+    }
 
-        if ($convert) {
-            $this->tags = $convert->toArray();
-        }
-
-        $this->instance->overwrite_tags = $this->overrideTags;
-        $this->instance->remove_other_tags = $this->removeOldTags;
-
-        $tags = [];
-        if (! empty($this->tags)) {
-            foreach ($this->tags as $key => $tag) {
-                if ($tag) {
-                    $tags[$key] = [$tag];
-                }
-            }
-        }
-
+    private function attachCover(array &$tags): void
+    {
         $coverFormatsAllowed = [AudioFormatEnum::mp3];
         if ($this->core->cover() && in_array($this->audio->format(), $coverFormatsAllowed)) {
             // $tags = [
@@ -314,23 +416,5 @@ class Id3Writer
             ];
             $this->core->setHasCover(true);
         }
-
-        $this->instance->tag_data = $tags;
-        $this->success = $this->instance->WriteTags();
-
-        $this->errors = $this->instance->errors;
-        $this->warnings = $this->instance->warnings;
-
-        if (! empty($this->errors)) {
-            $errors = implode(', ', $this->errors);
-            throw new \Exception($errors);
-        }
-
-        if (! empty($this->warnings)) {
-            $warnings = implode(', ', $this->warnings);
-            error_log($warnings);
-        }
-
-        return $this->success;
     }
 }

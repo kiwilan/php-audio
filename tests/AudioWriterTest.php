@@ -66,3 +66,52 @@ it('can read use file content as cover', function (string $path) {
     $content = file_get_contents(FOLDER);
     expect($tag->core()->cover()->data())->toBe(base64_encode($content));
 })->with([MP3_WRITER]);
+
+it('can read use tags', function (string $path) {
+    $audio = Audio::get($path);
+
+    $random = (string) rand(1, 1000);
+    $image = getimagesize(FOLDER);
+    $coverData = file_get_contents(FOLDER);
+    $coverPicturetypeid = $image[2];
+    $coverDescription = 'cover';
+    $coverMime = $image['mime'];
+    $tag = $audio->update()
+        ->noAutomatic()
+        ->setTags([
+            'title' => $random,
+            'attached_picture' => [
+                [
+                    'data' => $coverData,
+                    'picturetypeid' => $coverPicturetypeid,
+                    'description' => $coverDescription,
+                    'mime' => $coverMime,
+                ],
+            ],
+        ]);
+
+    $tag->save();
+
+    $audio = Audio::get($path);
+    expect($audio->title())->toBe($random);
+
+    $content = file_get_contents(FOLDER);
+    expect($audio->cover()->content())->toBe($content);
+})->with([MP3_WRITER]);
+
+it('can read use tags with tag formats', function (string $path) {
+    $audio = Audio::get($path);
+
+    $random = (string) rand(1, 1000);
+    $tag = $audio->update()
+        ->noAutomatic()
+        ->setTags([
+            'title' => $random,
+        ])
+        ->setTagFormats(['id3v1', 'id3v2.4']);
+
+    $tag->save();
+
+    $audio = Audio::get($path);
+    expect($audio->title())->toBe($random);
+})->with([MP3_WRITER]);
