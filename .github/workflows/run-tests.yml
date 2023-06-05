@@ -25,19 +25,21 @@ jobs:
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, fileinfo
           coverage: none
 
-      - name: Add dependencies (Linux only)
-        if: matrix.os == 'ubuntu-latest'
-        run: /
+      - name: apt
+        if: runner.os == 'Linux'
+        run: |
           sudo apt-get install vorbis-tools
           sudo apt-get install metaflac
+        shell: bash
 
-      - name: Add vorbis-tools (Windows with scoop)
-        if: matrix.os == 'windows-latest'
-        run: /
-          Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-          irm get.scoop.sh | iex
-          scoop install vorbis-tools
-          scoop install flac
+      - name: scoop
+        run: |
+          [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+          iex "& {$(irm get.scoop.sh)} -RunAsAdmin"
+          [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+          scoop update
+          scoop install vorbis-tools flac
+        shell: powershell
 
       - name: Setup problem matchers
         run: |
