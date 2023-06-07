@@ -286,13 +286,15 @@ class Id3Writer
         $this->errors = $this->instance->errors;
         $this->warnings = $this->instance->warnings;
 
+        $errors = implode(', ', $this->errors);
+        $warnings = implode(', ', $this->warnings);
+
         if (! empty($this->errors)) {
-            $errors = implode(', ', $this->errors);
-            throw new \Exception($errors);
+            $errors = strip_tags($errors);
+            throw new \Exception("Save tags failed: {$errors}. Warnings: {$warnings}. Success: {$this->success}");
         }
 
         if (! empty($this->warnings)) {
-            $warnings = implode(', ', $this->warnings);
             error_log($warnings);
         }
 
