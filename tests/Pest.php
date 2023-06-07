@@ -5,22 +5,26 @@ define('AUDIOBOOK', __DIR__.'/media/audiobook.m4b');
 define('MD', __DIR__.'/media/test.md');
 define('FOLDER', __DIR__.'/media/folder.jpg');
 
-$files = glob('./tests/media/*');
-foreach ($files as $file) {
-    if (is_file($file) && str_contains($file, 'writer')) {
-        unlink($file);
+function addWriterFilesForTests()
+{
+    $files = glob('./tests/media/*');
+    foreach ($files as $file) {
+        if (is_file($file) && str_contains($file, 'writer')) {
+            unlink($file);
+        }
     }
-}
 
-$files = glob('./tests/media/*');
-foreach ($files as $file) {
-    $basename = pathinfo($file, PATHINFO_BASENAME);
-    if (is_file($file) && str_contains($basename, 'test')) {
-        $writer = str_replace('test', 'test-writer', $basename);
-        $writer = str_replace($basename, $writer, $file);
-        copy($file, $writer);
+    $files = glob('./tests/media/*');
+    foreach ($files as $file) {
+        $basename = pathinfo($file, PATHINFO_BASENAME);
+        if (is_file($file) && str_contains($basename, 'test')) {
+            $writer = str_replace('test', 'test-writer', $basename);
+            $writer = str_replace($basename, $writer, $file);
+            copy($file, $writer);
+        }
     }
 }
+addWriterFilesForTests();
 
 define('ALAC_WRITER', __DIR__.'/media/test-alac-writer.m4a');
 define('AAC_WRITER', __DIR__.'/media/test-writer.aac');
