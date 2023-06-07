@@ -305,6 +305,7 @@ class Id3Writer
 
             $isSuccess = $this->success ? 'true' : 'false';
             $success = "Success: {$isSuccess}";
+            $msg .= " {$success}";
 
             throw new \Exception($msg);
         }
