@@ -41,9 +41,6 @@ jobs:
           scoop install flac
           scoop bucket add extras
           scoop install extras/icecast
-          cd D:\a\php-audio\php-audio\tests\media
-          ./convert-writer.ps1
-          ls
         shell: powershell
 
       - name: Setup problem matchers
