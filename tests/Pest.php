@@ -5,10 +5,21 @@ define('AUDIOBOOK', __DIR__.'/media/audiobook.m4b');
 define('MD', __DIR__.'/media/test.md');
 define('FOLDER', __DIR__.'/media/folder.jpg');
 
-if (PHP_OS_FAMILY === 'Windows') {
-    exec('cd tests/media ; ./convert-writer.ps1');
-} else {
-    exec('cd tests/media && ./convert-writer.sh');
+$files = glob('./tests/media/*');
+foreach ($files as $file) {
+    if (is_file($file) && str_contains($file, 'writer')) {
+        unlink($file);
+    }
+}
+
+$files = glob('./tests/media/*');
+foreach ($files as $file) {
+    $basename = pathinfo($file, PATHINFO_BASENAME);
+    if (is_file($file) && str_contains($basename, 'test')) {
+        $writer = str_replace('test', 'test-writer', $basename);
+        $writer = str_replace($basename, $writer, $file);
+        copy($file, $writer);
+    }
 }
 
 define('ALAC_WRITER', __DIR__.'/media/test-alac-writer.m4a');
