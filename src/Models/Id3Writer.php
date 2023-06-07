@@ -294,6 +294,9 @@ class Id3Writer
 
             $errors = strip_tags($errors);
             $errors = "Errors: {$errors}.";
+            if (! empty($this->errors)) {
+                $msg .= " {$errors}";
+            }
 
             $warnings = "Warnings: {$warnings}.";
             if (! empty($this->warnings)) {
