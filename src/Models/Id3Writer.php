@@ -290,8 +290,20 @@ class Id3Writer
         $warnings = implode(', ', $this->warnings);
 
         if (! empty($this->errors)) {
+            $msg = 'Save tags failed.';
+
             $errors = strip_tags($errors);
-            throw new \Exception("Save tags failed: {$errors}. Warnings: {$warnings}. Success: {$this->success}");
+            $errors = "Errors: {$errors}.";
+
+            $warnings = "Warnings: {$warnings}.";
+            if (! empty($this->warnings)) {
+                $msg .= " {$warnings}";
+            }
+
+            $isSuccess = $this->success ? 'true' : 'false';
+            $success = "Success: {$isSuccess}";
+
+            throw new \Exception($msg);
         }
 
         if (! empty($this->warnings)) {
