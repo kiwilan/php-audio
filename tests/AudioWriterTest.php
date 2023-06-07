@@ -51,9 +51,7 @@ it('can update file', function (string $path) {
         $content = file_get_contents(FOLDER);
         expect($tag->core()->cover()->data())->toBe(base64_encode($content));
     }
-})
-    ->with(AUDIO_WRITER)
-    ->skip(fn () => PHP_OS_FAMILY === 'Windows');
+})->with(AUDIO_WRITER);
 
 it('can read use file content as cover', function (string $path) {
     $audio = Audio::get($path);

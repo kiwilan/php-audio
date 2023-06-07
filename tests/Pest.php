@@ -25,6 +25,7 @@ function addWriterFilesForTests()
     }
 }
 addWriterFilesForTests();
+sleep(1);
 
 define('ALAC_WRITER', __DIR__.'/media/test-alac-writer.m4a');
 define('AAC_WRITER', __DIR__.'/media/test-writer.aac');
