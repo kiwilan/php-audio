@@ -3,7 +3,7 @@
 use Kiwilan\Audio\Audio;
 use Kiwilan\Audio\Enums\AudioFormatEnum;
 
-it('can read file', function (string $path) {
+it('can update file', function (string $path) {
     $audio = Audio::get($path);
     $random = (string) rand(1, 1000);
     $tag = $audio->update()
@@ -51,7 +51,9 @@ it('can read file', function (string $path) {
         $content = file_get_contents(FOLDER);
         expect($tag->core()->cover()->data())->toBe(base64_encode($content));
     }
-})->with(AUDIO_WRITER);
+})
+    ->with(AUDIO_WRITER)
+    ->skip(fn () => PHP_OS_FAMILY === 'Windows');
 
 it('can read use file content as cover', function (string $path) {
     $audio = Audio::get($path);
@@ -99,7 +101,7 @@ it('can read use tags', function (string $path) {
     expect($audio->cover()->content())->toBe($content);
 })->with([MP3_WRITER]);
 
-it('can read use tags with tag formats', function (string $path) {
+it('can update use tags with tag formats', function (string $path) {
     $audio = Audio::get($path);
 
     $random = (string) rand(1, 1000);
