@@ -5,7 +5,6 @@ namespace Kiwilan\Audio\Models;
 use DateTime;
 use getid3_writetags;
 use Kiwilan\Audio\Audio;
-use Kiwilan\Audio\AudioConverter;
 use Kiwilan\Audio\Enums\AudioFormatEnum;
 use Kiwilan\Audio\Enums\AudioTypeEnum;
 
@@ -19,17 +18,32 @@ class Id3Writer
     ];
 
     /**
-     * @var array<string, string>
+     * @var array<string, array>
      */
     protected array $tags = [];
 
+    /**
+     * @var string[]
+     */
     protected array $warnings = [];
 
+    /**
+     * @var string[]
+     */
     protected array $errors = [];
 
     protected bool $overrideTags = true;
 
     protected bool $removeOldTags = false;
+
+    protected bool $failOnError = true;
+
+    /**
+     * @var string[]
+     */
+    protected array $tagFormats = [];
+
+    protected ?string $path = null;
 
     protected bool $success = false;
 
@@ -51,89 +65,96 @@ class Id3Writer
         return $self;
     }
 
-    public function core(): AudioCore
+    public function getCore(): AudioCore
     {
         return $this->core;
     }
 
-    public function setTitle(?string $title): self
+    public function title(?string $title): self
     {
         $this->core->setTitle($title);
 
         return $this;
     }
 
-    public function setArtist(?string $artist): self
+    public function artist(?string $artist): self
     {
         $this->core->setArtist($artist);
 
         return $this;
     }
 
-    public function setAlbum(?string $album): self
+    public function album(?string $album): self
     {
         $this->core->setAlbum($album);
 
         return $this;
     }
 
-    public function setGenre(?string $genre): self
+    public function genre(?string $genre): self
     {
         $this->core->setGenre($genre);
 
         return $this;
     }
 
-    public function setYear(int $year): self
+    public function year(int $year): self
     {
         $this->core->setYear($year);
 
         return $this;
     }
 
-    public function setTrackNumber(?string $trackNumber): self
+    public function trackNumber(?string $trackNumber): self
     {
         $this->core->setTrackNumber($trackNumber);
 
         return $this;
     }
 
-    public function setComment(?string $comment): self
+    public function comment(?string $comment): self
     {
         $this->core->setComment($comment);
 
         return $this;
     }
 
-    public function setAlbumArtist(?string $albumArtist): self
+    public function albumArtist(?string $albumArtist): self
     {
         $this->core->setAlbumArtist($albumArtist);
 
         return $this;
     }
 
-    public function setComposer(?string $composer): self
+    public function composer(?string $composer): self
     {
         $this->core->setComposer($composer);
 
         return $this;
     }
 
-    public function setDiscNumber(?string $discNumber): self
+    public function discNumber(?string $discNumber): self
     {
         $this->core->setDiscNumber($discNumber);
 
         return $this;
     }
 
-    public function setIsCompilation(bool $isCompilation): self
+    public function isCompilation(): self
     {
-        $this->core->setIsCompilation($isCompilation);
+        $this->core->setIsCompilation(true);
 
         return $this;
     }
 
-    public function setCreationDate(string|DateTime|null $creationDate): self
+    public function isNotCompilation(): self
+    {
+        $this->core->setIsCompilation(false);
+
+        return $this;
+    }
+
+    public function creationDate(string|DateTime|null $creationDate): self
     {
         if ($creationDate instanceof DateTime) {
             $creationDate = $creationDate->format('Y-m-d');
@@ -144,42 +165,42 @@ class Id3Writer
         return $this;
     }
 
-    public function setCopyright(?string $copyright): self
+    public function copyright(?string $copyright): self
     {
         $this->core->setCopyright($copyright);
 
         return $this;
     }
 
-    public function setEncodingBy(?string $encodingBy): self
+    public function encodingBy(?string $encodingBy): self
     {
         $this->core->setEncodingBy($encodingBy);
 
         return $this;
     }
 
-    public function setEncoding(?string $encoding): self
+    public function encoding(?string $encoding): self
     {
         $this->core->setEncoding($encoding);
 
         return $this;
     }
 
-    public function setDescription(?string $description): self
+    public function description(?string $description): self
     {
         $this->core->setDescription($description);
 
         return $this;
     }
 
-    public function setLyrics(?string $lyrics): self
+    public function lyrics(?string $lyrics): self
     {
         $this->core->setLyrics($lyrics);
 
         return $this;
     }
 
-    public function setStik(?string $stik): self
+    public function stik(?string $stik): self
     {
         $this->core->setStik($stik);
 
@@ -189,7 +210,7 @@ class Id3Writer
     /**
      * @param  string  $pathOrData Path to cover image or binary data
      */
-    public function setCover(string $pathOrData): self
+    public function cover(string $pathOrData): self
     {
         $this->core->setCover($pathOrData);
 
@@ -203,9 +224,23 @@ class Id3Writer
         return $this;
     }
 
-    public function write(): self
+    public function path(string $path): self
     {
-        $this->instance->filename = $this->audio->path();
+        $this->path = $path;
+
+        if (file_exists($this->audio->path())) {
+            copy($this->audio->path(), $this->path);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Prevent fail on error.
+     */
+    public function preventFailOnError(): self
+    {
+        $this->failOnError = false;
 
         return $this;
     }
@@ -213,39 +248,191 @@ class Id3Writer
     /**
      * Override existing tags, default is true.
      */
-    public function overrideTags(bool $value): self
+    // public function notOverrideTags(): self
+    // {
+    //     $this->overrideTags = false;
+
+    //     return $this;
+    // }
+
+    /**
+     * Remove other tags, default is false.
+     */
+    public function removeOldTags(): self
     {
-        $this->instance->overwrite_tags = $value;
+        $this->removeOldTags = true;
 
         return $this;
     }
 
     /**
-     * Remove other tags, default is false.
+     * Set manually tags.
+     *
+     * @param  array<string, string>  $tags
      */
-    public function removeOldTags(bool $value): self
+    public function tags(array $tags): self
     {
-        $this->instance->remove_other_tags = $value;
+        $this->tags = $this->convertTags($tags);
 
         return $this;
     }
 
+    /**
+     * Set tag format.
+     *
+     * @param  string[]  $tags Options are `id3v1`, `id3v2.2`, `id2v2.3`, `id3v2.4`, `ape`, `vorbiscomment`, `metaflac`, `real`
+     */
+    public function tagFormats(array $tags): self
+    {
+        $this->tagFormats = $tags;
+
+        return $this;
+    }
+
+    /**
+     * Save tags.
+     *
+     * @throws \Exception
+     */
     public function save(): bool
     {
-        /**
-         * - ID3v1 (v1 & v1.1)
-         * - ID3v2 (v2.3, v2.4)
-         * - APE (v2)
-         * - Ogg Vorbis comments (need `vorbis-tools`)
-         * - FLAC comments
-         *
-         * Options: `id3v1`, `id3v2.2`, `id2v2.3`, `id3v2.4`, `ape`, `vorbiscomment`, `metaflac`, `real`
-         */
-        $format = match ($this->audio->format()) {
+        if (! $this->path) {
+            $this->path = $this->audio->path();
+        }
+
+        $this->instance->filename = $this->path;
+
+        $this->convertTagFormats();
+        $this->automaticConvert();
+
+        $this->instance->overwrite_tags = $this->overrideTags;
+        $this->instance->remove_other_tags = $this->removeOldTags;
+        $this->instance->tagformats = $this->tagFormats;
+        $this->instance->tag_data = $this->tags;
+
+        $this->success = $this->instance->WriteTags();
+
+        $this->errors = $this->instance->errors;
+        $this->warnings = $this->instance->warnings;
+
+        $errors = implode(', ', $this->errors);
+        $warnings = implode(', ', $this->warnings);
+        $supported = match ($this->audio->format()) {
+            AudioFormatEnum::flac => true,
+            AudioFormatEnum::mp3 => true,
+            AudioFormatEnum::ogg => true,
+            default => false
+        };
+
+        if (! empty($this->errors)) {
+            $msg = 'Save tags failed.';
+
+            $errors = strip_tags($errors);
+            $errors = "Errors: {$errors}.";
+            if (! empty($this->errors)) {
+                $msg .= " {$errors}";
+            }
+
+            $warnings = "Warnings: {$warnings}.";
+            if (! empty($this->warnings)) {
+                $msg .= " {$warnings}";
+            }
+
+            $isSuccess = $this->success ? 'true' : 'false';
+            $success = "Success: {$isSuccess}";
+            $msg .= " {$success}";
+
+            error_log($msg);
+
+            if ($this->failOnError) {
+                throw new \Exception($msg);
+            }
+        }
+
+        if (! $supported && $this->failOnError) {
+            throw new \Exception("Format {$this->audio->format()?->value} is not supported.");
+        }
+
+        if (! empty($this->warnings)) {
+            error_log($warnings);
+        }
+
+        return $this->success;
+    }
+
+    private function automaticConvert(): self
+    {
+        $this->convertTagFormats();
+
+        $convert = match ($this->audio->type()) {
+            AudioTypeEnum::id3 => AudioCore::toId3v2($this->core),
+            AudioTypeEnum::vorbiscomment => AudioCore::toVorbisComment($this->core),
+            AudioTypeEnum::quicktime => AudioCore::toQuicktime($this->core),
+            AudioTypeEnum::matroska => AudioCore::toMatroska($this->core),
+            AudioTypeEnum::ape => AudioCore::toApe($this->core),
+            AudioTypeEnum::asf => AudioCore::toAsf($this->core),
+            default => null,
+        };
+
+        $tags = [];
+        if ($convert) {
+            $tags = $convert->toArray();
+        }
+
+        $tags = $this->convertTags($tags);
+        $this->attachCover($tags);
+
+        $this->tags = [
+            ...$this->tags,
+            ...$tags,
+        ];
+
+        return $this;
+    }
+
+    /**
+     * @param  array<string, string>  $tags
+     * @return array<string, array>
+     */
+    private function convertTags(array $tags): array
+    {
+        $attached = $tags['attached_picture'] ?? null;
+        $items = [];
+        if (! empty($tags)) {
+            foreach ($tags as $key => $tag) {
+                if ($tag && gettype($tag) === 'string') {
+                    $items[$key] = [$tag];
+                }
+            }
+        }
+
+        if ($attached) {
+            $items['attached_picture'] = $attached;
+        }
+
+        return $items;
+    }
+
+    /**
+     * - ID3v1 (v1 & v1.1)
+     * - ID3v2 (v2.3, v2.4)
+     * - APE (v2)
+     * - Ogg Vorbis comments (need `vorbis-tools`)
+     * - FLAC comments
+     *
+     * Options: `id3v1`, `id3v2.2`, `id2v2.3`, `id3v2.4`, `ape`, `vorbiscomment`, `metaflac`, `real`
+     */
+    private function convertTagFormats(): self
+    {
+        if (! empty($this->tagFormats)) {
+            return $this;
+        }
+
+        $formats = match ($this->audio->format()) {
             AudioFormatEnum::aac => [],
-            AudioFormatEnum::aif => ['id3v2.4'],
-            AudioFormatEnum::aifc => ['id3v2.4'],
-            AudioFormatEnum::aiff => ['id3v2.4'],
+            AudioFormatEnum::aif => [],
+            AudioFormatEnum::aifc => [],
+            AudioFormatEnum::aiff => [],
             AudioFormatEnum::dsf => [],
             AudioFormatEnum::flac => ['metaflac'],
             AudioFormatEnum::m4a => [],
@@ -258,46 +445,25 @@ class Id3Writer
             AudioFormatEnum::mp3 => ['id3v1', 'id3v2.4'],
             AudioFormatEnum::mp4 => [],
             AudioFormatEnum::ogg => ['vorbiscomment'],
-            AudioFormatEnum::opus => ['vorbiscomment'],
+            AudioFormatEnum::opus => [],
             AudioFormatEnum::ofr => [],
             AudioFormatEnum::ofs => [],
-            AudioFormatEnum::spx => ['vorbiscomment'],
+            AudioFormatEnum::spx => [],
             AudioFormatEnum::tak => [],
-            AudioFormatEnum::tta => ['ape'],
-            AudioFormatEnum::wav => ['id3v2.4'],
+            AudioFormatEnum::tta => [],
+            AudioFormatEnum::wav => [],
             AudioFormatEnum::webm => [],
             AudioFormatEnum::wma => [],
-            AudioFormatEnum::wv => ['ape'],
+            AudioFormatEnum::wv => [],
             default => null,
         };
-        $this->instance->tagformats = $format;
+        $this->tagFormats = $formats;
 
-        $convert = match ($this->audio->type()) {
-            AudioTypeEnum::id3 => AudioConverter::toId3v2($this->core),
-            AudioTypeEnum::vorbiscomment => AudioConverter::toVorbisComment($this->core),
-            AudioTypeEnum::quicktime => AudioConverter::toQuicktime($this->core),
-            AudioTypeEnum::matroska => AudioConverter::toMatroska($this->core),
-            AudioTypeEnum::ape => AudioConverter::toApe($this->core),
-            AudioTypeEnum::asf => AudioConverter::toAsf($this->core),
-            default => null,
-        };
+        return $this;
+    }
 
-        if ($convert) {
-            $this->tags = $convert->toArray();
-        }
-
-        $this->instance->overwrite_tags = $this->overrideTags;
-        $this->instance->remove_other_tags = $this->removeOldTags;
-
-        $tags = [];
-        if (! empty($this->tags)) {
-            foreach ($this->tags as $key => $tag) {
-                if ($tag) {
-                    $tags[$key] = [$tag];
-                }
-            }
-        }
-
+    private function attachCover(array &$tags): void
+    {
         $coverFormatsAllowed = [AudioFormatEnum::mp3];
         if ($this->core->cover() && in_array($this->audio->format(), $coverFormatsAllowed)) {
             // $tags = [
@@ -314,23 +480,5 @@ class Id3Writer
             ];
             $this->core->setHasCover(true);
         }
-
-        $this->instance->tag_data = $tags;
-        $this->success = $this->instance->WriteTags();
-
-        $this->errors = $this->instance->errors;
-        $this->warnings = $this->instance->warnings;
-
-        if (! empty($this->errors)) {
-            $errors = implode(', ', $this->errors);
-            throw new \Exception($errors);
-        }
-
-        if (! empty($this->warnings)) {
-            $warnings = implode(', ', $this->warnings);
-            error_log($warnings);
-        }
-
-        return $this->success;
     }
 }

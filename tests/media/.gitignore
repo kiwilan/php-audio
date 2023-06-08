@@ -1,2 +1,3 @@
-test-alac-writer.*
+test-writer-alac.*
+test-writer-no-meta.*
 test-writer.*

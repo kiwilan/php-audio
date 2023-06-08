@@ -74,6 +74,11 @@ class Audio
 
     public static function get(string $path): self
     {
+        $fileExists = file_exists($path);
+        if (! $fileExists) {
+            throw new \Exception("File not found: {$path}");
+        }
+
         $extension = pathinfo($path, PATHINFO_EXTENSION);
         $extension = strtolower($extension);
         $format = AudioFormatEnum::tryFrom($extension);
@@ -98,7 +103,7 @@ class Audio
      */
     public function update(): Id3Writer
     {
-        return $this->writer->write();
+        return $this->writer;
     }
 
     /**
@@ -377,32 +382,32 @@ class Audio
 
         $core = null;
         if ($this->type === AudioTypeEnum::id3) {
-            $core = AudioConverter::fromId3($tags->id3v1(), $tags->id3v2());
+            $core = AudioCore::fromId3($tags->id3v1(), $tags->id3v2());
             $this->isValid = true;
         }
 
         if ($this->type === AudioTypeEnum::quicktime) {
-            $core = AudioConverter::fromQuicktime($tags->quicktime());
+            $core = AudioCore::fromQuicktime($tags->quicktime());
             $this->isValid = true;
         }
 
         if ($this->type === AudioTypeEnum::vorbiscomment) {
-            $core = AudioConverter::fromVorbisComment($tags->vorbiscomment());
+            $core = AudioCore::fromVorbisComment($tags->vorbiscomment());
             $this->isValid = true;
         }
 
         if ($this->type === AudioTypeEnum::asf) {
-            $core = AudioConverter::fromAsf($tags->asf());
+            $core = AudioCore::fromAsf($tags->asf());
             $this->isValid = true;
         }
 
         if ($this->type === AudioTypeEnum::matroska) {
-            $core = AudioConverter::fromMatroska($tags->matroska());
+            $core = AudioCore::fromMatroska($tags->matroska());
             $this->isValid = true;
         }
 
         if ($this->type === AudioTypeEnum::ape) {
-            $core = AudioConverter::fromApe($tags->ape());
+            $core = AudioCore::fromApe($tags->ape());
             $this->isValid = true;
         }
 

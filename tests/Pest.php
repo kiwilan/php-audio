@@ -5,13 +5,31 @@ define('AUDIOBOOK', __DIR__.'/media/audiobook.m4b');
 define('MD', __DIR__.'/media/test.md');
 define('FOLDER', __DIR__.'/media/folder.jpg');
 
+function addWriterFilesForTests()
+{
+    $files = glob('./tests/media/*');
+    foreach ($files as $file) {
+        if (is_file($file) && str_contains($file, 'writer')) {
+            unlink($file);
+        }
+    }
+
+    $files = glob('./tests/media/*');
+    foreach ($files as $file) {
+        $basename = pathinfo($file, PATHINFO_BASENAME);
+        if (is_file($file) && str_contains($basename, 'test')) {
+            $writer = str_replace('test', 'test-writer', $basename);
+            $writer = str_replace($basename, $writer, $file);
+            copy($file, $writer);
+        }
+    }
+}
+addWriterFilesForTests();
 if (PHP_OS_FAMILY === 'Windows') {
-    exec('cd tests/media ; ./convert-writer.ps1');
-} else {
-    exec('cd tests/media && ./convert-writer.sh');
+    sleep(1);
 }
 
-define('ALAC_WRITER', __DIR__.'/media/test-alac-writer.m4a');
+define('ALAC_WRITER', __DIR__.'/media/test-writer-alac.m4a');
 define('AAC_WRITER', __DIR__.'/media/test-writer.aac');
 define('AIF_WRITER', __DIR__.'/media/test-writer.aif');
 define('AIFC_WRITER', __DIR__.'/media/test-writer.aifc');
