@@ -349,10 +349,8 @@ class Id3Writer
             }
         }
 
-        if (! $supported) {
-            if ($this->failOnError) {
-                throw new \Exception("Format {$this->audio->format()?->value} is not supported.");
-            }
+        if (! $supported && $this->failOnError) {
+            throw new \Exception("Format {$this->audio->format()?->value} is not supported.");
         }
 
         if (! empty($this->warnings)) {

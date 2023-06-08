@@ -118,6 +118,13 @@ Audio files can use different formats, this package aims to provide a simple way
 
 -   PHP >= 8.1
 
+### Optional
+
+To update audio files, you need to install some packages.
+
+-   `FLAC`: `flac` (with `apt`, `brew` or `scoop`)
+-   `OGG`: `vorbis-tools` (with `apt` or `brew`) / `extras/icecast` (with `scoop`)
+
 ## Installation
 
 You can install the package via composer:
@@ -176,60 +183,103 @@ $audio->cover(); // `?AudioCover` with cover metadata
 
 You can update audio files metadata with `Audio::class`, but not all formats are supported. [See supported formats](#updatable-formats)
 
+> **Warning**
+> You can use any property of `Audio::class` but if you use a property not supported by the format, it will be ignored.
+
 ```php
 $audio = Audio::get('path/to/audio.mp3');
 $audio->title(); // `Title`
 
 $tag = $audio->update()
-  ->setTitle('New Title')
-  ->setArtist('New Artist')
-  ->setAlbum('New Album')
-  ->setGenre('New Genre')
-  ->setYear('2022')
-  ->setTrackNumber('2/10')
-  ->setAlbumArtist('New Album Artist')
-  ->setComment('New Comment')
-  ->setComposer('New Composer')
-  ->setCreationDate('2021-01-01')
-  ->setDescription('New Description')
-  ->setDiscNumber('2/2')
-  ->setEncodingBy('New Encoding By')
-  ->setEncoding('New Encoding')
-  ->setIsCompilation(false)
-  ->setLyrics('New Lyrics')
-  ->setStik('New Stik')
-  ->setCover('path/to/cover.jpg') // you can use file content `file_get_contents('path/to/cover.jpg')`
+  ->title('New Title')
+  ->artist('New Artist')
+  ->album('New Album')
+  ->genre('New Genre')
+  ->year('2022')
+  ->trackNumber('2/10')
+  ->albumArtist('New Album Artist')
+  ->comment('New Comment')
+  ->composer('New Composer')
+  ->creationDate('2021-01-01')
+  ->description('New Description')
+  ->discNumber('2/2')
+  ->encodingBy('New Encoding By')
+  ->encoding('New Encoding')
+  ->isCompilation()
+  ->lyrics('New Lyrics')
+  ->stik('New Stik')
+  ->cover('path/to/cover.jpg') // you can use file content `file_get_contents('path/to/cover.jpg')`
   ->save();
 
 $audio = Audio::get('path/to/audio.mp3');
 $audio->title(); // `New Title`
+$audio->creationDate(); // `null` because `creationDate` is not supported by `MP3`
 ```
 
 Some properties are not supported by all formats, for example `MP3` can't handle some properties like `lyrics` or `stik`, if you try to update these properties, they will be ignored.
 
 #### Set tags manually
 
-You can set tags manually with `setTags` method, but you need to know the format of the tag, you could use `setTagFormats` to set formats of tags (if you don't know the format, it will be automatically detected).
+You can set tags manually with `tags` method, but you need to know the format of the tag, you could use `tagFormats` to set formats of tags (if you don't know the format, it will be automatically detected).
 
-**`noAutomatic` method is required to use `setTags` method.**
+> **Warning**
+> If you use `tags` method, you have to use key used by metadata container. For example, if you want to set album artist in `id3v2`, you have to use `band` key. If you want to know which key to use check `src/Models/AudioCore.php` file.
+>
+> If your key is not supported, `save` method will throw an exception, unless you use `preventFailOnErrors`.
 
 ```php
 $audio = Audio::get('path/to/audio.mp3');
-$audio->title(); // `Title`
+$audio->albumArtist(); // `Band`
 
 $tag = $audio->update()
-  ->noAutomatic()
-  ->setTags([
+  ->tags([
     'title' => 'New Title',
+    'band' => 'New Band', // `band` is used by `id3v2` to set album artist, method is `albumArtist` but `albumArtist` key will throw an exception with `id3v2`
   ])
-  ->setTagFormats(['id3v1', 'id3v2.4']) // optional
+  ->tagFormats(['id3v1', 'id3v2.4']) // optional
   ->save();
 
 $audio = Audio::get('path/to/audio.mp3');
-$audio->title(); // `New Title`
+$audio->albumArtist(); // `New Band`
 ```
 
-Of course you can add cover with `setTags` method.
+```php
+$audio = Audio::get('path/to/audio.mp3');
+$audio->albumArtist(); // `Band`
+
+$tag = $audio->update()
+  ->title('New Title')
+  ->albumArtist('New Band') // `albumArtist` will set `band` for `id3v2`, exception safe
+  ->save();
+
+$audio = Audio::get('path/to/audio.mp3');
+$audio->albumArtist(); // `New Band`
+```
+
+```php
+$audio = Audio::get('path/to/audio.mp3');
+
+$tag = $audio->update()
+  ->tags([
+    'title' => 'New Title',
+    'title2' => 'New title', // not supported by `id3v2`, will throw an exception
+  ])
+  ->preventFailOnError() // will prevent exception
+  ->save();
+```
+
+Arrow functions are exception safe for properties but not for unsupported formats.
+
+```php
+$audio = Audio::get('path/to/audio.mp3');
+
+$tag = $audio->update()
+  ->encoding('New encoding') // not supported by `id3v2`, BUT will not throw an exception
+  ->preventFailOnError() // if you have some errors with unsupported format for example, you can prevent exception
+  ->save();
+```
+
+Of course you can add cover with `tags` method.
 
 ```php
 $audio = Audio::get('path/to/audio.mp3');
@@ -242,9 +292,9 @@ $coverDescription = 'cover';
 $coverMime = $image['mime'];
 
 $tag = $audio->update()
-  ->noAutomatic()
-  ->setTags([
+  ->tags([
     'title' => 'New Title',
+    'band' => 'New Band',
     'attached_picture' => [
       [
         'data' => $coverData,
@@ -255,6 +305,25 @@ $tag = $audio->update()
     ],
   ])
   ->save();
+```
+
+Merge `tags` with arrow functions.
+
+```php
+$audio = Audio::get($path);
+
+$tag = $audio->update()
+    ->title('New Title') // will be merged with `tags` and override `title` key
+    ->tags([
+        'title' => 'New Title tag',
+        'band' => 'New Band',
+    ]);
+
+$tag->save();
+
+$audio = Audio::get($path);
+expect($audio->title())->toBe('New Title');
+expect($audio->albumArtist())->toBe('New Band');
 ```
 
 ### Extras
@@ -355,6 +424,10 @@ You can create [an issue](https://github.com/kiwilan/php-audio/issues/new/choose
 ### I have an issue with a supported format, what can I do?
 
 You can create [an issue](https://github.com/kiwilan/php-audio/issues/new/choose) with informations.
+
+### How to convert audio files?
+
+This package doesn't provide a way to convert audio files, but you can use [ffmpeg](https://ffmpeg.org/) to convert audio files and [PHP-FFMpeg/PHP-FFMpeg](https://github.com/PHP-FFMpeg/PHP-FFMpeg).
 
 ## Changelog
 
