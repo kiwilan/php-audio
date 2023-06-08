@@ -25,6 +25,7 @@ it('can read file', function (string $path) {
     expect($audio->discNumber())->toBeString();
     expect($audio->isCompilation())->toBeBool();
     expect($audio->path())->toBe($path);
+    expect($audio->extension())->toBe($extension);
     expect($audio->format())->toBe($format);
     expect($audio->duration())->toBeFloat();
     expect($audio->extras())->toBeArray();
