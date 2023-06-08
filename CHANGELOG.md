@@ -2,6 +2,18 @@
 
 All notable changes to `php-audio` will be documented in this file.
 
+## 2.0.0 - 2023-06-08
+
+**BREAKING CHANGES**
+
+- `update` chained methods are now without `set` prefix
+
+**Features**
+
+- `update` have now `tags` to set tags manually
+- `update` have now `tagFormats` to set tag formats manually
+- `update` have now `preventFailOnError` to prevent fail on error
+
 ## 1.0.2 - 2023-06-05
 
 - fix ci
