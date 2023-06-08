@@ -243,6 +243,8 @@ $audio = Audio::get('path/to/audio.mp3');
 $audio->albumArtist(); // `New Band`
 ```
 
+#### Arrow functions
+
 ```php
 $audio = Audio::get('path/to/audio.mp3');
 $audio->albumArtist(); // `Band`
@@ -255,6 +257,10 @@ $tag = $audio->update()
 $audio = Audio::get('path/to/audio.mp3');
 $audio->albumArtist(); // `New Band`
 ```
+
+#### Prevent fail on errors
+
+You can use `preventFailOnError` to prevent exception if you use unsupported format.
 
 ```php
 $audio = Audio::get('path/to/audio.mp3');
@@ -278,6 +284,8 @@ $tag = $audio->update()
   ->preventFailOnError() // if you have some errors with unsupported format for example, you can prevent exception
   ->save();
 ```
+
+#### Tags and cover
 
 Of course you can add cover with `tags` method.
 
@@ -306,6 +314,8 @@ $tag = $audio->update()
   ])
   ->save();
 ```
+
+#### Merge tags
 
 Merge `tags` with arrow functions.
 
