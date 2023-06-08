@@ -614,7 +614,7 @@ class Id3AudioTagV2
         protected ?string $composer = null,
         protected ?string $part_of_a_set = null,
         protected ?string $genre = null,
-        protected bool $part_of_a_compilation = false,
+        protected ?string $part_of_a_compilation = null,
         protected ?string $title = null,
         protected ?string $track_number = null,
         protected ?string $year = null,
@@ -627,8 +627,6 @@ class Id3AudioTagV2
             return null;
         }
 
-        $compilation = $metadata['part_of_a_compilation'][0] ?? null;
-
         $self = new self(
             album: $metadata['album'][0] ?? null,
             artist: $metadata['artist'][0] ?? null,
@@ -637,7 +635,7 @@ class Id3AudioTagV2
             composer: $metadata['composer'][0] ?? null,
             part_of_a_set: $metadata['part_of_a_set'][0] ?? null,
             genre: $metadata['genre'][0] ?? null,
-            part_of_a_compilation: $compilation === '1' ? true : false,
+            part_of_a_compilation: $metadata['part_of_a_compilation'][0] ?? null,
             title: $metadata['title'][0] ?? null,
             track_number: $metadata['track_number'][0] ?? null,
             year: $metadata['year'][0] ?? null,
@@ -681,7 +679,7 @@ class Id3AudioTagV2
         return $this->genre;
     }
 
-    public function part_of_a_compilation(): bool
+    public function part_of_a_compilation(): ?string
     {
         return $this->part_of_a_compilation;
     }
@@ -824,7 +822,7 @@ class Id3TagQuicktime
         protected ?string $title = null,
         protected ?string $track_number = null,
         protected ?string $disc_number = null,
-        protected bool $compilation = false,
+        protected ?string $compilation = null,
         protected ?string $album = null,
         protected ?string $genre = null,
         protected ?string $composer = null,
@@ -848,16 +846,11 @@ class Id3TagQuicktime
             return null;
         }
 
-        $compilation = $metadata['compilation'][0] ?? false;
-        if ($compilation === 1) {
-            $compilation = true;
-        }
-
         $self = new self(
             title: $metadata['title'][0] ?? null,
             track_number: $metadata['track_number'][0] ?? null,
             disc_number: $metadata['disc_number'][0] ?? null,
-            compilation: $compilation,
+            compilation: $metadata['compilation'][0] ?? null,
             album: $metadata['album'][0] ?? null,
             genre: $metadata['genre'][0] ?? null,
             composer: $metadata['composer'][0] ?? null,
@@ -892,7 +885,7 @@ class Id3TagQuicktime
         return $this->disc_number;
     }
 
-    public function compilation(): bool
+    public function compilation(): ?string
     {
         return $this->compilation;
     }
@@ -1317,7 +1310,7 @@ class Id3TagMatroska
         protected ?string $composer = null,
         protected ?string $disc = null,
         protected ?string $genre = null,
-        protected bool $compilation = false,
+        protected ?string $compilation = null,
         protected ?string $part_number = null,
         protected ?string $date = null,
         protected ?string $encoder = null,
@@ -1331,11 +1324,6 @@ class Id3TagMatroska
             return null;
         }
 
-        $compilation = $metadata['compilation'][0] ?? false;
-        if ($compilation === 1) {
-            $compilation = true;
-        }
-
         $self = new self(
             title: $metadata['title'][0] ?? null,
             muxingapp: $metadata['muxingapp'][0] ?? null,
@@ -1347,7 +1335,7 @@ class Id3TagMatroska
             composer: $metadata['composer'][0] ?? null,
             disc: $metadata['disc'][0] ?? null,
             genre: $metadata['genre'][0] ?? null,
-            compilation: $compilation,
+            compilation: $metadata['compilation'][0] ?? null,
             part_number: $metadata['part_number'][0] ?? null,
             date: $metadata['date'][0] ?? null,
             encoder: $metadata['encoder'][0] ?? null,
@@ -1407,7 +1395,7 @@ class Id3TagMatroska
         return $this->genre;
     }
 
-    public function compilation(): bool
+    public function compilation(): ?string
     {
         return $this->compilation;
     }
@@ -1465,7 +1453,7 @@ class Id3TagApe
         protected ?string $comment = null,
         protected ?string $genre = null,
         protected ?string $disc = null,
-        protected bool $compilation = false,
+        protected ?string $compilation = null,
         protected ?string $track = null,
         protected ?string $date = null,
         protected ?string $encoder = null,
@@ -1478,11 +1466,6 @@ class Id3TagApe
             return null;
         }
 
-        $compilation = $metadata['compilation'][0] ?? false;
-        if ($compilation === 1) {
-            $compilation = true;
-        }
-
         $self = new self(
             title: $metadata['title'][0] ?? null,
             artist: $metadata['artist'][0] ?? null,
@@ -1492,7 +1475,7 @@ class Id3TagApe
             comment: $metadata['comment'][0] ?? null,
             genre: $metadata['genre'][0] ?? null,
             disc: $metadata['disc'][0] ?? null,
-            compilation: $compilation,
+            compilation: $metadata['compilation'][0] ?? null,
             track: $metadata['track'][0] ?? null,
             date: $metadata['date'][0] ?? null,
             encoder: $metadata['encoder'][0] ?? null,
@@ -1541,7 +1524,7 @@ class Id3TagApe
         return $this->disc;
     }
 
-    public function compilation(): bool
+    public function compilation(): ?string
     {
         return $this->compilation;
     }

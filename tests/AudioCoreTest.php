@@ -1,7 +1,6 @@
 <?php
 
 use Kiwilan\Audio\Audio;
-use Kiwilan\Audio\AudioConverter;
 use Kiwilan\Audio\Models\AudioCore;
 use Kiwilan\Audio\Models\AudioCoreCover;
 
@@ -40,15 +39,15 @@ it('can convert formats', function () {
     expect($core->discNumber())->toBe('1');
     expect($core->isCompilation())->toBe(true);
 
-    $id3v1 = AudioConverter::toId3v1($core);
-    $id3v2 = AudioConverter::toId3v2($core);
-    $quicktime = AudioConverter::toQuicktime($core);
-    $matroska = AudioConverter::toMatroska($core);
-    $ape = AudioConverter::toApe($core);
-    $asf = AudioConverter::toAsf($core);
+    $id3v1 = AudioCore::toId3v1($core);
+    $id3v2 = AudioCore::toId3v2($core);
+    $quicktime = AudioCore::toQuicktime($core);
+    $matroska = AudioCore::toMatroska($core);
+    $ape = AudioCore::toApe($core);
+    $asf = AudioCore::toAsf($core);
 
-    $core = AudioConverter::fromId3v1($id3v1);
-    $core = AudioConverter::fromId3v2($id3v2);
+    $core = AudioCore::fromId3v1($id3v1);
+    $core = AudioCore::fromId3v2($id3v2);
 
     $cover = AudioCoreCover::make(FOLDER);
 
