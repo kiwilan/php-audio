@@ -25,9 +25,11 @@ function addWriterFilesForTests()
     }
 }
 addWriterFilesForTests();
-sleep(1);
+if (PHP_OS_FAMILY === 'Windows') {
+    sleep(1);
+}
 
-define('ALAC_WRITER', __DIR__.'/media/test-alac-writer.m4a');
+define('ALAC_WRITER', __DIR__.'/media/test-writer-alac.m4a');
 define('AAC_WRITER', __DIR__.'/media/test-writer.aac');
 define('AIF_WRITER', __DIR__.'/media/test-writer.aif');
 define('AIFC_WRITER', __DIR__.'/media/test-writer.aifc');
