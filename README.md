@@ -10,105 +10,8 @@
 
 PHP package to parse and update audio files metadata, with [`JamesHeinrich/getID3`](https://github.com/JamesHeinrich/getID3).
 
-## Supported formats
-
-### Readable formats
-
--   `id3v2` will be selected before `id3v1` or `riff` if both are available.
-
-| Format | Supported |                About                 |    ID3 type     |         Notes         |
-| :----: | :-------: | :----------------------------------: | :-------------: | :-------------------: |
-|  AAC   |    ❌     |        Advanced Audio Coding         |                 |                       |
-|  ALAC  |    ✅     |      Apple Lossless Audio Codec      |   `quicktime`   |                       |
-|  AIF   |    ✅     | Audio Interchange File Format (aif)  | `id3v2`,`riff`  |                       |
-|  AIFC  |    ✅     | Audio Interchange File Format (aifc) | `id3v2`,`riff`  |                       |
-|  AIFF  |    ✅     | Audio Interchange File Format (aiff) | `id3v2`,`riff`  |                       |
-|  DSF   |    ❌     |     Direct Stream Digital Audio      |                 |                       |
-|  FLAC  |    ✅     |      Free Lossless Audio Codec       | `vorbiscomment` |                       |
-|  MKA   |    ✅     |               Matroska               |   `matroska`    | _Cover not supported_ |
-|  MKV   |    ✅     |               Matroska               |   `matroska`    | _Cover not supported_ |
-|  APE   |    ❌     |            Monkey's Audio            |                 |                       |
-|  MP3   |    ✅     |          MPEG audio layer 3          | `id3v2`,`id3v1` |                       |
-|  MP4   |    ✅     | Digital multimedia container format  |   `quicktime`   |                       |
-|  M4A   |    ✅     |             mpeg-4 audio             |   `quicktime`   |                       |
-|  M4B   |    ✅     |              Audiobook               |   `quicktime`   |                       |
-|  M4V   |    ✅     |             mpeg-4 video             |   `quicktime`   |                       |
-|  MPC   |    ❌     |               Musepack               |                 |                       |
-|  OGG   |    ✅     |        Open container format         | `vorbiscomment` |                       |
-|  OPUS  |    ✅     |           IETF Opus audio            | `vorbiscomment` |                       |
-|  OFR   |    ❌     |              OptimFROG               |                 |                       |
-|  OFS   |    ❌     |              OptimFROG               |                 |                       |
-|  SPX   |    ✅     |                Speex                 | `vorbiscomment` | _Cover not supported_ |
-|  TAK   |    ❌     |        Tom's Audio Kompressor        |                 |                       |
-|  TTA   |    ✅     |              True Audio              |      `ape`      | _Cover not supported_ |
-|  WMA   |    ✅     |         Windows Media Audio          |      `asf`      | _Cover not supported_ |
-|   WV   |    ✅     |               WavPack                |      `ape`      |                       |
-|  WAV   |    ✅     |            Waveform Audio            | `id3v2`,`riff`  |                       |
-|  WEBM  |    ✅     |                 WebM                 |   `matroska`    | _Cover not supported_ |
-
-You want to add a format? [See FAQ](#faq)
-
-### Updatable formats
-
-`JamesHeinrich/getID3` can update some formats, but not all.
-
-> -   ID3v1 (v1 & v1.1)
-> -   ID3v2 (v2.3, v2.4)
-> -   APE (v2)
-> -   Ogg Vorbis comments (need `vorbis-tools`)
-> -   FLAC comments (need `flac`)
-
-| Format |         Notes         |    Requires    |
-| :----: | :-------------------: | :------------: |
-|  FLAC  | _Cover not supported_ |     `flac`     |
-|  MP3   |                       |                |
-|  OGG   | _Cover not supported_ | `vorbis-tools` |
-
--   `flac`: with `apt`, `brew` or `scoop`
--   `vorbis-tools`: with `apt`, `brew` or `scoop`
-    -   With `scoop`, `vorbis-tools` is not available, you can use `extras/icecast` instead.
-
-### Convert properties
-
-`Audio::class` convert some properties to be more readable.
-
-|    ID3 type     |        Original         |  New property   |
-| :-------------: | :---------------------: | :-------------: |
-|     `id3v2`     |         `band`          |  `albumArtist`  |
-|     `id3v2`     |     `track_number`      |  `trackNumber`  |
-|     `id3v2`     |     `part_of_a_set`     |  `discNumber`   |
-|     `id3v2`     | `part_of_a_compilation` | `isCompilation` |
-|   `quicktime`   |     `track_number`      |  `trackNumber`  |
-|   `quicktime`   |      `disc_number`      |  `discNumber`   |
-|   `quicktime`   |      `compilation`      | `isCompilation` |
-|   `quicktime`   |     `creation_date`     | `creationDate`  |
-|   `quicktime`   |     `album_artist`      |  `albumArtist`  |
-|   `quicktime`   |      `encoded_by`       |  `encodingBy`   |
-|   `quicktime`   |     `encoding_tool`     |   `encoding`    |
-|   `quicktime`   |   `description_long`    | `description`\* |
-|      `asf`      |      `albumartist`      |  `albumArtist`  |
-|      `asf`      |       `partofset`       |  `discNumber`   |
-|      `asf`      |     `track_number`      |  `trackNumber`  |
-|      `asf`      |   `encodingsettings`    |   `encoding`    |
-| `vorbiscomment` |        `encoder`        |   `encoding`    |
-| `vorbiscomment` |      `albumartist`      |  `albumArtist`  |
-| `vorbiscomment` |      `discnumber`       |  `discNumber`   |
-| `vorbiscomment` |      `compilation`      | `isCompilation` |
-| `vorbiscomment` |      `tracknumber`      |  `trackNumber`  |
-|   `matroska`    |     `album_artist`      |  `albumArtist`  |
-|   `matroska`    |         `disc`          |  `discNumber`   |
-|   `matroska`    |      `part_number`      |  `trackNumber`  |
-|   `matroska`    |         `date`          |     `year`      |
-|   `matroska`    |      `compilation`      | `isCompilation` |
-|   `matroska`    |        `encoder`        |   `encoding`    |
-|      `ape`      |     `album_artist`      |  `albumArtist`  |
-|      `ape`      |         `disc`          |  `discNumber`   |
-|      `ape`      |      `compilation`      | `isCompilation` |
-|      `ape`      |         `track`         |  `trackNumber`  |
-|      `ape`      |         `date`          |     `year`      |
-|      `ape`      |        `encoder`        |   `encoding`    |
-
-\*: if `description_long` has more content than `description`, it replaces `description`.
+> **Information**
+> You can check formats supported on [Supported formats](#supported-formats) section.
 
 ## About
 
@@ -117,13 +20,9 @@ Audio files can use different formats, this package aims to provide a simple way
 ## Requirements
 
 -   PHP >= 8.1
-
-### Optional
-
-To update audio files, you need to install some packages.
-
--   `FLAC`: `flac` (with `apt`, `brew` or `scoop`)
--   `OGG`: `vorbis-tools` (with `apt` or `brew`) / `extras/icecast` (with `scoop`)
+-   Optional for update
+    -   `FLAC`: `flac` (with `apt`, `brew` or `scoop`)
+    -   `OGG`: `vorbis-tools` (with `apt` or `brew`) / `extras/icecast` (with `scoop`)
 
 ## Installation
 
@@ -170,6 +69,12 @@ $audio->hasCover(); // `bool` to know if has cover
 $audio->isValid(); // `bool` to know if file is valid audio file
 $audio->format(); // `AudioFormatEnum` to get format (mp3, m4a, ...)
 $audio->type(); // `?AudioTypeEnum` ID3 type (id3, riff, asf, quicktime, matroska, ape, vorbiscomment)
+```
+
+Advanced properties:
+
+```php
+$audio = Audio::get('path/to/audio.mp3');
 
 $audio->extras(); // `array` with raw metadata (could contains some metadata not parsed)
 $audio->reader(); // `?Id3Reader` reader based on `getID3`
@@ -379,6 +284,106 @@ $audio->cover()->mimeType(); // `?string` (image/jpeg, image/png, ...)
 $audio->cover()->width(); // `?int` in pixels
 $audio->cover()->height(); // `?int` in pixels
 ```
+
+## Supported formats
+
+### Readable formats
+
+-   `id3v2` will be selected before `id3v1` or `riff` if both are available.
+
+| Format | Supported |                About                 |    ID3 type     |         Notes         |
+| :----: | :-------: | :----------------------------------: | :-------------: | :-------------------: |
+|  AAC   |    ❌     |        Advanced Audio Coding         |                 |                       |
+|  ALAC  |    ✅     |      Apple Lossless Audio Codec      |   `quicktime`   |                       |
+|  AIF   |    ✅     | Audio Interchange File Format (aif)  | `id3v2`,`riff`  |                       |
+|  AIFC  |    ✅     | Audio Interchange File Format (aifc) | `id3v2`,`riff`  |                       |
+|  AIFF  |    ✅     | Audio Interchange File Format (aiff) | `id3v2`,`riff`  |                       |
+|  DSF   |    ❌     |     Direct Stream Digital Audio      |                 |                       |
+|  FLAC  |    ✅     |      Free Lossless Audio Codec       | `vorbiscomment` |                       |
+|  MKA   |    ✅     |               Matroska               |   `matroska`    | _Cover not supported_ |
+|  MKV   |    ✅     |               Matroska               |   `matroska`    | _Cover not supported_ |
+|  APE   |    ❌     |            Monkey's Audio            |                 |                       |
+|  MP3   |    ✅     |          MPEG audio layer 3          | `id3v2`,`id3v1` |                       |
+|  MP4   |    ✅     | Digital multimedia container format  |   `quicktime`   |                       |
+|  M4A   |    ✅     |             mpeg-4 audio             |   `quicktime`   |                       |
+|  M4B   |    ✅     |              Audiobook               |   `quicktime`   |                       |
+|  M4V   |    ✅     |             mpeg-4 video             |   `quicktime`   |                       |
+|  MPC   |    ❌     |               Musepack               |                 |                       |
+|  OGG   |    ✅     |        Open container format         | `vorbiscomment` |                       |
+|  OPUS  |    ✅     |           IETF Opus audio            | `vorbiscomment` |                       |
+|  OFR   |    ❌     |              OptimFROG               |                 |                       |
+|  OFS   |    ❌     |              OptimFROG               |                 |                       |
+|  SPX   |    ✅     |                Speex                 | `vorbiscomment` | _Cover not supported_ |
+|  TAK   |    ❌     |        Tom's Audio Kompressor        |                 |                       |
+|  TTA   |    ✅     |              True Audio              |      `ape`      | _Cover not supported_ |
+|  WMA   |    ✅     |         Windows Media Audio          |      `asf`      | _Cover not supported_ |
+|   WV   |    ✅     |               WavPack                |      `ape`      |                       |
+|  WAV   |    ✅     |            Waveform Audio            | `id3v2`,`riff`  |                       |
+|  WEBM  |    ✅     |                 WebM                 |   `matroska`    | _Cover not supported_ |
+
+You want to add a format? [See FAQ](#faq)
+
+### Updatable formats
+
+`JamesHeinrich/getID3` can update some formats, but not all.
+
+> -   ID3v1 (v1 & v1.1)
+> -   ID3v2 (v2.3, v2.4)
+> -   APE (v2)
+> -   Ogg Vorbis comments (need `vorbis-tools`)
+> -   FLAC comments (need `flac`)
+
+| Format |         Notes         |    Requires    |
+| :----: | :-------------------: | :------------: |
+|  FLAC  | _Cover not supported_ |     `flac`     |
+|  MP3   |                       |                |
+|  OGG   | _Cover not supported_ | `vorbis-tools` |
+
+-   `flac`: with `apt`, `brew` or `scoop`
+-   `vorbis-tools`: with `apt`, `brew` or `scoop`
+    -   With `scoop`, `vorbis-tools` is not available, you can use `extras/icecast` instead.
+
+### Convert properties
+
+`Audio::class` convert some properties to be more readable.
+
+|    ID3 type     |        Original         |  New property   |
+| :-------------: | :---------------------: | :-------------: |
+|     `id3v2`     |         `band`          |  `albumArtist`  |
+|     `id3v2`     |     `track_number`      |  `trackNumber`  |
+|     `id3v2`     |     `part_of_a_set`     |  `discNumber`   |
+|     `id3v2`     | `part_of_a_compilation` | `isCompilation` |
+|   `quicktime`   |     `track_number`      |  `trackNumber`  |
+|   `quicktime`   |      `disc_number`      |  `discNumber`   |
+|   `quicktime`   |      `compilation`      | `isCompilation` |
+|   `quicktime`   |     `creation_date`     | `creationDate`  |
+|   `quicktime`   |     `album_artist`      |  `albumArtist`  |
+|   `quicktime`   |      `encoded_by`       |  `encodingBy`   |
+|   `quicktime`   |     `encoding_tool`     |   `encoding`    |
+|   `quicktime`   |   `description_long`    | `description`\* |
+|      `asf`      |      `albumartist`      |  `albumArtist`  |
+|      `asf`      |       `partofset`       |  `discNumber`   |
+|      `asf`      |     `track_number`      |  `trackNumber`  |
+|      `asf`      |   `encodingsettings`    |   `encoding`    |
+| `vorbiscomment` |        `encoder`        |   `encoding`    |
+| `vorbiscomment` |      `albumartist`      |  `albumArtist`  |
+| `vorbiscomment` |      `discnumber`       |  `discNumber`   |
+| `vorbiscomment` |      `compilation`      | `isCompilation` |
+| `vorbiscomment` |      `tracknumber`      |  `trackNumber`  |
+|   `matroska`    |     `album_artist`      |  `albumArtist`  |
+|   `matroska`    |         `disc`          |  `discNumber`   |
+|   `matroska`    |      `part_number`      |  `trackNumber`  |
+|   `matroska`    |         `date`          |     `year`      |
+|   `matroska`    |      `compilation`      | `isCompilation` |
+|   `matroska`    |        `encoder`        |   `encoding`    |
+|      `ape`      |     `album_artist`      |  `albumArtist`  |
+|      `ape`      |         `disc`          |  `discNumber`   |
+|      `ape`      |      `compilation`      | `isCompilation` |
+|      `ape`      |         `track`         |  `trackNumber`  |
+|      `ape`      |         `date`          |     `year`      |
+|      `ape`      |        `encoder`        |   `encoding`    |
+
+\*: if `description_long` has more content than `description`, it replaces `description`.
 
 ## Testing
 

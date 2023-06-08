@@ -65,6 +65,7 @@ class Audio
 
     protected function __construct(
         protected string $path,
+        protected string $extension,
         protected AudioFormatEnum $format,
         protected FileStat $stat,
         protected Id3Reader $reader,
@@ -85,6 +86,7 @@ class Audio
 
         $self = new self(
             path: $path,
+            extension: $extension,
             format: $format ? $format : AudioFormatEnum::unknown,
             stat: FileStat::make($path),
             reader: Id3Reader::make($path),
@@ -328,6 +330,14 @@ class Audio
     public function path(): string
     {
         return $this->path;
+    }
+
+    /**
+     * Get `extension` of audio file.
+     */
+    public function extension(): string
+    {
+        return $this->extension;
     }
 
     /**
