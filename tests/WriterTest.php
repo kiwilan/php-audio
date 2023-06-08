@@ -179,9 +179,13 @@ it('can use arrow function safe with unsupported tags', function (string $path) 
     $audio = Audio::get($path);
 
     $tag = $audio->update()
+        ->title('New Title')
         ->encoding('New encoding');
 
     expect(fn () => $tag->save())->not()->toThrow(Exception::class);
+
+    $audio = Audio::get($path);
+    expect($audio->title())->toBe('New Title');
 })->with([MP3_WRITER]);
 
 it('can use arrow function safe with unsupported formats', function (string $path) {
