@@ -243,6 +243,8 @@ $audio = Audio::get('path/to/audio.mp3');
 $audio->albumArtist(); // `New Band`
 ```
 
+#### Arrow functions
+
 ```php
 $audio = Audio::get('path/to/audio.mp3');
 $audio->albumArtist(); // `Band`
@@ -255,6 +257,10 @@ $tag = $audio->update()
 $audio = Audio::get('path/to/audio.mp3');
 $audio->albumArtist(); // `New Band`
 ```
+
+#### Prevent fail on errors
+
+You can use `preventFailOnError` to prevent exception if you use unsupported format.
 
 ```php
 $audio = Audio::get('path/to/audio.mp3');
@@ -278,6 +284,8 @@ $tag = $audio->update()
   ->preventFailOnError() // if you have some errors with unsupported format for example, you can prevent exception
   ->save();
 ```
+
+#### Tags and cover
 
 Of course you can add cover with `tags` method.
 
@@ -306,6 +314,8 @@ $tag = $audio->update()
   ])
   ->save();
 ```
+
+#### Merge tags
 
 Merge `tags` with arrow functions.
 
@@ -378,9 +388,11 @@ composer test
 
 ## Tools
 
--   [ffmpeg](https://ffmpeg.org/)
+-   [ffmpeg](https://ffmpeg.org/): free and open-source software project consisting of a suite of libraries and programs for handling video, audio, and other multimedia files and streams.
 -   [MP3TAG](https://www.mp3tag.de/en/): powerful and easy-to-use tool to edit metadata of audio files (free on Windows).
 -   [Audiobook Builder](https://www.splasm.com/audiobookbuilder/): makes it easy to turn audio CDs and files into audiobooks (only macOS and paid).
+-   [Tag Editor](https://github.com/Martchus/tageditor): A tag editor with Qt GUI and command-line interface supporting MP4/M4A/AAC (iTunes), ID3, Vorbis, Opus, FLAC and Matroska.
+-   [Tag Editor](https://amvidia.com/tag-editor): a spreadsheet application for editing audio metadata in a simple, fast, and flexible way.
 
 ## FAQ
 
@@ -443,6 +455,8 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+
+[<img src="https://user-images.githubusercontent.com/48261459/201463225-0a5a084e-df15-4b11-b1d2-40fafd3555cf.svg" height="120rem" width="100%" />](https://github.com/kiwilan)
 
 [version-src]: https://img.shields.io/packagist/v/kiwilan/php-audio.svg?style=flat-square&colorA=18181B&colorB=777BB4
 [version-href]: https://packagist.org/packages/kiwilan/php-audio

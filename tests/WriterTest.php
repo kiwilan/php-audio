@@ -255,6 +255,24 @@ it('can remove old tags', function (string $path) {
     expect($audio->albumArtist())->toBeNull();
 })->with([MP3]);
 
+it('can use tags with cover', function (string $path) {
+    $audio = Audio::get($path);
+
+    $tag = $audio->update()
+        ->tags([
+            'title' => 'New Title',
+        ])
+        ->cover(FOLDER);
+
+    $tag->save();
+
+    $audio = Audio::get($path);
+
+    $content = file_get_contents(FOLDER);
+    expect($audio->title())->toBe('New Title');
+    expect($tag->getCore()->cover()->data())->toBe(base64_encode($content));
+})->with([MP3_WRITER]);
+
 // it('can not override tags', function (string $path) {
 //     $audio = Audio::get($path);
 
