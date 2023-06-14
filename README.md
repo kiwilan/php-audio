@@ -1,9 +1,5 @@
 # PHP Audio
 
-<p align="center">
-  <img src="tests/media/banner.jpg" style="width: 80%;" alt="Banner with speaker picture in background and PHP Audio title" />
-</p>
-
 [![php][php-version-src]][php-version-href]
 [![version][version-src]][version-href]
 [![downloads][downloads-src]][downloads-href]
@@ -17,6 +13,10 @@ PHP package to parse and update audio files metadata, with [`JamesHeinrich/getID
 > **Note**
 >
 > You can check formats supported on [Supported formats](#supported-formats) section.
+
+<p align="center">
+  <img src="tests/media/banner.jpg" style="width: 80%;" alt="Banner with speaker picture in background and PHP Audio title" />
+</p>
 
 ## Table of contents
 
