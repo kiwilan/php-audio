@@ -10,9 +10,10 @@
 
 PHP package to parse and update audio files metadata, with [`JamesHeinrich/getID3`](https://github.com/JamesHeinrich/getID3).
 
-![banner](tests/media/banner.jpg)
+<img src="tests/media/banner.jpg" style="width: 100%;height: 20rem;object-fit: cover;" alt="Banner with speaker picture in background and PHP Audio title" />
 
 > **Note**
+>
 > You can check formats supported on [Supported formats](#supported-formats) section.
 
 ## Table of contents
@@ -105,6 +106,7 @@ $audio->cover(); // `?AudioCover` with cover metadata
 You can update audio files metadata with `Audio::class`, but not all formats are supported. [See supported formats](#updatable-formats)
 
 > **Warning**
+>
 > You can use any property of `Audio::class` but if you use a property not supported by the format, it will be ignored.
 
 ```php
@@ -144,6 +146,7 @@ Some properties are not supported by all formats, for example `MP3` can't handle
 You can set tags manually with `tags` method, but you need to know the format of the tag, you could use `tagFormats` to set formats of tags (if you don't know the format, it will be automatically detected).
 
 > **Warning**
+>
 > If you use `tags` method, you have to use key used by metadata container. For example, if you want to set album artist in `id3v2`, you have to use `band` key. If you want to know which key to use check `src/Models/AudioCore.php` file.
 >
 > If your key is not supported, `save` method will throw an exception, unless you use `preventFailOnErrors`.
