@@ -10,6 +10,8 @@
 
 PHP package to parse and update audio files metadata, with [`JamesHeinrich/getID3`](https://github.com/JamesHeinrich/getID3).
 
+![banner](tests/media/banner.jpg)
+
 > **Note**
 > You can check formats supported on [Supported formats](#supported-formats) section.
 
