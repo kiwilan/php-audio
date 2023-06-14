@@ -15,7 +15,7 @@ PHP package to parse and update audio files metadata, with [`JamesHeinrich/getID
 > You can check formats supported on [Supported formats](#supported-formats) section.
 
 <p align="center">
-  <img src="tests/media/banner.jpg" style="width: 60%;" alt="Banner with speaker picture in background and PHP Audio title" />
+  <img src="tests/media/banner.jpg" style="width: 80%;" alt="Banner with speaker picture in background and PHP Audio title" />
 </p>
 
 ## Table of contents
