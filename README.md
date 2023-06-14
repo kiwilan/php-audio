@@ -10,7 +10,7 @@
 
 PHP package to parse and update audio files metadata, with [`JamesHeinrich/getID3`](https://github.com/JamesHeinrich/getID3).
 
-<img src="tests/media/banner.jpg" style="width: 100%;height: 20rem;object-fit: cover;" alt="Banner with speaker picture in background and PHP Audio title" />
+<img src="tests/media/banner.jpg" style="width: 100%;" alt="Banner with speaker picture in background and PHP Audio title" />
 
 > **Note**
 >
