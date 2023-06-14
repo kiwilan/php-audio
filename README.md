@@ -8,15 +8,15 @@
 [![tests][tests-src]][tests-href]
 [![codecov][codecov-src]][codecov-href]
 
+<p align="center">
+  <img src="tests/media/banner.jpg" style="width: 80%;" alt="Banner with speaker picture in background and PHP Audio title" />
+</p>
+
 PHP package to parse and update audio files metadata, with [`JamesHeinrich/getID3`](https://github.com/JamesHeinrich/getID3).
 
 > **Note**
 >
 > You can check formats supported on [Supported formats](#supported-formats) section.
-
-<p align="center">
-  <img src="tests/media/banner.jpg" style="width: 80%;" alt="Banner with speaker picture in background and PHP Audio title" />
-</p>
 
 ## Table of contents
 
