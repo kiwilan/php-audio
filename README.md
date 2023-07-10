@@ -1,6 +1,6 @@
 # PHP Audio
 
-![Banner with speaker and PHP Audio title](docs/banner.jpg)
+![Banner with speaker and PHP Audio title](https://raw.githubusercontent.com/kiwilan/php-audio/main/docs/banner.jpg)
 
 [![php][php-version-src]][php-version-href]
 [![version][version-src]][version-href]
