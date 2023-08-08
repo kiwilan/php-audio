@@ -7,7 +7,7 @@ use Kiwilan\Audio\Enums\AudioTypeEnum;
 use Kiwilan\Audio\Models\AudioCore;
 use Kiwilan\Audio\Models\AudioCover;
 use Kiwilan\Audio\Models\AudioMetadata;
-use Kiwilan\Audio\Models\FileStat;
+use Kiwilan\Audio\Models\AudioStat;
 use Kiwilan\Audio\Models\Id3Reader;
 use Kiwilan\Audio\Models\Id3Writer;
 
@@ -67,7 +67,7 @@ class Audio
         protected string $path,
         protected string $extension,
         protected AudioFormatEnum $format,
-        protected FileStat $stat,
+        protected AudioStat $stat,
         protected Id3Reader $reader,
         protected ?Id3Writer $writer = null,
     ) {
@@ -88,10 +88,10 @@ class Audio
             path: $path,
             extension: $extension,
             format: $format ? $format : AudioFormatEnum::unknown,
-            stat: FileStat::make($path),
+            stat: AudioStat::make($path),
             reader: Id3Reader::make($path),
         );
-        if ($self->reader->is_writable()) {
+        if ($self->reader->isWritable()) {
             $self->writer = Id3Writer::make($self);
         }
         $self->audio = AudioMetadata::make($self);
@@ -111,7 +111,7 @@ class Audio
     /**
      * Get the value of `stat` method.
      */
-    public function stat(): ?FileStat
+    public function getStat(): ?AudioStat
     {
         return $this->stat;
     }
@@ -119,7 +119,7 @@ class Audio
     /**
      * `Id3Reader` with metadata.
      */
-    public function reader(): Id3Reader
+    public function getReader(): Id3Reader
     {
         return $this->reader;
     }
@@ -127,7 +127,7 @@ class Audio
     /**
      * `Id3Writer` to update metadata.
      */
-    public function writer(): ?Id3Writer
+    public function getWriter(): ?Id3Writer
     {
         return $this->writer;
     }
@@ -135,7 +135,7 @@ class Audio
     /**
      * Get `title` metadata.
      */
-    public function title(): ?string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -143,7 +143,7 @@ class Audio
     /**
      * Get `artist` metadata.
      */
-    public function artist(): ?string
+    public function getArtist(): ?string
     {
         return $this->artist;
     }
@@ -151,7 +151,7 @@ class Audio
     /**
      * Get `album` metadata.
      */
-    public function album(): ?string
+    public function getAlbum(): ?string
     {
         return $this->album;
     }
@@ -159,7 +159,7 @@ class Audio
     /**
      * Get `genre` metadata.
      */
-    public function genre(): ?string
+    public function getGenre(): ?string
     {
         return $this->genre;
     }
@@ -167,7 +167,7 @@ class Audio
     /**
      * Get `year` metadata.
      */
-    public function year(): ?int
+    public function getYear(): ?int
     {
         return $this->year;
     }
@@ -175,7 +175,7 @@ class Audio
     /**
      * Get `trackNumber` metadata.
      */
-    public function trackNumber(): ?string
+    public function getTrackNumber(): ?string
     {
         return $this->trackNumber;
     }
@@ -183,7 +183,7 @@ class Audio
     /**
      * Get `comment` metadata.
      */
-    public function comment(): ?string
+    public function getComment(): ?string
     {
         return $this->comment;
     }
@@ -191,7 +191,7 @@ class Audio
     /**
      * Get `albumArtist` metadata.
      */
-    public function albumArtist(): ?string
+    public function getAlbumArtist(): ?string
     {
         return $this->albumArtist;
     }
@@ -199,7 +199,7 @@ class Audio
     /**
      * Get `composer` metadata.
      */
-    public function composer(): ?string
+    public function getComposer(): ?string
     {
         return $this->composer;
     }
@@ -207,7 +207,7 @@ class Audio
     /**
      * Get `discNumber` metadata.
      */
-    public function discNumber(): ?string
+    public function getDiscNumber(): ?string
     {
         return $this->discNumber;
     }
@@ -223,7 +223,7 @@ class Audio
     /**
      * Get `creationDate` metadata for audiobook.
      */
-    public function creationDate(): ?string
+    public function getCreationDate(): ?string
     {
         return $this->creationDate;
     }
@@ -231,7 +231,7 @@ class Audio
     /**
      * Get `encodingBy` metadata for audiobook.
      */
-    public function encodingBy(): ?string
+    public function getEncodingBy(): ?string
     {
         return $this->encodingBy;
     }
@@ -239,7 +239,7 @@ class Audio
     /**
      * Get `encoding` metadata for audiobook.
      */
-    public function encoding(): ?string
+    public function getEncoding(): ?string
     {
         return $this->encoding;
     }
@@ -247,7 +247,7 @@ class Audio
     /**
      * Get `encoding` metadata for audiobook.
      */
-    public function copyright(): ?string
+    public function getCopyright(): ?string
     {
         return $this->copyright;
     }
@@ -255,7 +255,7 @@ class Audio
     /**
      * Get `description` metadata for audiobook.
      */
-    public function description(): ?string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -263,7 +263,7 @@ class Audio
     /**
      * Get `lyrics` metadata for audiobook.
      */
-    public function lyrics(): ?string
+    public function getLyrics(): ?string
     {
         return $this->lyrics;
     }
@@ -271,7 +271,7 @@ class Audio
     /**
      * Get `stik` metadata for audiobook.
      */
-    public function stik(): ?string
+    public function getStik(): ?string
     {
         return $this->stik;
     }
@@ -279,7 +279,7 @@ class Audio
     /**
      * Get `duration` in seconds.
      */
-    public function duration(): ?float
+    public function getDuration(): ?float
     {
         return $this->duration;
     }
@@ -295,7 +295,7 @@ class Audio
     /**
      * Get `extras` with raw metadata.
      */
-    public function extras(): array
+    public function getExtras(): array
     {
         return $this->extras;
     }
@@ -303,7 +303,7 @@ class Audio
     /**
      * Get `audio` metadata with some audio information.
      */
-    public function audio(): ?AudioMetadata
+    public function getAudio(): ?AudioMetadata
     {
         return $this->audio;
     }
@@ -319,7 +319,7 @@ class Audio
     /**
      * Get `cover` metadata with some cover information.
      */
-    public function cover(): ?AudioCover
+    public function getCover(): ?AudioCover
     {
         return $this->cover;
     }
@@ -327,7 +327,7 @@ class Audio
     /**
      * Get `path` of audio file.
      */
-    public function path(): string
+    public function getPath(): string
     {
         return $this->path;
     }
@@ -335,7 +335,7 @@ class Audio
     /**
      * Get `extension` of audio file.
      */
-    public function extension(): string
+    public function getgetExtension(): string
     {
         return $this->extension;
     }
@@ -343,7 +343,7 @@ class Audio
     /**
      * Get `format` of audio file.
      */
-    public function format(): AudioFormatEnum
+    public function getFormat(): AudioFormatEnum
     {
         return $this->format;
     }
@@ -351,15 +351,15 @@ class Audio
     /**
      * Get `type` of audio file.
      */
-    public function type(): ?AudioTypeEnum
+    public function getType(): ?AudioTypeEnum
     {
         return $this->type;
     }
 
     private function parse(): self
     {
-        $raw = $this->reader()->raw();
-        $reader = $this->reader();
+        $raw = $this->getReader()->getRaw();
+        $reader = $this->getReader();
 
         $this->type = match ($this->format) {
             AudioFormatEnum::aac => null,
@@ -385,7 +385,7 @@ class Audio
             default => null,
         };
 
-        $tags = $reader->tags();
+        $tags = $reader->getTags();
         if (! $tags) {
             return $this;
         }
@@ -425,13 +425,13 @@ class Audio
         $this->extras = $raw['tags'] ?? [];
 
         $this->audio = AudioMetadata::make($this);
-        $this->cover = AudioCover::make($reader->comments());
+        $this->cover = AudioCover::make($reader->getComments());
 
-        if ($this->cover?->content()) {
+        if ($this->cover?->getContent()) {
             $this->hasCover = true;
         }
 
-        $this->duration = number_format((float) $this->audio->durationSeconds(), 2, '.', '');
+        $this->duration = number_format((float) $this->audio->getDurationSeconds(), 2, '.', '');
 
         return $this;
     }
@@ -442,24 +442,24 @@ class Audio
             return $this;
         }
 
-        $this->title = $core->title();
-        $this->artist = $core->artist();
-        $this->album = $core->album();
-        $this->genre = $core->genre();
-        $this->year = $core->year();
-        $this->trackNumber = $core->trackNumber();
-        $this->comment = $core->comment();
-        $this->albumArtist = $core->albumArtist();
-        $this->composer = $core->composer();
-        $this->discNumber = $core->discNumber();
+        $this->title = $core->getTitle();
+        $this->artist = $core->getArtist();
+        $this->album = $core->getAlbum();
+        $this->genre = $core->getGenre();
+        $this->year = $core->getYear();
+        $this->trackNumber = $core->getTrackNumber();
+        $this->comment = $core->getComment();
+        $this->albumArtist = $core->getAlbumArtist();
+        $this->composer = $core->getComposer();
+        $this->discNumber = $core->getDiscNumber();
         $this->isCompilation = $core->isCompilation();
-        $this->creationDate = $core->creationDate();
-        $this->encodingBy = $core->encodingBy();
-        $this->encoding = $core->encoding();
-        $this->copyright = $core->copyright();
-        $this->description = $core->description();
-        $this->lyrics = $core->lyrics();
-        $this->stik = $core->stik();
+        $this->creationDate = $core->getCreationDate();
+        $this->encodingBy = $core->getEncodingBy();
+        $this->encoding = $core->getEncoding();
+        $this->copyright = $core->getCopyright();
+        $this->description = $core->getDescription();
+        $this->lyrics = $core->getLyrics();
+        $this->stik = $core->getStik();
 
         return $this;
     }

@@ -7,36 +7,36 @@ use Kiwilan\Audio\Models\AudioCoreCover;
 it('can convert formats', function () {
     $audio = Audio::get(MP3);
     $core = new AudioCore(
-        title: $audio->title(),
-        artist: $audio->artist(),
-        album: $audio->album(),
-        genre: $audio->genre(),
-        year: $audio->year(),
-        trackNumber: $audio->trackNumber(),
-        comment: $audio->comment(),
-        albumArtist: $audio->albumArtist(),
-        composer: $audio->composer(),
-        discNumber: $audio->discNumber(),
+        title: $audio->getTitle(),
+        artist: $audio->getArtist(),
+        album: $audio->getAlbum(),
+        genre: $audio->getGenre(),
+        year: $audio->getYear(),
+        trackNumber: $audio->getTrackNumber(),
+        comment: $audio->getComment(),
+        albumArtist: $audio->getAlbumArtist(),
+        composer: $audio->getComposer(),
+        discNumber: $audio->getDiscNumber(),
         isCompilation: $audio->isCompilation(),
-        creationDate: $audio->creationDate(),
-        copyright: $audio->copyright(),
-        encodingBy: $audio->encodingBy(),
-        encoding: $audio->encoding(),
-        description: $audio->description(),
-        lyrics: $audio->lyrics(),
-        stik: $audio->stik(),
+        creationDate: $audio->getCreationDate(),
+        copyright: $audio->getCopyright(),
+        encodingBy: $audio->getEncodingBy(),
+        encoding: $audio->getEncoding(),
+        description: $audio->getDescription(),
+        lyrics: $audio->getLyrics(),
+        stik: $audio->getStik(),
     );
 
-    expect($core->title())->toBe('Introduction');
-    expect($core->artist())->toBe('Mr Piouf');
-    expect($core->album())->toBe('P1PDD Le conclave de Troie');
-    expect($core->genre())->toBe('Roleplaying game');
-    expect($core->year())->toBe(2016);
-    expect($core->trackNumber())->toBe('1');
-    expect($core->comment())->toBe('http://www.p1pdd.com');
-    expect($core->albumArtist())->toBe('P1PDD & Mr Piouf');
-    expect($core->composer())->toBe('P1PDD & Piouf');
-    expect($core->discNumber())->toBe('1');
+    expect($core->getTitle())->toBe('Introduction');
+    expect($core->getArtist())->toBe('Mr Piouf');
+    expect($core->getAlbum())->toBe('P1PDD Le conclave de Troie');
+    expect($core->getGenre())->toBe('Roleplaying game');
+    expect($core->getYear())->toBe(2016);
+    expect($core->getTrackNumber())->toBe('1');
+    expect($core->getComment())->toBe('http://www.p1pdd.com');
+    expect($core->getAlbumArtist())->toBe('P1PDD & Mr Piouf');
+    expect($core->getComposer())->toBe('P1PDD & Piouf');
+    expect($core->getDiscNumber())->toBe('1');
     expect($core->isCompilation())->toBe(true);
 
     $id3v1 = AudioCore::toId3v1($core);

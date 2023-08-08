@@ -228,8 +228,8 @@ class Id3Writer
     {
         $this->path = $path;
 
-        if (file_exists($this->audio->path())) {
-            copy($this->audio->path(), $this->path);
+        if (file_exists($this->audio->getPath())) {
+            copy($this->audio->getPath(), $this->path);
         }
 
         return $this;
@@ -297,7 +297,7 @@ class Id3Writer
     public function save(): bool
     {
         if (! $this->path) {
-            $this->path = $this->audio->path();
+            $this->path = $this->audio->getPath();
         }
 
         $this->instance->filename = $this->path;
@@ -317,7 +317,7 @@ class Id3Writer
 
         $errors = implode(', ', $this->errors);
         $warnings = implode(', ', $this->warnings);
-        $supported = match ($this->audio->format()) {
+        $supported = match ($this->audio->getFormat()) {
             AudioFormatEnum::flac => true,
             AudioFormatEnum::mp3 => true,
             AudioFormatEnum::ogg => true,
@@ -350,7 +350,7 @@ class Id3Writer
         }
 
         if (! $supported && $this->failOnError) {
-            throw new \Exception("Format {$this->audio->format()?->value} is not supported.");
+            throw new \Exception("Format {$this->audio->getFormat()?->value} is not supported.");
         }
 
         if (! empty($this->warnings)) {
@@ -364,7 +364,7 @@ class Id3Writer
     {
         $this->convertTagFormats();
 
-        $convert = match ($this->audio->type()) {
+        $convert = match ($this->audio->getType()) {
             AudioTypeEnum::id3 => AudioCore::toId3v2($this->core),
             AudioTypeEnum::vorbiscomment => AudioCore::toVorbisComment($this->core),
             AudioTypeEnum::quicktime => AudioCore::toQuicktime($this->core),
@@ -428,7 +428,7 @@ class Id3Writer
             return $this;
         }
 
-        $formats = match ($this->audio->format()) {
+        $formats = match ($this->audio->getFormat()) {
             AudioFormatEnum::aac => [],
             AudioFormatEnum::aif => [],
             AudioFormatEnum::aifc => [],
@@ -465,7 +465,7 @@ class Id3Writer
     private function attachCover(array &$tags): void
     {
         $coverFormatsAllowed = [AudioFormatEnum::mp3];
-        if ($this->core->cover() && in_array($this->audio->format(), $coverFormatsAllowed)) {
+        if ($this->core->getCover() && in_array($this->audio->getFormat(), $coverFormatsAllowed)) {
             // $tags = [
             //     ...$tags,
             //     'CTOC' => $old_tags['id3v2']['CTOC'],
@@ -473,10 +473,10 @@ class Id3Writer
             //     'chapters' => $old_tags['id3v2']['chapters'],
             // ];
             $tags['attached_picture'][0] = [
-                'data' => base64_decode($this->core->cover()->data()),
-                'picturetypeid' => $this->core->cover()->picturetypeid(),
-                'description' => $this->core->cover()->description(),
-                'mime' => $this->core->cover()->mime(),
+                'data' => base64_decode($this->core->getCover()->data()),
+                'picturetypeid' => $this->core->getCover()->picturetypeid(),
+                'description' => $this->core->getCover()->description(),
+                'mime' => $this->core->getCover()->mime(),
             ];
             $this->core->setHasCover(true);
         }

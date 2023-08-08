@@ -4,7 +4,7 @@ namespace Kiwilan\Audio\Models;
 
 use DateTime;
 
-class FileStat
+class AudioStat
 {
     protected function __construct(
         protected string $path,
@@ -46,72 +46,72 @@ class FileStat
         return $self;
     }
 
-    public function path(): string
+    public function getPath(): string
     {
         return $this->path;
     }
 
-    public function deviceNumber(): ?int
+    public function getDeviceNumber(): ?int
     {
         return $this->deviceNumber;
     }
 
-    public function inodeNumber(): ?int
+    public function getInodeNumber(): ?int
     {
         return $this->inodeNumber;
     }
 
-    public function inodeProtectionMode(): ?int
+    public function getInodeProtectionMode(): ?int
     {
         return $this->inodeProtectionMode;
     }
 
-    public function numberOfLinks(): ?int
+    public function getNumberOfLinks(): ?int
     {
         return $this->numberOfLinks;
     }
 
-    public function userId(): ?int
+    public function getUserId(): ?int
     {
         return $this->userId;
     }
 
-    public function groupId(): ?int
+    public function getGroupId(): ?int
     {
         return $this->groupId;
     }
 
-    public function deviceType(): ?int
+    public function getDeviceType(): ?int
     {
         return $this->deviceType;
     }
 
-    public function size(): ?int
+    public function getSize(): ?int
     {
         return $this->size;
     }
 
-    public function lastAccessAt(): ?DateTime
+    public function getLastAccessAt(): ?DateTime
     {
         return $this->lastAccessAt;
     }
 
-    public function createdAt(): ?DateTime
+    public function getCreatedAt(): ?DateTime
     {
         return $this->createdAt;
     }
 
-    public function modifiedAt(): ?DateTime
+    public function getModifiedAt(): ?DateTime
     {
         return $this->modifiedAt;
     }
 
-    public function blockSize(): ?int
+    public function getBlockSize(): ?int
     {
         return $this->blockSize;
     }
 
-    public function numberOfBlocks(): ?int
+    public function getNumberOfBlocks(): ?int
     {
         return $this->numberOfBlocks;
     }

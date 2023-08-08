@@ -28,22 +28,22 @@ class AudioCover
         return $self;
     }
 
-    public function content(): ?string
+    public function getContent(): ?string
     {
         return $this->content;
     }
 
-    public function mimeType(): ?string
+    public function getMimeType(): ?string
     {
         return $this->mimeType;
     }
 
-    public function width(): ?int
+    public function getWidth(): ?int
     {
         return $this->width;
     }
 
-    public function height(): ?int
+    public function getHeight(): ?int
     {
         return $this->height;
     }

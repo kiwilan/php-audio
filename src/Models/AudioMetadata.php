@@ -25,17 +25,17 @@ class AudioMetadata
 
     public static function make(Audio $audio): self
     {
-        $reader = $audio->reader();
-        $audio = $reader->audio();
+        $reader = $audio->getReader();
+        $audio = $reader->getAudio();
 
         return new self(
-            filesize: $reader->filesize(),
+            filesize: $reader->getFilesize(),
             extension: $audio?->dataformat(),
-            encoding: $reader->encoding(),
-            mimeType: $reader->mime_type(),
-            durationSeconds: $reader->playtime_seconds(),
-            durationReadable: $reader->playtime_string(),
-            bitrate: $reader->bitrate(),
+            encoding: $reader->getEncoding(),
+            mimeType: $reader->getMimeType(),
+            durationSeconds: $reader->getPlaytimeSeconds(),
+            durationReadable: $reader->getPlaytimeString(),
+            bitrate: $reader->getBitrate(),
             bitrateMode: $audio?->bitrate_mode(),
             sampleRate: $audio?->sample_rate(),
             channels: $audio?->channels(),
@@ -45,67 +45,67 @@ class AudioMetadata
         );
     }
 
-    public function filesize(): ?int
+    public function getFilesize(): ?int
     {
         return $this->filesize;
     }
 
-    public function extension(): ?string
+    public function getExtension(): ?string
     {
         return $this->extension;
     }
 
-    public function encoding(): ?string
+    public function getEncoding(): ?string
     {
         return $this->encoding;
     }
 
-    public function mimeType(): ?string
+    public function getMimeType(): ?string
     {
         return $this->mimeType;
     }
 
-    public function durationSeconds(): ?float
+    public function getDurationSeconds(): ?float
     {
         return $this->durationSeconds;
     }
 
-    public function durationReadable(): ?string
+    public function getDurationReadable(): ?string
     {
         return $this->durationReadable;
     }
 
-    public function bitrate(): ?int
+    public function getBitrate(): ?int
     {
         return $this->bitrate;
     }
 
-    public function bitrateMode(): ?string
+    public function getBitrateMode(): ?string
     {
         return $this->bitrateMode;
     }
 
-    public function sampleRate(): ?int
+    public function getSampleRate(): ?int
     {
         return $this->sampleRate;
     }
 
-    public function channels(): ?int
+    public function getChannels(): ?int
     {
         return $this->channels;
     }
 
-    public function channelMode(): ?string
+    public function getChannelMode(): ?string
     {
         return $this->channelMode;
     }
 
-    public function lossless(): bool
+    public function getLossless(): bool
     {
         return $this->lossless;
     }
 
-    public function compressionRatio(): ?float
+    public function getCompressionRatio(): ?float
     {
         return $this->compressionRatio;
     }
