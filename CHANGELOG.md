@@ -2,6 +2,15 @@
 
 All notable changes to `php-audio` will be documented in this file.
 
+## 3.0.0 - 2023-08-08
+
+### BREAKING CHANGES
+
+- All simple getters have now `get` prefix. For example, `getTitle()` instead of `title()`, `getAlbum()` instead of `album()`, etc. It concerns all simple getters of `AudioCore`, `AudioCover`, `AudioMetadata`, `AudioStat`, `Id3Reader` classes.
+
+> Why?
+All these classes have some methods like setters or actions. To be consistent and clear, all simple getters have now `get` prefix.
+
 ## 2.0.0 - 2023-06-08
 
 **BREAKING CHANGES**
