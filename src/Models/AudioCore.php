@@ -28,52 +28,52 @@ class AudioCore
     ) {
     }
 
-    public function title(): ?string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function artist(): ?string
+    public function getArtist(): ?string
     {
         return $this->artist;
     }
 
-    public function album(): ?string
+    public function getAlbum(): ?string
     {
         return $this->album;
     }
 
-    public function genre(): ?string
+    public function getGenre(): ?string
     {
         return $this->genre;
     }
 
-    public function year(): ?int
+    public function getYear(): ?int
     {
         return $this->year;
     }
 
-    public function trackNumber(): ?string
+    public function getTrackNumber(): ?string
     {
         return $this->trackNumber;
     }
 
-    public function comment(): ?string
+    public function getComment(): ?string
     {
         return $this->comment;
     }
 
-    public function albumArtist(): ?string
+    public function getAlbumArtist(): ?string
     {
         return $this->albumArtist;
     }
 
-    public function composer(): ?string
+    public function getComposer(): ?string
     {
         return $this->composer;
     }
 
-    public function discNumber(): ?string
+    public function getDiscNumber(): ?string
     {
         return $this->discNumber;
     }
@@ -87,37 +87,37 @@ class AudioCore
         return $this->isCompilation;
     }
 
-    public function creationDate(): ?string
+    public function getCreationDate(): ?string
     {
         return $this->creationDate;
     }
 
-    public function copyright(): ?string
+    public function getCopyright(): ?string
     {
         return $this->copyright;
     }
 
-    public function encodingBy(): ?string
+    public function getEncodingBy(): ?string
     {
         return $this->encodingBy;
     }
 
-    public function encoding(): ?string
+    public function getEncoding(): ?string
     {
         return $this->encoding;
     }
 
-    public function description(): ?string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    public function lyrics(): ?string
+    public function getLyrics(): ?string
     {
         return $this->lyrics;
     }
 
-    public function stik(): ?string
+    public function getStik(): ?string
     {
         return $this->stik;
     }
@@ -127,7 +127,7 @@ class AudioCore
         return $this->hasCover;
     }
 
-    public function cover(): ?AudioCoreCover
+    public function getCover(): ?AudioCoreCover
     {
         return $this->cover;
     }
@@ -300,124 +300,124 @@ class AudioCore
     public static function toId3v2(AudioCore $core): Id3AudioTagV2
     {
         return new Id3AudioTagV2(
-            album: $core->album(),
-            artist: $core->artist(),
-            band: $core->albumArtist(),
-            comment: $core->comment(),
-            composer: $core->composer(),
-            part_of_a_set: $core->discNumber(),
-            genre: $core->genre(),
+            album: $core->getAlbum(),
+            artist: $core->getArtist(),
+            band: $core->getAlbumArtist(),
+            comment: $core->getComment(),
+            composer: $core->getComposer(),
+            part_of_a_set: $core->getDiscNumber(),
+            genre: $core->getGenre(),
             part_of_a_compilation: $core->isCompilation() ? '1' : '0',
-            title: $core->title(),
-            track_number: $core->trackNumber(),
-            year: $core->year(),
+            title: $core->getTitle(),
+            track_number: $core->getTrackNumber(),
+            year: $core->getYear(),
         );
     }
 
     public static function toId3v1(AudioCore $core): Id3AudioTagV1
     {
         return new Id3AudioTagV1(
-            album: $core->album(),
-            artist: $core->artist(),
-            comment: $core->comment(),
-            genre: $core->genre(),
-            title: $core->title(),
-            track_number: $core->trackNumber(),
-            year: $core->year(),
+            album: $core->getAlbum(),
+            artist: $core->getArtist(),
+            comment: $core->getComment(),
+            genre: $core->getGenre(),
+            title: $core->getTitle(),
+            track_number: $core->getTrackNumber(),
+            year: $core->getYear(),
         );
     }
 
     public static function toVorbisComment(AudioCore $core): Id3TagVorbisComment
     {
         return new Id3TagVorbisComment(
-            album: $core->album(),
-            artist: $core->artist(),
-            albumartist: $core->albumArtist(),
-            comment: $core->comment(),
-            composer: $core->composer(),
+            album: $core->getAlbum(),
+            artist: $core->getArtist(),
+            albumartist: $core->getAlbumArtist(),
+            comment: $core->getComment(),
+            composer: $core->getComposer(),
             compilation: $core->isCompilation() ? '1' : '0',
-            discnumber: $core->discNumber(),
-            genre: $core->genre(),
-            title: $core->title(),
-            tracknumber: $core->trackNumber(),
-            date: $core->year(),
-            encoder: $core->encoding(),
-            description: $core->description(),
+            discnumber: $core->getDiscNumber(),
+            genre: $core->getGenre(),
+            title: $core->getTitle(),
+            tracknumber: $core->getTrackNumber(),
+            date: $core->getYear(),
+            encoder: $core->getEncoding(),
+            description: $core->getDescription(),
         );
     }
 
     public static function toQuicktime(AudioCore $core): Id3TagQuicktime
     {
         return new Id3TagQuicktime(
-            title: $core->title(),
-            track_number: $core->trackNumber(),
-            disc_number: $core->discNumber(),
+            title: $core->getTitle(),
+            track_number: $core->getTrackNumber(),
+            disc_number: $core->getDiscNumber(),
             compilation: $core->isCompilation() ? '1' : '0',
-            album: $core->album(),
-            genre: $core->genre(),
-            composer: $core->composer(),
-            creation_date: $core->creationDate(),
-            copyright: $core->copyright(),
-            artist: $core->artist(),
-            album_artist: $core->albumArtist(),
-            encoded_by: $core->encoding(),
-            encoding_tool: $core->encoding(),
-            description: $core->description(),
-            description_long: $core->description(),
-            lyrics: $core->lyrics(),
-            comment: $core->comment(),
-            stik: $core->stik(),
+            album: $core->getAlbum(),
+            genre: $core->getGenre(),
+            composer: $core->getComposer(),
+            creation_date: $core->getCreationDate(),
+            copyright: $core->getCopyright(),
+            artist: $core->getArtist(),
+            album_artist: $core->getAlbumArtist(),
+            encoded_by: $core->getEncoding(),
+            encoding_tool: $core->getEncoding(),
+            description: $core->getDescription(),
+            description_long: $core->getDescription(),
+            lyrics: $core->getLyrics(),
+            comment: $core->getComment(),
+            stik: $core->getStik(),
         );
     }
 
     public static function toMatroska(AudioCore $core): Id3TagMatroska
     {
         return new Id3TagMatroska(
-            title: $core->title(),
-            album: $core->album(),
-            artist: $core->artist(),
-            album_artist: $core->albumArtist(),
-            comment: $core->comment(),
-            composer: $core->composer(),
-            disc: $core->discNumber(),
+            title: $core->getTitle(),
+            album: $core->getAlbum(),
+            artist: $core->getArtist(),
+            album_artist: $core->getAlbumArtist(),
+            comment: $core->getComment(),
+            composer: $core->getComposer(),
+            disc: $core->getDiscNumber(),
             compilation: $core->isCompilation() ? '1' : '0',
-            genre: $core->genre(),
-            part_number: $core->trackNumber(),
-            date: $core->year(),
-            encoder: $core->encoding(),
+            genre: $core->getGenre(),
+            part_number: $core->getTrackNumber(),
+            date: $core->getYear(),
+            encoder: $core->getEncoding(),
         );
     }
 
     public static function toApe(AudioCore $core): Id3TagApe
     {
         return new Id3TagApe(
-            album: $core->album(),
-            artist: $core->artist(),
-            album_artist: $core->albumArtist(),
-            comment: $core->comment(),
-            composer: $core->composer(),
-            disc: $core->discNumber(),
+            album: $core->getAlbum(),
+            artist: $core->getArtist(),
+            album_artist: $core->getAlbumArtist(),
+            comment: $core->getComment(),
+            composer: $core->getComposer(),
+            disc: $core->getDiscNumber(),
             compilation: $core->isCompilation() ? '1' : '0',
-            genre: $core->genre(),
-            title: $core->title(),
-            track: $core->trackNumber(),
-            date: $core->year(),
-            encoder: $core->encoding(),
+            genre: $core->getGenre(),
+            title: $core->getTitle(),
+            track: $core->getTrackNumber(),
+            date: $core->getYear(),
+            encoder: $core->getEncoding(),
         );
     }
 
     public static function toAsf(AudioCore $core): Id3TagAsf
     {
         return new Id3TagAsf(
-            album: $core->album(),
-            artist: $core->artist(),
-            albumartist: $core->albumArtist(),
-            composer: $core->composer(),
-            partofset: $core->discNumber(),
-            genre: $core->genre(),
-            track_number: $core->trackNumber(),
-            year: $core->year(),
-            encodingsettings: $core->encoding(),
+            album: $core->getAlbum(),
+            artist: $core->getArtist(),
+            albumartist: $core->getAlbumArtist(),
+            composer: $core->getComposer(),
+            partofset: $core->getDiscNumber(),
+            genre: $core->getGenre(),
+            track_number: $core->getTrackNumber(),
+            year: $core->getYear(),
+            encodingsettings: $core->getEncoding(),
         );
     }
 
@@ -519,11 +519,11 @@ class AudioCore
             artist: $tag->artist(),
             album: $tag->album(),
             genre: $tag->genre(),
-            trackNumber: $tag->tracknumber(),
+            trackNumber: $tag->trackNumber(),
             comment: $tag->comment(),
             albumArtist: $tag->albumartist(),
             composer: $tag->composer(),
-            discNumber: $tag->discnumber(),
+            discNumber: $tag->discNumber(),
             isCompilation: $tag->compilation() === '1',
             year: (int) $tag->date(),
             encoding: $tag->encoder(),

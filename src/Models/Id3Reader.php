@@ -74,107 +74,107 @@ class Id3Reader
         return $self;
     }
 
-    public function instance(): getID3
+    public function getInstance(): getID3
     {
         return $this->instance;
     }
 
-    public function version(): ?string
+    public function getVersion(): ?string
     {
         return $this->version;
     }
 
-    public function filesize(): ?int
+    public function getFilesize(): ?int
     {
         return $this->filesize;
     }
 
-    public function filepath(): ?string
+    public function getFilepath(): ?string
     {
         return $this->filepath;
     }
 
-    public function filename(): ?string
+    public function getFilename(): ?string
     {
         return $this->filename;
     }
 
-    public function filenamepath(): ?string
+    public function getFilenamepath(): ?string
     {
         return $this->filenamepath;
     }
 
-    public function avdataoffset(): ?int
+    public function getAvdataoffset(): ?int
     {
         return $this->avdataoffset;
     }
 
-    public function avdataend(): ?int
+    public function getAvdataend(): ?int
     {
         return $this->avdataend;
     }
 
-    public function fileformat(): ?string
+    public function getFileformat(): ?string
     {
         return $this->fileformat;
     }
 
-    public function audio(): ?Id3Audio
+    public function getAudio(): ?Id3Audio
     {
         return $this->audio;
     }
 
-    public function tags(): ?Id3AudioTag
+    public function getTags(): ?Id3AudioTag
     {
         return $this->tags;
     }
 
-    public function comments(): ?Id3Comments
+    public function getComments(): ?Id3Comments
     {
         return $this->comments;
     }
 
-    public function encoding(): ?string
+    public function getEncoding(): ?string
     {
         return $this->encoding;
     }
 
-    public function mime_type(): ?string
+    public function getMimeType(): ?string
     {
         return $this->mime_type;
     }
 
-    public function mpeg(): mixed
+    public function getMpeg(): mixed
     {
         return $this->mpeg;
     }
 
-    public function playtime_seconds(): ?float
+    public function getPlaytimeSeconds(): ?float
     {
         return $this->playtime_seconds;
     }
 
-    public function tags_html(): ?Id3TagsHtml
+    public function getTagsHtml(): ?Id3TagsHtml
     {
         return $this->tags_html;
     }
 
-    public function bitrate(): ?float
+    public function getBitrate(): ?float
     {
         return $this->bitrate;
     }
 
-    public function playtime_string(): ?string
+    public function getPlaytimeString(): ?string
     {
         return $this->playtime_string;
     }
 
-    public function is_writable(): bool
+    public function isWritable(): bool
     {
         return $this->is_writable;
     }
 
-    public function raw(): array
+    public function getRaw(): array
     {
         return $this->raw;
     }

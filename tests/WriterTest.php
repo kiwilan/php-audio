@@ -32,35 +32,35 @@ it('can update file', function (string $path) {
 
     $audio = Audio::get($path);
 
-    expect($audio->title())->toBe($random);
-    expect($audio->artist())->toBe('New Artist');
-    expect($audio->album())->toBe('New Album');
-    expect($audio->genre())->toBe('New Genre');
-    expect($audio->year())->toBe(2022);
-    expect($audio->albumArtist())->toBe('New Album Artist');
-    expect($audio->comment())->toBe('New Comment');
-    expect($audio->composer())->toBe('New Composer');
-    expect($audio->discNumber())->toBe('2/2');
+    expect($audio->getTitle())->toBe($random);
+    expect($audio->getArtist())->toBe('New Artist');
+    expect($audio->getAlbum())->toBe('New Album');
+    expect($audio->getGenre())->toBe('New Genre');
+    expect($audio->getYear())->toBe(2022);
+    expect($audio->getAlbumArtist())->toBe('New Album Artist');
+    expect($audio->getComment())->toBe('New Comment');
+    expect($audio->getComposer())->toBe('New Composer');
+    expect($audio->getDiscNumber())->toBe('2/2');
     expect($audio->isCompilation())->toBeFalse();
 
-    expect($audio->creationDate())->toBeNull();
-    if ($audio->format() === AudioFormatEnum::mp3) {
-        expect($audio->description())->toBeNull();
-        expect($audio->encoding())->toBeNull();
+    expect($audio->getCreationDate())->toBeNull();
+    if ($audio->getFormat() === AudioFormatEnum::mp3) {
+        expect($audio->getDescription())->toBeNull();
+        expect($audio->getEncoding())->toBeNull();
     }
-    expect($audio->encodingBy())->toBeNull();
-    expect($audio->lyrics())->toBeNull();
-    expect($audio->stik())->toBeNull();
+    expect($audio->getEncodingBy())->toBeNull();
+    expect($audio->getLyrics())->toBeNull();
+    expect($audio->getStik())->toBeNull();
 
-    if ($audio->format() !== AudioFormatEnum::mp3) {
-        expect($audio->trackNumber())->toBe('2/10');
+    if ($audio->getFormat() !== AudioFormatEnum::mp3) {
+        expect($audio->getTrackNumber())->toBe('2/10');
     } else {
-        expect($audio->trackNumber())->toBe('2');
+        expect($audio->getTrackNumber())->toBe('2');
     }
 
     if ($tag->getCore()->hasCover()) {
         $content = file_get_contents(FOLDER);
-        expect($tag->getCore()->cover()->data())->toBe(base64_encode($content));
+        expect($tag->getCore()->getCover()->data())->toBe(base64_encode($content));
     }
 })->with(AUDIO_WRITER);
 
@@ -75,7 +75,7 @@ it('can read use file content as cover', function (string $path) {
     $audio = Audio::get($path);
 
     $content = file_get_contents(FOLDER);
-    expect($tag->getCore()->cover()->data())->toBe(base64_encode($content));
+    expect($tag->getCore()->getCover()->data())->toBe(base64_encode($content));
 })->with([MP3_WRITER]);
 
 it('can read use tags', function (string $path) {
@@ -103,10 +103,10 @@ it('can read use tags', function (string $path) {
     $tag->save();
 
     $audio = Audio::get($path);
-    expect($audio->title())->toBe($random);
+    expect($audio->getTitle())->toBe($random);
 
     $content = file_get_contents(FOLDER);
-    expect($audio->cover()->content())->toBe($content);
+    expect($audio->getCover()->getContent())->toBe($content);
 })->with([MP3_WRITER]);
 
 it('can update use tags with tag formats', function (string $path) {
@@ -122,7 +122,7 @@ it('can update use tags with tag formats', function (string $path) {
     $tag->save();
 
     $audio = Audio::get($path);
-    expect($audio->title())->toBe($random);
+    expect($audio->getTitle())->toBe($random);
 })->with([MP3_WRITER]);
 
 it('can update with tags and handle native metadata', function (string $path) {
@@ -139,8 +139,8 @@ it('can update with tags and handle native metadata', function (string $path) {
     $tag->save();
 
     $audio = Audio::get($path);
-    expect($audio->title())->toBe('New Title');
-    expect($audio->albumArtist())->toBe('New Band');
+    expect($audio->getTitle())->toBe('New Title');
+    expect($audio->getAlbumArtist())->toBe('New Band');
     expect($audio->isCompilation())->toBeTrue();
 })->with([MP3_WRITER]);
 
@@ -155,7 +155,7 @@ it('can update with new path', function (string $path) {
     $tag->save();
 
     $audio = Audio::get($newPath);
-    expect($audio->title())->toBe('New Title');
+    expect($audio->getTitle())->toBe('New Title');
 })->with([MP3_WRITER]);
 
 it('can update with merged tags and core methods', function (string $path) {
@@ -171,8 +171,8 @@ it('can update with merged tags and core methods', function (string $path) {
     $tag->save();
 
     $audio = Audio::get($path);
-    expect($audio->title())->toBe('New Title');
-    expect($audio->albumArtist())->toBe('New Band');
+    expect($audio->getTitle())->toBe('New Title');
+    expect($audio->getAlbumArtist())->toBe('New Band');
 })->with([MP3_WRITER]);
 
 it('can use arrow function safe with unsupported tags', function (string $path) {
@@ -185,7 +185,7 @@ it('can use arrow function safe with unsupported tags', function (string $path) 
     expect(fn () => $tag->save())->not()->toThrow(Exception::class);
 
     $audio = Audio::get($path);
-    expect($audio->title())->toBe('New Title');
+    expect($audio->getTitle())->toBe('New Title');
 })->with([MP3_WRITER]);
 
 it('can use arrow function safe with unsupported formats', function (string $path) {
@@ -236,8 +236,8 @@ it('can skip exceptions', function (string $path) {
     $tag->save();
 
     $audio = Audio::get($path);
-    expect($audio->title())->toBe('New Title');
-    expect($audio->albumArtist())->toBeNull();
+    expect($audio->getTitle())->toBe('New Title');
+    expect($audio->getAlbumArtist())->toBeNull();
 })->with([MP3_WRITER]);
 
 it('can remove old tags', function (string $path) {
@@ -251,8 +251,8 @@ it('can remove old tags', function (string $path) {
     $tag->save();
 
     $audio = Audio::get('tests/output/new.mp3');
-    expect($audio->title())->toBe('New Title');
-    expect($audio->albumArtist())->toBeNull();
+    expect($audio->getTitle())->toBe('New Title');
+    expect($audio->getAlbumArtist())->toBeNull();
 })->with([MP3]);
 
 it('can use tags with cover', function (string $path) {
@@ -269,20 +269,20 @@ it('can use tags with cover', function (string $path) {
     $audio = Audio::get($path);
 
     $content = file_get_contents(FOLDER);
-    expect($audio->title())->toBe('New Title');
-    expect($tag->getCore()->cover()->data())->toBe(base64_encode($content));
+    expect($audio->getTitle())->toBe('New Title');
+    expect($tag->getCore()->getCover()->data())->toBe(base64_encode($content));
 })->with([MP3_WRITER]);
 
 // it('can not override tags', function (string $path) {
 //     $audio = Audio::get($path);
 
 //     $tag = $audio->update()
-//         ->title('New Title')
+//         ->getTitle('New Title')
 //         ->notOverrideTags()
 //         ->path('tests/output/new.mp3');
 
 //     $tag->save();
 
 //     $audio = Audio::get('tests/output/new.mp3');
-//     expect($audio->title())->toBe('Introduction');
+//     expect($audio->getTitle())->toBe('Introduction');
 // })->with([MP3]);

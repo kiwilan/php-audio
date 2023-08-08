@@ -11,54 +11,54 @@ it('can read file', function (string $path) {
 
     // ray($audio);
     expect($audio)->toBeInstanceOf(Audio::class);
-    expect($audio->title())->toBe('Introduction');
-    expect($audio->artist())->toBe('Mr Piouf');
-    expect($audio->album())->toBe('P1PDD Le conclave de Troie');
-    expect($audio->genre())->toBe('Roleplaying game');
-    expect($audio->year())->toBe(2016);
-    expect($audio->trackNumber())->toBe('1');
-    if ($audio->comment()) {
-        expect($audio->comment())->toBe('http://www.p1pdd.com');
+    expect($audio->getTitle())->toBe('Introduction');
+    expect($audio->getArtist())->toBe('Mr Piouf');
+    expect($audio->getAlbum())->toBe('P1PDD Le conclave de Troie');
+    expect($audio->getGenre())->toBe('Roleplaying game');
+    expect($audio->getYear())->toBe(2016);
+    expect($audio->getTrackNumber())->toBe('1');
+    if ($audio->getComment()) {
+        expect($audio->getComment())->toBe('http://www.p1pdd.com');
     }
-    expect($audio->albumArtist())->toBe('P1PDD & Mr Piouf');
-    expect($audio->composer())->toBe('P1PDD & Piouf');
-    expect($audio->discNumber())->toBeString();
+    expect($audio->getAlbumArtist())->toBe('P1PDD & Mr Piouf');
+    expect($audio->getComposer())->toBe('P1PDD & Piouf');
+    expect($audio->getDiscNumber())->toBeString();
     expect($audio->isCompilation())->toBeBool();
-    expect($audio->path())->toBe($path);
-    expect($audio->extension())->toBe($extension);
-    expect($audio->format())->toBe($format);
-    expect($audio->duration())->toBeFloat();
-    expect($audio->extras())->toBeArray();
+    expect($audio->getPath())->toBe($path);
+    expect($audio->getgetExtension())->toBe($extension);
+    expect($audio->getFormat())->toBe($format);
+    expect($audio->getDuration())->toBeFloat();
+    expect($audio->getExtras())->toBeArray();
 
-    $metadata = $audio->audio();
-    expect($metadata->filesize())->toBeInt();
-    expect($metadata->extension())->toBeString();
-    expect($metadata->encoding())->toBeString();
-    expect($metadata->mimeType())->toBeString();
-    if ($metadata->durationSeconds()) {
-        expect($metadata->durationSeconds())->toBeFloat();
+    $metadata = $audio->getAudio();
+    expect($metadata->getFilesize())->toBeInt();
+    expect($metadata->getExtension())->toBeString();
+    expect($metadata->getEncoding())->toBeString();
+    expect($metadata->getMimeType())->toBeString();
+    if ($metadata->getDurationSeconds()) {
+        expect($metadata->getDurationSeconds())->toBeFloat();
     }
-    if ($metadata->durationReadable()) {
-        expect($metadata->durationReadable())->toBeString();
+    if ($metadata->getDurationReadable()) {
+        expect($metadata->getDurationReadable())->toBeString();
     }
-    if ($metadata->bitrate()) {
-        expect($metadata->bitrate())->toBeInt();
+    if ($metadata->getBitrate()) {
+        expect($metadata->getBitrate())->toBeInt();
     }
-    if ($metadata->bitrateMode()) {
-        expect($metadata->bitrateMode())->toBeString();
+    if ($metadata->getBitrateMode()) {
+        expect($metadata->getBitrateMode())->toBeString();
     }
-    if ($metadata->sampleRate()) {
-        expect($metadata->sampleRate())->toBeInt();
+    if ($metadata->getSampleRate()) {
+        expect($metadata->getSampleRate())->toBeInt();
     }
-    if ($metadata->channels()) {
-        expect($metadata->channels())->toBeInt();
+    if ($metadata->getChannels()) {
+        expect($metadata->getChannels())->toBeInt();
     }
-    if ($metadata->channelMode()) {
-        expect($metadata->channelMode())->toBeString();
+    if ($metadata->getChannelMode()) {
+        expect($metadata->getChannelMode())->toBeString();
     }
-    expect($metadata->lossless())->toBeBool();
-    if ($metadata->compressionRatio()) {
-        expect($metadata->compressionRatio())->toBeFloat();
+    expect($metadata->getLossless())->toBeBool();
+    if ($metadata->getCompressionRatio()) {
+        expect($metadata->getCompressionRatio())->toBeFloat();
     }
     expect($audio->isValid())->toBeTrue();
 })->with([...AUDIO]);
@@ -66,21 +66,21 @@ it('can read file', function (string $path) {
 it('can extract cover', function (string $path) {
     $audio = Audio::get($path);
     $ext = pathinfo($path, PATHINFO_EXTENSION);
-    $cover = $audio->cover();
+    $cover = $audio->getCover();
 
     if ($audio->hasCover()) {
         expect($cover)->toBeInstanceOf(AudioCover::class);
-        expect($cover->content())->toBeString();
-        expect($cover->mimeType())->toBeString();
-        if ($cover->width()) {
-            expect($cover->width())->toBeInt();
+        expect($cover->getContent())->toBeString();
+        expect($cover->getMimeType())->toBeString();
+        if ($cover->getWidth()) {
+            expect($cover->getWidth())->toBeInt();
         }
-        if ($cover->height()) {
-            expect($cover->height())->toBeInt();
+        if ($cover->getHeight()) {
+            expect($cover->getHeight())->toBeInt();
         }
 
         $path = "tests/output/cover-{$ext}.jpg";
-        file_put_contents($path, $cover->content());
+        file_put_contents($path, $cover->getContent());
         expect(file_exists($path))->toBeTrue();
         expect($path)->toBeReadableFile();
     } else {
@@ -90,21 +90,21 @@ it('can extract cover', function (string $path) {
 
 it('can use stat data', function (string $path) {
     $audio = Audio::get($path);
-    $stat = $audio->stat();
+    $stat = $audio->getStat();
 
-    expect($stat->path())->toBe($path);
-    expect($stat->deviceNumber())->toBeInt();
-    expect($stat->inodeNumber())->toBeInt();
-    expect($stat->inodeProtectionMode())->toBeInt();
-    expect($stat->numberOfLinks())->toBeInt();
-    expect($stat->userId())->toBeInt();
-    expect($stat->groupId())->toBeInt();
-    expect($stat->deviceType())->toBeInt();
-    expect($stat->lastAccessAt())->toBeInstanceOf(DateTime::class);
-    expect($stat->createdAt())->toBeInstanceOf(DateTime::class);
-    expect($stat->modifiedAt())->toBeInstanceOf(DateTime::class);
-    expect($stat->blockSize())->toBeInt();
-    expect($stat->numberOfBlocks())->toBeInt();
+    expect($stat->getPath())->toBe($path);
+    expect($stat->getDeviceNumber())->toBeInt();
+    expect($stat->getInodeNumber())->toBeInt();
+    expect($stat->getInodeProtectionMode())->toBeInt();
+    expect($stat->getNumberOfLinks())->toBeInt();
+    expect($stat->getUserId())->toBeInt();
+    expect($stat->getGroupId())->toBeInt();
+    expect($stat->getDeviceType())->toBeInt();
+    expect($stat->getLastAccessAt())->toBeInstanceOf(DateTime::class);
+    expect($stat->getCreatedAt())->toBeInstanceOf(DateTime::class);
+    expect($stat->getModifiedAt())->toBeInstanceOf(DateTime::class);
+    expect($stat->getBlockSize())->toBeInt();
+    expect($stat->getNumberOfBlocks())->toBeInt();
     expect($stat->toArray())->toBeArray();
     expect($stat->toJson())->toBeString();
     expect($stat->__toString())->toBeString();
@@ -112,7 +112,7 @@ it('can use stat data', function (string $path) {
 
 it('can read mp3 stream', function () {
     $audio = Audio::get(MP3);
-    $streams = $audio->reader()->audio()->streams();
+    $streams = $audio->getReader()->getAudio()->streams();
 
     expect($streams)->toBeArray();
     expect($streams)->toHaveCount(1);
