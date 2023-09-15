@@ -26,6 +26,21 @@ Audio files can use different formats, this package aims to provide a simple way
     -   `FLAC`: `flac` (with `apt`, `brew` or `scoop`)
     -   `OGG`: `vorbis-tools` (with `apt` or `brew`) / `extras/icecast` (with `scoop`)
 
+### Roadmap
+
+-   Add support for more formats with [external packages](https://askubuntu.com/questions/226773/how-to-read-mp3-tags-in-shell)
+
+| Program  |  Version   |  Time / s  |
+| :------: | :--------: | :--------: |
+| exiftool |   10.25    | 49.5 ± 0.5 |
+|  lltag   |   0.14.5   |  41 ± 1.0  |
+| ffprobe  | 3.1.3-1+b3 |  33 ± 0.5  |
+|  eyeD3   |   0.6.18   |  24 ± 0.5  |
+| id3info  |   3.8.3    | 4.2 ± 0.1  |
+|  id3v2   |   0.1.12   | 2.9 ± 0.1  |
+| id3tool  |    1.2a    | 1.7 ± 0.1  |
+| mp3info  |   0.8.5a   | 1.4 ± 0.1  |
+
 ## Installation
 
 You can install the package via composer:
