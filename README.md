@@ -15,20 +15,6 @@ PHP package to parse and update audio files metadata, with [`JamesHeinrich/getID
 >
 > You can check formats supported on [Supported formats](#supported-formats) section.
 
-## Table of contents
-
--   [About](#about)
--   [Requirements](#requirements)
--   [Installation](#installation)
--   [Usage](#usage)
--   [Supported formats](#supported-formats)
--   [Testing](#testing)
--   [Tools](#tools)
--   [FAQ](#faq)
--   [Changelog](#changelog)
--   [Credits](#credits)
--   [License](#license)
-
 ## About
 
 Audio files can use different formats, this package aims to provide a simple way to read them with [`JamesHeinrich/getID3`](https://github.com/JamesHeinrich/getID3). The `JamesHeinrich/getID3` package is excellent to read metadata from audio files, but output is just an array, current package aims to provide a simple way to read audio files with a beautiful API.
