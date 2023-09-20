@@ -45,13 +45,13 @@ it('can extract cover mp3', function () {
     $cover = $audio->getCover();
 
     expect($cover)->toBeInstanceOf(AudioCover::class);
-    expect($cover->getContent())->toBeString();
+    expect($cover->getContents())->toBeString();
     expect($cover->getMimeType())->toBe('image/jpeg');
     expect($cover->getWidth())->toBe(640);
     expect($cover->getHeight())->toBe(640);
 
     $path = 'tests/output/cover.jpg';
-    file_put_contents($path, $cover->getContent());
+    file_put_contents($path, $cover->getContents());
     expect(file_exists($path))->toBeTrue();
     expect($path)->toBeReadableFile();
 });

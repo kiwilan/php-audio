@@ -427,7 +427,7 @@ class Audio
         $this->audio = AudioMetadata::make($this);
         $this->cover = AudioCover::make($reader->getComments());
 
-        if ($this->cover?->getContent()) {
+        if ($this->cover?->getContents()) {
             $this->hasCover = true;
         }
 
