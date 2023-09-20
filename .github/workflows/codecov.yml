@@ -26,7 +26,8 @@ jobs:
       - name: apt
         if: runner.os == 'Linux'
         run: |
-          sudo apt-get install vorbis-tools flac
+          sudo apt update
+          sudo apt install vorbis-tools flac
         shell: bash
 
       - name: Setup problem matchers
