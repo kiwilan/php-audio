@@ -106,7 +106,7 @@ it('can read use tags', function (string $path) {
     expect($audio->getTitle())->toBe($random);
 
     $content = file_get_contents(FOLDER);
-    expect($audio->getCover()->getContent())->toBe($content);
+    expect($audio->getCover()->getContents())->toBe($content);
 })->with([MP3_WRITER]);
 
 it('can update use tags with tag formats', function (string $path) {

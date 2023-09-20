@@ -71,6 +71,7 @@ it('can extract cover', function (string $path) {
     if ($audio->hasCover()) {
         expect($cover)->toBeInstanceOf(AudioCover::class);
         expect($cover->getContent())->toBeString();
+        expect($cover->getContents())->toBeString();
         expect($cover->getMimeType())->toBeString();
         if ($cover->getWidth()) {
             expect($cover->getWidth())->toBeInt();
@@ -80,7 +81,7 @@ it('can extract cover', function (string $path) {
         }
 
         $path = "tests/output/cover-{$ext}.jpg";
-        file_put_contents($path, $cover->getContent());
+        file_put_contents($path, $cover->getContents());
         expect(file_exists($path))->toBeTrue();
         expect($path)->toBeReadableFile();
     } else {

@@ -4,7 +4,7 @@ namespace Kiwilan\Audio\Models;
 
 class AudioCover
 {
-    protected ?string $content = null;
+    protected ?string $contents = null;
 
     protected ?string $mimeType = null;
 
@@ -20,7 +20,7 @@ class AudioCover
 
         $self = new self();
 
-        $self->content = $comments->picture()->data();
+        $self->contents = $comments->picture()->data();
         $self->mimeType = $comments->picture()->image_mime();
         $self->width = $comments->picture()->image_width();
         $self->height = $comments->picture()->image_height();
@@ -28,9 +28,17 @@ class AudioCover
         return $self;
     }
 
+    /**
+     * @deprecated Use `getContents()` instead.
+     */
     public function getContent(): ?string
     {
-        return $this->content;
+        return $this->contents;
+    }
+
+    public function getContents(): ?string
+    {
+        return $this->contents;
     }
 
     public function getMimeType(): ?string

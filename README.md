@@ -15,20 +15,6 @@ PHP package to parse and update audio files metadata, with [`JamesHeinrich/getID
 >
 > You can check formats supported on [Supported formats](#supported-formats) section.
 
-## Table of contents
-
--   [About](#about)
--   [Requirements](#requirements)
--   [Installation](#installation)
--   [Usage](#usage)
--   [Supported formats](#supported-formats)
--   [Testing](#testing)
--   [Tools](#tools)
--   [FAQ](#faq)
--   [Changelog](#changelog)
--   [Credits](#credits)
--   [License](#license)
-
 ## About
 
 Audio files can use different formats, this package aims to provide a simple way to read them with [`JamesHeinrich/getID3`](https://github.com/JamesHeinrich/getID3). The `JamesHeinrich/getID3` package is excellent to read metadata from audio files, but output is just an array, current package aims to provide a simple way to read audio files with a beautiful API.
@@ -39,6 +25,10 @@ Audio files can use different formats, this package aims to provide a simple way
 -   Optional for update
     -   `FLAC`: `flac` (with `apt`, `brew` or `scoop`)
     -   `OGG`: `vorbis-tools` (with `apt` or `brew`) / `extras/icecast` (with `scoop`)
+
+### Roadmap
+
+-   Add support for more formats with [external packages](https://askubuntu.com/questions/226773/how-to-read-mp3-tags-in-shell)
 
 ## Installation
 
@@ -323,7 +313,7 @@ use Kiwilan\Audio\Audio;
 
 $audio = Audio::get('path/to/audio.mp3');
 
-$audio->getCover()->getContent(); // `?string` raw file
+$audio->getCover()->getContents(); // `?string` raw file
 $audio->getCover()->getMimeType(); // `?string` (image/jpeg, image/png, ...)
 $audio->getCover()->getWidth(); // `?int` in pixels
 $audio->getCover()->getHeight(); // `?int` in pixels
