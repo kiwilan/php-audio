@@ -2,6 +2,11 @@
 
 All notable changes to `php-audio` will be documented in this file.
 
+## v3.0.01 - 2023-09-20
+
+- Add `getContents()` to AudioCover
+- Old method `getContent()` is deprecated
+
 ## 3.0.0 - 2023-08-08
 
 ### BREAKING CHANGES
