@@ -2,6 +2,10 @@
 
 All notable changes to `php-audio` will be documented in this file.
 
+## v3.0.02 - 2023-09-21
+
+- Id3Writer: `trackNumber()` and `discNumber()` accept now integers (and strings)
+
 ## v3.0.01 - 2023-09-20
 
 - Add `getContents()` to AudioCover
