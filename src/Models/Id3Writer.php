@@ -105,8 +105,12 @@ class Id3Writer
         return $this;
     }
 
-    public function trackNumber(?string $trackNumber): self
+    public function trackNumber(string|int|null $trackNumber): self
     {
+        if (is_int($trackNumber)) {
+            $trackNumber = (string) $trackNumber;
+        }
+
         $this->core->setTrackNumber($trackNumber);
 
         return $this;
@@ -133,8 +137,12 @@ class Id3Writer
         return $this;
     }
 
-    public function discNumber(?string $discNumber): self
+    public function discNumber(string|int|null $discNumber): self
     {
+        if (is_int($discNumber)) {
+            $discNumber = (string) $discNumber;
+        }
+
         $this->core->setDiscNumber($discNumber);
 
         return $this;
