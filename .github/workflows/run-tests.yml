@@ -28,7 +28,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt update
-          sudo apt install vorbis-tools flac ubuntu-restricted-extras
+          sudo apt install vorbis-tools flac ubuntu-restricted-extras exiftool
 
       - name: Windows installation
         if: runner.os == 'Windows'
