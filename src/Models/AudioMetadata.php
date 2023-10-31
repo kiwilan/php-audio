@@ -7,8 +7,10 @@ use Kiwilan\Audio\Audio;
 class AudioMetadata
 {
     protected function __construct(
+        protected ?string $path = null,
         protected ?int $filesize = null,
         protected ?string $extension = null,
+        protected ?string $dataformat = null,
         protected ?string $encoding = null,
         protected ?string $mimeType = null,
         protected ?float $durationSeconds = null,
@@ -25,12 +27,15 @@ class AudioMetadata
 
     public static function make(Audio $audio): self
     {
+        $path = $audio->getPath();
         $reader = $audio->getReader();
         $audio = $reader->getAudio();
 
         return new self(
+            path: $path,
             filesize: $reader->getFilesize(),
-            extension: $audio?->dataformat(),
+            extension: pathinfo($path, PATHINFO_EXTENSION),
+            dataformat: $audio?->dataformat(),
             encoding: $reader->getEncoding(),
             mimeType: $reader->getMimeType(),
             durationSeconds: $reader->getPlaytimeSeconds(),
@@ -45,6 +50,11 @@ class AudioMetadata
         );
     }
 
+    public function getPath(): ?string
+    {
+        return $this->path;
+    }
+
     public function getFilesize(): ?int
     {
         return $this->filesize;
@@ -53,6 +63,11 @@ class AudioMetadata
     public function getExtension(): ?string
     {
         return $this->extension;
+    }
+
+    public function getDataformat(): ?string
+    {
+        return $this->dataformat;
     }
 
     public function getEncoding(): ?string

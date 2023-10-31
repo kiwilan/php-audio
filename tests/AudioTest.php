@@ -9,7 +9,6 @@ it('can read file', function (string $path) {
     $extension = pathinfo($path, PATHINFO_EXTENSION);
     $format = AudioFormatEnum::tryFrom($extension);
 
-    // ray($audio);
     expect($audio)->toBeInstanceOf(Audio::class);
     expect($audio->getTitle())->toBe('Introduction');
     expect($audio->getArtist())->toBe('Mr Piouf');
@@ -31,8 +30,10 @@ it('can read file', function (string $path) {
     expect($audio->getExtras())->toBeArray();
 
     $metadata = $audio->getAudio();
+    expect($metadata->getPath())->toBeString();
     expect($metadata->getFilesize())->toBeInt();
     expect($metadata->getExtension())->toBeString();
+    // expect($metadata->getDataformat())->toBeString();
     expect($metadata->getEncoding())->toBeString();
     expect($metadata->getMimeType())->toBeString();
     if ($metadata->getDurationSeconds()) {
@@ -70,7 +71,7 @@ it('can extract cover', function (string $path) {
 
     if ($audio->hasCover()) {
         expect($cover)->toBeInstanceOf(AudioCover::class);
-        expect($cover->getContent())->toBeString();
+        expect($cover->getContents())->toBeString();
         expect($cover->getContents())->toBeString();
         expect($cover->getMimeType())->toBeString();
         if ($cover->getWidth()) {
