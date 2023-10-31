@@ -8,6 +8,7 @@ docker run -it --rm ubuntu:latest
 ```
 
 ```bash
+cd /home
 apt update
 apt install -y git software-properties-common
 apt install -y flac vorbis-tools
@@ -23,8 +24,8 @@ php -r "unlink('composer-setup.php');"
 ```bash
 git clone -b develop https://github.com/kiwilan/php-audio.git
 cd php-audio
-composer install
-composer test
+/home/composer.phar install
+/home/composer.phar test
 ```
 
 ## Docker windows

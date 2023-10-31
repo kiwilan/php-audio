@@ -9,7 +9,7 @@ it('can read file', function (string $path) {
     $extension = pathinfo($path, PATHINFO_EXTENSION);
     $format = AudioFormatEnum::tryFrom($extension);
 
-    // ray($audio);
+    dump($audio->getTitle());
     expect($audio)->toBeInstanceOf(Audio::class);
     expect($audio->getTitle())->toBe('Introduction');
     expect($audio->getArtist())->toBe('Mr Piouf');
