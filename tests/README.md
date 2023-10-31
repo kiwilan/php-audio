@@ -26,3 +26,28 @@ cd php-audio
 composer install
 composer test
 ```
+
+## Docker windows
+
+```bash
+docker pull mcr.microsoft.com/windows/server
+docker run -it --rm mcr.microsoft.com/windows/servercore:ltsc2019
+```
+
+```bash
+powershell
+```
+
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh'))
+scoop install git
+scoop install php
+scoop install composer
+```
+
+```bash
+git clone -b develop
+cd php-audio
+composer install
+composer test
+```
