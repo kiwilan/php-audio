@@ -28,7 +28,20 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           brew install flac vorbis-tools
-          brew install fribidi libarchive libsamplerate lz4 p11-kit gd libass libsndfile lzo p7zip srt aom gdk-pixbuf libassuan libsodium m4 svt-av1 apr geckodriver libavif libsoxr pango tesseract apr-util gettext libb2 libssh mbedtls pcre theora argon2 ghostscript libbluray libssh2 pcre2 tidy-html5 aribb24 giflib libde265 libtasn1 mpdecimal unar aspell glib libevent libtiff mpg123 unbound autoconf gmp libgcrypt libtool unixodbc automake gnupg libgit2 libunibreak pinentry brotli gnutls libgit2@1.6 libunistring pixman wavpack ca-certificates go libgpg-error libusb pkg-config webp cairo gpgme libheif libvidstab nettle poppler x264 cjson graphite2 libidn libvmaf nginx x265 curl harfbuzz libidn2 libvorbis nmap xorgproto dav1d highway libksba libvpx npth xvid djvulibre icu4c liblinear libx11 nspr rav1e xz dnsmasq liblqr libxau nss readline exa imath libmobi libxcb oniguruma exiftool jasper libnghttp2 libxdmcp opencore-amr rtmpdump z3 exiv2 jbig2dec libogg libxext openexr rubberband zeromq ffmpeg libomp libxrender zimg libpng libzip sdl2 zstd fontconfig krb5 libpq little-cms2 openldap shared-mime-info freetds lame libraw six freetype leptonica librist snappy frei0r libao lua opus speex
+
+      - name: macOS installation
+        if: runner.os == 'macOS'
+        run: |
+          brew install fribidi libarchive libsamplerate lz4 p11-kit gd libass libsndfile lzo p7zip srt aom gdk-pixbuf libassuan libsodium m4 svt-av1 apr geckodriver libavif libsoxr pango tesseract apr-util gettext libb2 libssh mbedtls pcre theora argon2 ghostscript libbluray libssh2 pcre2 tidy-html5 aribb24 giflib libde265 libtasn1 mpdecimal unar aspell glib libevent libtiff mpg123 unbound autoconf gmp libgcrypt libtool unixodbc automake gnupg libgit2 libunibreak pinentry gnutls libgit2@1.6 libunistring pixman wavpack ca-certificates
+
+      - name: macOS installation
+        if: runner.os == 'macOS'
+        run: |
+          brew install libgpg-error libusb pkg-config webp cairo gpgme libheif libvidstab nettle poppler x264 cjson graphite2 libidn libvmaf nginx x265 curl harfbuzz libidn2 libvorbis nmap xorgproto dav1d highway libksba libvpx npth xvid djvulibre icu4c liblinear libx11 nspr rav1e xz dnsmasq liblqr libxau nss readline imath libmobi libxcb oniguruma exiftool jasper libnghttp2 libxdmcp opencore-amr rtmpdump z3 exiv2 jbig2dec libogg libxext openexr rubberband zeromq ffmpeg libomp libxrender zimg libpng libzip sdl2 zstd fontconfig krb5 libpq little-cms2 openldap shared-mime-info freetds lame libraw six freetype leptonica librist snappy frei0r libao lua opus speex
+
+      - name: macOS installation
+        if: runner.os == 'macOS'
+        run: |
           brew install --cask airflow devutils plex-htpc iina mkvtoolnix spotify
 
       - name: Setup problem matchers
