@@ -28,7 +28,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt update
-          sudo apt install vorbis-tools flac
+          sudo apt install vorbis-tools flac ubuntu-restricted-extras
 
       - name: Windows installation
         if: runner.os == 'Windows'
