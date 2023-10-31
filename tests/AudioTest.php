@@ -33,7 +33,6 @@ it('can read file', function (string $path) {
     expect($metadata->getPath())->toBeString();
     expect($metadata->getFilesize())->toBeInt();
     expect($metadata->getExtension())->toBeString();
-    // expect($metadata->getDataformat())->toBeString();
     expect($metadata->getEncoding())->toBeString();
     expect($metadata->getMimeType())->toBeString();
     if ($metadata->getDurationSeconds()) {
