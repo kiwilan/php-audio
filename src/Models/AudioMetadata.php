@@ -7,6 +7,7 @@ use Kiwilan\Audio\Audio;
 class AudioMetadata
 {
     protected function __construct(
+        protected ?string $path = null,
         protected ?int $filesize = null,
         protected ?string $extension = null,
         protected ?string $encoding = null,
@@ -25,10 +26,12 @@ class AudioMetadata
 
     public static function make(Audio $audio): self
     {
+        $path = $audio->getPath();
         $reader = $audio->getReader();
         $audio = $reader->getAudio();
 
         return new self(
+            path: $path,
             filesize: $reader->getFilesize(),
             extension: $audio?->dataformat(),
             encoding: $reader->getEncoding(),
@@ -43,6 +46,11 @@ class AudioMetadata
             lossless: $audio?->lossless() ?? false,
             compressionRatio: $audio?->compression_ratio(),
         );
+    }
+
+    public function getPath(): ?string
+    {
+        return $this->path;
     }
 
     public function getFilesize(): ?int

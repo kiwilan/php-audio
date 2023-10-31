@@ -32,6 +32,7 @@ it('can read file', function (string $path) {
 
     $metadata = $audio->getAudio();
     dump($metadata);
+    expect($metadata->getPath())->toBeString();
     expect($metadata->getFilesize())->toBeInt();
     expect($metadata->getExtension())->toBeString();
     expect($metadata->getEncoding())->toBeString();
