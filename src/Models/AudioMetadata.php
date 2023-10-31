@@ -10,6 +10,7 @@ class AudioMetadata
         protected ?string $path = null,
         protected ?int $filesize = null,
         protected ?string $extension = null,
+        protected ?string $dataformat = null,
         protected ?string $encoding = null,
         protected ?string $mimeType = null,
         protected ?float $durationSeconds = null,
@@ -33,7 +34,8 @@ class AudioMetadata
         return new self(
             path: $path,
             filesize: $reader->getFilesize(),
-            extension: $audio?->dataformat(),
+            extension: pathinfo($path, PATHINFO_EXTENSION),
+            dataformat: $audio?->dataformat(),
             encoding: $reader->getEncoding(),
             mimeType: $reader->getMimeType(),
             durationSeconds: $reader->getPlaytimeSeconds(),
@@ -61,6 +63,11 @@ class AudioMetadata
     public function getExtension(): ?string
     {
         return $this->extension;
+    }
+
+    public function getDataformat(): ?string
+    {
+        return $this->dataformat;
     }
 
     public function getEncoding(): ?string
