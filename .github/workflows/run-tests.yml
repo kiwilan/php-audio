@@ -22,13 +22,14 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
+          extensions: bcmath, bz2, calendar, ctype, curl, date, dba, dom, exif, FFI, fileinfo, filter, ftp, gd, gettext, gmp, hash, iconv, imagick, intl, json, ldap, libxml, mbstring, mysqli, mysqlnd, odbc, openssl, pcntl, pcov, pcre, PDO, pdo_dblib, pdo_mysql, PDO_ODBC, pdo_pgsql, pdo_sqlite, pdo_sqlsrv, pgsql, posix, pspell, random, readline, redis, Reflection, session, shmop, SimpleXML, soap, sockets, sodium, SPL, sqlite3, sqlsrv, standard, swoole, sysvmsg, sysvsem, sysvshm, tidy, tokenizer, xml, xmlreader, xmlwriter, xsl, zip
           coverage: none
 
       - name: Linux installation
         if: runner.os == 'Linux'
         run: |
           sudo apt update
-          sudo apt install vorbis-tools flac ubuntu-restricted-extras exiftool
+          sudo apt install vorbis-tools flac
 
       - name: Windows installation
         if: runner.os == 'Windows'
