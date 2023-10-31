@@ -2,6 +2,11 @@
 
 All notable changes to `php-audio` will be documented in this file.
 
+## v3.0.03 - 2023-10-31
+
+- `AudioCore`, `fromId3()` method comment bug, issue #18 thanks to @cospin
+- `AudioMetadata`, add `path`, `dataformat`
+
 ## v3.0.02 - 2023-09-21
 
 - Id3Writer: `trackNumber()` and `discNumber()` accept now integers (and strings)
