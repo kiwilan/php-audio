@@ -10,6 +10,10 @@ it('can read file', function (string $path) {
     $format = AudioFormatEnum::tryFrom($extension);
 
     dump($audio->getTitle());
+    dump($audio->getArtist());
+    dump($audio->getAlbum());
+    dump($audio->getGenre());
+    dump($audio->getYear());
     expect($audio)->toBeInstanceOf(Audio::class);
     expect($audio->getTitle())->toBe('Introduction');
     expect($audio->getArtist())->toBe('Mr Piouf');
