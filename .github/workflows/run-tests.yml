@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [windows-latest]
         php: [8.2, 8.1]
         stability: [prefer-stable]
 
@@ -22,7 +22,6 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: bcmath, bz2, calendar, ctype, curl, date, dba, dom, exif, FFI, fileinfo, filter, ftp, gd, gettext, gmp, hash, iconv, imagick, intl, json, ldap, libxml, mbstring, mysqli, mysqlnd, odbc, openssl, pcntl, pcov, pcre, PDO, pdo_dblib, pdo_mysql, PDO_ODBC, pdo_pgsql, pdo_sqlite, pdo_sqlsrv, pgsql, posix, pspell, random, readline, redis, Reflection, session, shmop, SimpleXML, soap, sockets, sodium, SPL, sqlite3, sqlsrv, standard, swoole, sysvmsg, sysvsem, sysvshm, tidy, tokenizer, xml, xmlreader, xmlwriter, xsl, zip
           coverage: none
 
       - name: Linux installation
