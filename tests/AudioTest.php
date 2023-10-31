@@ -31,6 +31,7 @@ it('can read file', function (string $path) {
     expect($audio->getExtras())->toBeArray();
 
     $metadata = $audio->getAudio();
+    dump($metadata);
     expect($metadata->getFilesize())->toBeInt();
     expect($metadata->getExtension())->toBeString();
     expect($metadata->getEncoding())->toBeString();
@@ -70,7 +71,7 @@ it('can extract cover', function (string $path) {
 
     if ($audio->hasCover()) {
         expect($cover)->toBeInstanceOf(AudioCover::class);
-        expect($cover->getContent())->toBeString();
+        expect($cover->getContents())->toBeString();
         expect($cover->getContents())->toBeString();
         expect($cover->getMimeType())->toBeString();
         if ($cover->getWidth()) {
