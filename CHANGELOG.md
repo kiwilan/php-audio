@@ -2,6 +2,10 @@
 
 All notable changes to `php-audio` will be documented in this file.
 
+## v3.0.04 - 2023-11-01
+
+- `AudioCore`, fix `fromId3()` with `null` check `Id3AudioTagV1` and `Id3AudioTagV2`, issue #18 thanks to @cospin
+
 ## v3.0.03 - 2023-10-31
 
 - `AudioCore`, `fromId3()` method comment bug, issue #18 thanks to @cospin
