@@ -33,7 +33,6 @@ it('can read file', function (string $path) {
     expect($metadata->getPath())->toBeString();
     expect($metadata->getFilesize())->toBeInt();
     expect($metadata->getExtension())->toBeString();
-    // expect($metadata->getDataformat())->toBeString();
     expect($metadata->getEncoding())->toBeString();
     expect($metadata->getMimeType())->toBeString();
     if ($metadata->getDurationSeconds()) {
@@ -136,3 +135,23 @@ it('can read wrong audio file', function () {
 
     expect($audio->isValid())->toBeFalse();
 });
+
+it('can read file id3v1', function (string $path) {
+    $audio = Audio::get($path);
+    $extension = pathinfo($path, PATHINFO_EXTENSION);
+    $format = AudioFormatEnum::tryFrom($extension);
+
+    expect($audio->getTitle())->toBeString();
+    expect($audio->getArtist())->toBeString();
+    expect($audio->getAlbum())->toBeString();
+    expect($audio->getTrackNumber())->toBeString();
+    expect($audio->getAlbumArtist())->toBeString();
+    expect($audio->getComposer())->toBeNull();
+
+    expect($audio->getgetExtension())->toBe($extension);
+    expect($audio->getFormat())->toBe($format);
+    expect($audio->getDuration())->toBeFloat();
+    expect($audio->getExtras())->toBeArray();
+
+    expect($audio)->toBeInstanceOf(Audio::class);
+})->with([...AUDIO_ID3_V1]);

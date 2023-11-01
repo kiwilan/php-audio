@@ -338,7 +338,7 @@ $audio->getCover()->getHeight(); // `?int` in pixels
 |  MKV   |    ✅     |               Matroska               |   `matroska`    | _Cover not supported_ |
 |  APE   |    ❌     |            Monkey's Audio            |                 |                       |
 |  MP3   |    ✅     |          MPEG audio layer 3          | `id3v2`,`id3v1` |                       |
-|  MP4   |    ✅     | Digital multimedia container format  |   `quicktime`   |                       |
+|  MP4   |    ✅     | Digital multimedia container format  |   `quicktime`   | _Partially supported_ |
 |  M4A   |    ✅     |             mpeg-4 audio             |   `quicktime`   |                       |
 |  M4B   |    ✅     |              Audiobook               |   `quicktime`   |                       |
 |  M4V   |    ✅     |             mpeg-4 video             |   `quicktime`   |                       |
