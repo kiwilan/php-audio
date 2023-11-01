@@ -421,13 +421,21 @@ class AudioCore
         );
     }
 
-    public static function fromId3(?Id3AudioTagV1 $v1, Id3AudioTagV2 $v2): AudioCore
+    public static function fromId3(?Id3AudioTagV1 $v1, ?Id3AudioTagV2 $v2): AudioCore
     {
+        if (! $v1) {
+            $v1 = new Id3AudioTagV1();
+        }
+
+        if (! $v2) {
+            $v2 = new Id3AudioTagV2();
+        }
+
         return new AudioCore(
             album: $v2->album() ?? $v1->album(),
             artist: $v2->artist() ?? $v1->artist(),
             albumArtist: $v2->band() ?? null,
-            comment: $v2 ? $v2->comment() : $v1->comment(),
+            comment: $v2->comment() ?? $v1->comment(),
             composer: $v2->composer() ?? null,
             discNumber: $v2->part_of_a_set() ?? null,
             genre: $v2->genre() ?? $v1->genre(),

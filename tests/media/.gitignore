@@ -1,3 +1,4 @@
 test-writer-alac.*
 test-writer-no-meta.*
 test-writer.*
+id3-test-writer*

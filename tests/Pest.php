@@ -63,6 +63,8 @@ define('M4V', __DIR__.'/media/test.m4v');
 define('MKA', __DIR__.'/media/test.mka');
 define('MKV', __DIR__.'/media/test.mkv');
 define('MP3', __DIR__.'/media/test.mp3');
+define('MP3_ID3_V1_1', __DIR__.'/media/id3-test-1.mp3');
+define('MP3_ID3_V1_2', __DIR__.'/media/id3-test-2.mp3');
 define('MP4', __DIR__.'/media/test.mp4');
 define('OGG', __DIR__.'/media/test.ogg');
 define('OPUS', __DIR__.'/media/test.opus');
@@ -94,6 +96,11 @@ define('AUDIO', [
     WEBM,
     WMA,
     WV,
+]);
+
+define('AUDIO_ID3_V1', [
+    MP3_ID3_V1_1,
+    MP3_ID3_V1_2,
 ]);
 
 define('AUDIO_WRITER', [
