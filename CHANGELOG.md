@@ -2,6 +2,12 @@
 
 All notable changes to `php-audio` will be documented in this file.
 
+## v3.0.05 - 2024-02-03
+
+- Add `toArray()` method to `Audio::class` to get all properties without cover.
+- Add `getTags()` method to `Audio::class` to get all tags as `array<string, string>`.
+- Add `getTag(string $tag)` method to `Audio::class` to get a single tag.
+
 ## v3.0.04 - 2023-11-01
 
 - `AudioCore`, fix `fromId3()` with `null` check `Id3AudioTagV1` and `Id3AudioTagV2`, issue #18 thanks to @cospin
