@@ -216,7 +216,7 @@ class Id3Writer
     }
 
     /**
-     * @param  string  $pathOrData Path to cover image or binary data
+     * @param  string  $pathOrData  Path to cover image or binary data
      */
     public function cover(string $pathOrData): self
     {
@@ -288,7 +288,7 @@ class Id3Writer
     /**
      * Set tag format.
      *
-     * @param  string[]  $tags Options are `id3v1`, `id3v2.2`, `id2v2.3`, `id3v2.4`, `ape`, `vorbiscomment`, `metaflac`, `real`
+     * @param  string[]  $tags  Options are `id3v1`, `id3v2.2`, `id2v2.3`, `id3v2.4`, `ape`, `vorbiscomment`, `metaflac`, `real`
      */
     public function tagFormats(array $tags): self
     {
