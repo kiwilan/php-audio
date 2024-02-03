@@ -28,6 +28,8 @@ it('can read file', function (string $path) {
     expect($audio->getFormat())->toBe($format);
     expect($audio->getDuration())->toBeFloat();
     expect($audio->getExtras())->toBeArray();
+    expect($audio->getTags())->toBeArray();
+    expect($audio->toArray())->toBeArray();
 
     $metadata = $audio->getAudio();
     expect($metadata->getPath())->toBeString();

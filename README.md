@@ -67,6 +67,17 @@ $audio->getStik(); // `?string` (audiobook)
 $audio->getDuration(); // `?float` to get duration in seconds
 ```
 
+Raw tags:
+
+```php
+use Kiwilan\Audio\Audio;
+
+$audio = Audio::get('path/to/audio.mp3');
+
+$audio->getTags(); // `array` with all tags
+$title = $audio->getTag('title'); // `?string` to get title same as `$audio->getTitle()`
+```
+
 Additional metadata:
 
 ```php
@@ -80,6 +91,20 @@ $audio->isValid(); // `bool` to know if file is valid audio file
 $audio->getFormat(); // `AudioFormatEnum` to get format (mp3, m4a, ...)
 $audio->getType(); // `?AudioTypeEnum` ID3 type (id3, riff, asf, quicktime, matroska, ape, vorbiscomment)
 $audio->getExtras(); // `array` with raw metadata (could contains some metadata not parsed)
+```
+
+Raw audio:
+
+> [!NOTE]
+>
+> Cover is removed from `toArray()` method, you can use `getCover()` method to get cover metadata.
+
+```php
+use Kiwilan\Audio\Audio;
+
+$audio = Audio::get('path/to/audio.mp3');
+
+$audio->toArray(); // `array` with all metadata
 ```
 
 Advanced properties:

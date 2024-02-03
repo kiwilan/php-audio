@@ -463,4 +463,31 @@ class Audio
 
         return $this;
     }
+
+    public function getTag(string $tag): ?string
+    {
+        $tags = $this->reader->toTagsArray();
+
+        return $tags[$tag] ?? null;
+    }
+
+    /**
+     * Get all tags as array.
+     *
+     * @return array<string, string>
+     */
+    public function getTags(): array
+    {
+        return $this->reader->toTagsArray();
+    }
+
+    /**
+     * Get all raw metadata as array.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return $this->reader->toArray();
+    }
 }
