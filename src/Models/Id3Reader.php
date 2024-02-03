@@ -178,6 +178,29 @@ class Id3Reader
     {
         return $this->raw;
     }
+
+    public function toTagsArray(): array
+    {
+        $tags = $this->raw['tags'] ?? [];
+        $first = reset($tags);
+
+        $items = [];
+        foreach ($first as $key => $value) {
+            $items[$key] = $value[0] ?? null;
+        }
+
+        return $items;
+    }
+
+    public function toArray(): array
+    {
+        $raw = $this->raw;
+        if (array_key_exists('comments', $raw) && array_key_exists('picture', $raw['comments'])) {
+            $raw['comments']['picture'] = 'cover string (removed for array)';
+        }
+
+        return $raw;
+    }
 }
 
 class Id3Audio
