@@ -2,6 +2,14 @@
 
 All notable changes to `php-audio` will be documented in this file.
 
+## v3.0.06 - 2024-02-04
+
+- Add `getAudioFormats()` to `Audio::class` to get an array with all audio formats of file.
+- Add param to `getTags(?string $audioFormat = null)` to select a specific tag format, default will be maximum tags found.
+- Add same param to `getTag(string $tag, ?string $audioFormat = null)` to select a specific tag format, default will be maximum tags found.
+- Add `getPodcastDescription()` method to `Audio::class` to get the podcast description.
+- Add `getLanguage()` method to `Audio::class` to get the language of the podcast.
+
 ## v3.0.05 - 2024-02-03
 
 - Add `toArray()` method to `Audio::class` to get all properties without cover.
