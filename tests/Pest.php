@@ -2,6 +2,7 @@
 
 define('MP3_NO_META', __DIR__.'/media/test-no-meta.mp3');
 define('AUDIOBOOK', __DIR__.'/media/audiobook.m4b');
+define('AUDIOBOOK_MP3', __DIR__.'/media/audiobook.mp3');
 define('MD', __DIR__.'/media/test.md');
 define('FOLDER', __DIR__.'/media/folder.jpg');
 
@@ -74,6 +75,11 @@ define('WAV', __DIR__.'/media/test.wav');
 define('WEBM', __DIR__.'/media/test.webm');
 define('WMA', __DIR__.'/media/test.wma');
 define('WV', __DIR__.'/media/test.wv');
+
+define('AUDIOBOOKS', [
+    AUDIOBOOK,
+    AUDIOBOOK_MP3,
+]);
 
 define('AUDIO', [
     ALAC,

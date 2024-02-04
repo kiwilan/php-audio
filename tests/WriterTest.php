@@ -49,7 +49,7 @@ it('can update file', function (string $path) {
         expect($audio->getEncoding())->toBeNull();
     }
     expect($audio->getEncodingBy())->toBeNull();
-    expect($audio->getLyrics())->toBeNull();
+    expect($audio->getLyrics())->toBe('New Lyrics');
     expect($audio->getStik())->toBeNull();
 
     if ($audio->getFormat() !== AudioFormatEnum::mp3) {

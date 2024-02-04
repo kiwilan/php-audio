@@ -45,6 +45,10 @@ class Audio
 
     protected ?string $description = null;
 
+    protected ?string $podcastDescription = null;
+
+    protected ?string $language = null;
+
     protected ?string $lyrics = null;
 
     protected ?string $stik = null;
@@ -261,6 +265,22 @@ class Audio
     }
 
     /**
+     * Get `podcastDescription` metadata for audiobook.
+     */
+    public function getPodcastDescription(): ?string
+    {
+        return $this->podcastDescription;
+    }
+
+    /**
+     * Get `language` metadata for audiobook.
+     */
+    public function getLanguage(): ?string
+    {
+        return $this->language;
+    }
+
+    /**
      * Get `lyrics` metadata for audiobook.
      */
     public function getLyrics(): ?string
@@ -458,15 +478,23 @@ class Audio
         $this->encoding = $core->getEncoding();
         $this->copyright = $core->getCopyright();
         $this->description = $core->getDescription();
+        $this->podcastDescription = $core->getPodcastDescription();
+        $this->language = $core->getLanguage();
         $this->lyrics = $core->getLyrics();
         $this->stik = $core->getStik();
 
         return $this;
     }
 
-    public function getTag(string $tag): ?string
+    /**
+     * Get a specific tag.
+     *
+     * @param  string  $tag  Tag name.
+     * @param  string|null  $audioFormat  Get a specific format, default format is format with maximum tags.
+     */
+    public function getTag(string $tag, ?string $audioFormat = null): ?string
     {
-        $tags = $this->reader->toTagsArray();
+        $tags = $this->reader->toTags($audioFormat);
 
         return $tags[$tag] ?? null;
     }
@@ -474,11 +502,22 @@ class Audio
     /**
      * Get all tags as array.
      *
+     * @param  string|null  $tag  Get a specific format, default format is format with maximum tags.
      * @return array<string, string>
      */
-    public function getTags(): array
+    public function getTags(?string $audioFormat = null): array
     {
-        return $this->reader->toTagsArray();
+        return $this->reader->toTags($audioFormat);
+    }
+
+    /**
+     * Get all audio formats as array, with tags.
+     *
+     * @return array<string, array<string, string>>
+     */
+    public function getAudioFormats(): array
+    {
+        return $this->reader->toAudioFormats();
     }
 
     /**
