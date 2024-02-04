@@ -21,6 +21,8 @@ class AudioCore
         protected ?string $encodingBy = null,
         protected ?string $encoding = null,
         protected ?string $description = null,
+        protected ?string $podcastDescription = null,
+        protected ?string $language = null,
         protected ?string $lyrics = null,
         protected ?string $stik = null,
         protected bool $hasCover = false,
@@ -110,6 +112,16 @@ class AudioCore
     public function getDescription(): ?string
     {
         return $this->description;
+    }
+
+    public function getPodcastDescription(): ?string
+    {
+        return $this->podcastDescription;
+    }
+
+    public function getLanguage(): ?string
+    {
+        return $this->language;
     }
 
     public function getLyrics(): ?string
@@ -244,6 +256,20 @@ class AudioCore
         return $this;
     }
 
+    public function setPodcastDescription(?string $podcastDescription): self
+    {
+        $this->podcastDescription = $podcastDescription;
+
+        return $this;
+    }
+
+    public function setLanguage(?string $language): self
+    {
+        $this->language = $language;
+
+        return $this;
+    }
+
     public function setLyrics(?string $lyrics): self
     {
         $this->lyrics = $lyrics;
@@ -290,6 +316,8 @@ class AudioCore
             'encodingBy' => $this->encodingBy,
             'encoding' => $this->encoding,
             'description' => $this->description,
+            'podcastDescription' => $this->podcastDescription,
+            'language' => $this->language,
             'lyrics' => $this->lyrics,
             'stik' => $this->stik,
             'hasCover' => $this->hasCover,
@@ -311,6 +339,10 @@ class AudioCore
             title: $core->getTitle(),
             track_number: $core->getTrackNumber(),
             year: $core->getYear(),
+            copyright: $core->getCopyright(),
+            text: $core->getPodcastDescription(),
+            unsynchronised_lyric: $core->getLyrics(),
+            language: $core->getLanguage(),
         );
     }
 
@@ -363,7 +395,7 @@ class AudioCore
             encoded_by: $core->getEncoding(),
             encoding_tool: $core->getEncoding(),
             description: $core->getDescription(),
-            description_long: $core->getDescription(),
+            description_long: $core->getPodcastDescription(),
             lyrics: $core->getLyrics(),
             comment: $core->getComment(),
             stik: $core->getStik(),
@@ -443,6 +475,10 @@ class AudioCore
             title: $v2->title() ?? $v1->title(),
             trackNumber: $v2->track_number() ?? $v1->track_number(),
             year: $v2->year() ?? $v1->year(),
+            copyright: $v2->copyright() ?? null,
+            description: $v2->text() ?? null,
+            lyrics: $v2->unsynchronised_lyric() ?? null,
+            language: $v2->language() ?? null,
         );
     }
 
@@ -483,10 +519,6 @@ class AudioCore
         $description = $tag->description();
         $description_long = $tag->description_long();
 
-        if ($description_long && $description && strlen($description_long) > strlen($description)) {
-            $description = $description_long;
-        }
-
         $core = new AudioCore(
             title: $tag->title(),
             artist: $tag->artist(),
@@ -500,6 +532,7 @@ class AudioCore
             albumArtist: $tag->album_artist(),
             encodingBy: $tag->encoded_by(),
             encoding: $tag->encoding_tool(),
+            language: $tag->language(),
         );
 
         if ($creation_date) {
@@ -514,6 +547,7 @@ class AudioCore
 
         $core->setCopyright($tag->copyright());
         $core->setDescription($description);
+        $core->setPodcastDescription($description_long);
         $core->setLyrics($tag->lyrics());
         $core->setStik($tag->stik());
 
@@ -586,8 +620,14 @@ class AudioCore
             isCompilation: $tag->compilation() === '1',
             title: $tag->title(),
             trackNumber: $tag->track(),
-            year: (int) $tag->date(),
+            creationDate: $tag->date(),
+            year: $tag->year() ?? (int) $tag->date(),
             encoding: $tag->encoder(),
+            description: $tag->description(),
+            copyright: $tag->copyright(),
+            lyrics: $tag->lyrics(),
+            podcastDescription: $tag->podcastdesc(),
+            language: $tag->language(),
         );
     }
 }

@@ -76,6 +76,11 @@ $audio = Audio::get('path/to/audio.mp3');
 
 $audio->getTags(); // `array` with all tags
 $title = $audio->getTag('title'); // `?string` to get title same as `$audio->getTitle()`
+
+$formats = $audio->getAudioFormats(); // `array` with all audio formats
+
+$format = $audio->getTags('id3v2'); // `?array` with all tags with format `id3v2`
+$title = $audio->getTag('title', 'id3v2'); // `?string` to get title with format `id3v2`
 ```
 
 Additional metadata:
@@ -406,43 +411,41 @@ You want to add a format? [See FAQ](#faq)
 
 `Audio::class` convert some properties to be more readable.
 
-|    ID3 type     |        Original         |  New property   |
-| :-------------: | :---------------------: | :-------------: |
-|     `id3v2`     |         `band`          |  `albumArtist`  |
-|     `id3v2`     |     `track_number`      |  `trackNumber`  |
-|     `id3v2`     |     `part_of_a_set`     |  `discNumber`   |
-|     `id3v2`     | `part_of_a_compilation` | `isCompilation` |
-|   `quicktime`   |     `track_number`      |  `trackNumber`  |
-|   `quicktime`   |      `disc_number`      |  `discNumber`   |
-|   `quicktime`   |      `compilation`      | `isCompilation` |
-|   `quicktime`   |     `creation_date`     | `creationDate`  |
-|   `quicktime`   |     `album_artist`      |  `albumArtist`  |
-|   `quicktime`   |      `encoded_by`       |  `encodingBy`   |
-|   `quicktime`   |     `encoding_tool`     |   `encoding`    |
-|   `quicktime`   |   `description_long`    | `description`\* |
-|      `asf`      |      `albumartist`      |  `albumArtist`  |
-|      `asf`      |       `partofset`       |  `discNumber`   |
-|      `asf`      |     `track_number`      |  `trackNumber`  |
-|      `asf`      |   `encodingsettings`    |   `encoding`    |
-| `vorbiscomment` |        `encoder`        |   `encoding`    |
-| `vorbiscomment` |      `albumartist`      |  `albumArtist`  |
-| `vorbiscomment` |      `discnumber`       |  `discNumber`   |
-| `vorbiscomment` |      `compilation`      | `isCompilation` |
-| `vorbiscomment` |      `tracknumber`      |  `trackNumber`  |
-|   `matroska`    |     `album_artist`      |  `albumArtist`  |
-|   `matroska`    |         `disc`          |  `discNumber`   |
-|   `matroska`    |      `part_number`      |  `trackNumber`  |
-|   `matroska`    |         `date`          |     `year`      |
-|   `matroska`    |      `compilation`      | `isCompilation` |
-|   `matroska`    |        `encoder`        |   `encoding`    |
-|      `ape`      |     `album_artist`      |  `albumArtist`  |
-|      `ape`      |         `disc`          |  `discNumber`   |
-|      `ape`      |      `compilation`      | `isCompilation` |
-|      `ape`      |         `track`         |  `trackNumber`  |
-|      `ape`      |         `date`          |     `year`      |
-|      `ape`      |        `encoder`        |   `encoding`    |
-
-\*: if `description_long` has more content than `description`, it replaces `description`.
+|    ID3 type     |        Original         |     New property     |
+| :-------------: | :---------------------: | :------------------: |
+|     `id3v2`     |         `band`          |    `albumArtist`     |
+|     `id3v2`     |     `track_number`      |    `trackNumber`     |
+|     `id3v2`     |     `part_of_a_set`     |     `discNumber`     |
+|     `id3v2`     | `part_of_a_compilation` |   `isCompilation`    |
+|   `quicktime`   |     `track_number`      |    `trackNumber`     |
+|   `quicktime`   |      `disc_number`      |     `discNumber`     |
+|   `quicktime`   |      `compilation`      |   `isCompilation`    |
+|   `quicktime`   |     `creation_date`     |    `creationDate`    |
+|   `quicktime`   |     `album_artist`      |    `albumArtist`     |
+|   `quicktime`   |      `encoded_by`       |     `encodingBy`     |
+|   `quicktime`   |     `encoding_tool`     |      `encoding`      |
+|   `quicktime`   |   `description_long`    | `podcastDescription` |
+|      `asf`      |      `albumartist`      |    `albumArtist`     |
+|      `asf`      |       `partofset`       |     `discNumber`     |
+|      `asf`      |     `track_number`      |    `trackNumber`     |
+|      `asf`      |   `encodingsettings`    |      `encoding`      |
+| `vorbiscomment` |        `encoder`        |      `encoding`      |
+| `vorbiscomment` |      `albumartist`      |    `albumArtist`     |
+| `vorbiscomment` |      `discnumber`       |     `discNumber`     |
+| `vorbiscomment` |      `compilation`      |   `isCompilation`    |
+| `vorbiscomment` |      `tracknumber`      |    `trackNumber`     |
+|   `matroska`    |     `album_artist`      |    `albumArtist`     |
+|   `matroska`    |         `disc`          |     `discNumber`     |
+|   `matroska`    |      `part_number`      |    `trackNumber`     |
+|   `matroska`    |         `date`          |        `year`        |
+|   `matroska`    |      `compilation`      |   `isCompilation`    |
+|   `matroska`    |        `encoder`        |      `encoding`      |
+|      `ape`      |     `album_artist`      |    `albumArtist`     |
+|      `ape`      |         `disc`          |     `discNumber`     |
+|      `ape`      |      `compilation`      |   `isCompilation`    |
+|      `ape`      |         `track`         |    `trackNumber`     |
+|      `ape`      |         `date`          |        `year`        |
+|      `ape`      |        `encoder`        |      `encoding`      |
 
 ## Testing
 

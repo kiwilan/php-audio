@@ -179,25 +179,65 @@ class Id3Reader
         return $this->raw;
     }
 
-    public function toTagsArray(): array
+    public function toTags(?string $audioFormat = null): array
     {
-        $tags = $this->raw['tags'] ?? [];
-        $first = reset($tags);
+        $rawTags = $this->raw['tags_html'] ?? [];
+
+        if (count($rawTags) === 0) {
+            return [];
+        }
+
+        $tagsItems = [];
+        if ($audioFormat) {
+            $tagsItems = $rawTags[$audioFormat] ?? [];
+        } else {
+            if (count($rawTags) > 1) {
+                $entries = [];
+                foreach ($rawTags as $key => $keyTags) {
+                    $entries[$key] = count($keyTags);
+                }
+                $maxKey = array_search(max($entries), $entries);
+                $tagsItems = $rawTags[$maxKey] ?? [];
+            } else {
+                $tagsItems = reset($rawTags);
+            }
+        }
+
+        return Id3Reader::cleanTags($tagsItems);
+    }
+
+    public static function cleanTags(?array $tagsItems): array
+    {
+        if (! $tagsItems) {
+            return [];
+        }
+
+        $temp = [];
+        foreach ($tagsItems as $k => $v) {
+            $temp[$k] = $v[0] ?? null;
+        }
 
         $items = [];
-        foreach ($first as $key => $value) {
-            $items[$key] = $value[0] ?? null;
+        foreach ($temp as $k => $v) {
+            $k = strtolower($k);
+            $k = str_replace(' ', '_', $k);
+            $items[$k] = $v;
         }
 
         return $items;
     }
 
+    public function toAudioFormats(): array
+    {
+        return $this->raw['tags_html'] ?? [];
+    }
+
     public function toArray(): array
     {
         $raw = $this->raw;
-        if (array_key_exists('comments', $raw) && array_key_exists('picture', $raw['comments'])) {
-            $raw['comments']['picture'] = 'cover string (removed for array)';
-        }
+        $raw['id3v2']['APIC'] = null;
+        $raw['ape']['items']['cover art (front)'] = null;
+        $raw['comments'] = null;
 
         return $raw;
     }
@@ -491,15 +531,24 @@ class Id3AudioTag
             return null;
         }
 
+        $id3v1 = Id3Reader::cleanTags($metadata['id3v1'] ?? null);
+        $id3v2 = Id3Reader::cleanTags($metadata['id3v2'] ?? null);
+        $quicktime = Id3Reader::cleanTags($metadata['quicktime'] ?? null);
+        $asf = Id3Reader::cleanTags($metadata['asf'] ?? null);
+        $vorbiscomment = Id3Reader::cleanTags($metadata['vorbiscomment'] ?? null);
+        $riff = Id3Reader::cleanTags($metadata['riff'] ?? null);
+        $matroska = Id3Reader::cleanTags($metadata['matroska'] ?? null);
+        $ape = Id3Reader::cleanTags($metadata['ape'] ?? null);
+
         $self = new self(
-            id3v1: Id3AudioTagV1::make($metadata['id3v1'] ?? null),
-            id3v2: Id3AudioTagV2::make($metadata['id3v2'] ?? null),
-            quicktime: Id3TagQuicktime::make($metadata['quicktime'] ?? null),
-            asf: Id3TagAsf::make($metadata['asf'] ?? null),
-            vorbiscomment: Id3TagVorbisComment::make($metadata['vorbiscomment'] ?? null),
-            riff: Id3TagRiff::make($metadata['riff'] ?? null),
-            matroska: Id3TagMatroska::make($metadata['matroska'] ?? null),
-            ape: Id3TagApe::make($metadata['ape'] ?? null),
+            id3v1: Id3AudioTagV1::make($id3v1),
+            id3v2: Id3AudioTagV2::make($id3v2),
+            quicktime: Id3TagQuicktime::make($quicktime),
+            asf: Id3TagAsf::make($asf),
+            vorbiscomment: Id3TagVorbisComment::make($vorbiscomment),
+            riff: Id3TagRiff::make($riff),
+            matroska: Id3TagMatroska::make($matroska),
+            ape: Id3TagApe::make($ape),
         );
 
         return $self;
@@ -566,13 +615,13 @@ class Id3AudioTagV1
         }
 
         $self = new self(
-            title: $metadata['title'][0] ?? null,
-            artist: $metadata['artist'][0] ?? null,
-            album: $metadata['album'][0] ?? null,
-            year: $metadata['year'][0] ?? null,
-            genre: $metadata['genre'][0] ?? null,
-            comment: $metadata['comment'][0] ?? null,
-            track_number: $metadata['track_number'][0] ?? null,
+            title: $metadata['title'] ?? null,
+            artist: $metadata['artist'] ?? null,
+            album: $metadata['album'] ?? null,
+            year: $metadata['year'] ?? null,
+            genre: $metadata['genre'] ?? null,
+            comment: $metadata['comment'] ?? null,
+            track_number: $metadata['track_number'] ?? null,
         );
 
         return $self;
@@ -641,6 +690,10 @@ class Id3AudioTagV2
         protected ?string $title = null,
         protected ?string $track_number = null,
         protected ?string $year = null,
+        protected ?string $copyright = null,
+        protected ?string $text = null,
+        protected ?string $unsynchronised_lyric = null,
+        protected ?string $language = null,
     ) {
     }
 
@@ -651,17 +704,21 @@ class Id3AudioTagV2
         }
 
         $self = new self(
-            album: $metadata['album'][0] ?? null,
-            artist: $metadata['artist'][0] ?? null,
-            band: $metadata['band'][0] ?? null,
-            comment: $metadata['comment'][0] ?? null,
-            composer: $metadata['composer'][0] ?? null,
-            part_of_a_set: $metadata['part_of_a_set'][0] ?? null,
-            genre: $metadata['genre'][0] ?? null,
-            part_of_a_compilation: $metadata['part_of_a_compilation'][0] ?? null,
-            title: $metadata['title'][0] ?? null,
-            track_number: $metadata['track_number'][0] ?? null,
-            year: $metadata['year'][0] ?? null,
+            album: $metadata['album'] ?? null,
+            artist: $metadata['artist'] ?? null,
+            band: $metadata['band'] ?? null,
+            comment: $metadata['comment'] ?? null,
+            composer: $metadata['composer'] ?? null,
+            part_of_a_set: $metadata['part_of_a_set'] ?? null,
+            genre: $metadata['genre'] ?? null,
+            part_of_a_compilation: $metadata['part_of_a_compilation'] ?? null,
+            title: $metadata['title'] ?? null,
+            track_number: $metadata['track_number'] ?? null,
+            year: $metadata['year'] ?? null,
+            copyright: $metadata['copyright_message'] ?? null,
+            text: $metadata['text'] ?? null,
+            unsynchronised_lyric: $metadata['unsynchronised_lyric'] ?? null,
+            language: $metadata['language'] ?? null,
         );
 
         return $self;
@@ -722,6 +779,26 @@ class Id3AudioTagV2
         return $this->year;
     }
 
+    public function copyright(): ?string
+    {
+        return $this->copyright;
+    }
+
+    public function text(): ?string
+    {
+        return $this->text;
+    }
+
+    public function unsynchronised_lyric(): ?string
+    {
+        return $this->unsynchronised_lyric;
+    }
+
+    public function language(): ?string
+    {
+        return $this->language;
+    }
+
     public function toArray(): array
     {
         return [
@@ -736,6 +813,10 @@ class Id3AudioTagV2
             'title' => $this->title,
             'track_number' => $this->track_number,
             'year' => $this->year,
+            'copyright' => $this->copyright,
+            'text' => $this->text,
+            'unsynchronised_lyric' => $this->unsynchronised_lyric,
+            'language' => $this->language,
         ];
     }
 }
@@ -857,6 +938,7 @@ class Id3TagQuicktime
         protected ?string $encoding_tool = null,
         protected ?string $description = null,
         protected ?string $description_long = null,
+        protected ?string $language = null,
         protected ?string $lyrics = null,
         protected ?string $comment = null,
         protected ?string $stik = null,
@@ -870,24 +952,25 @@ class Id3TagQuicktime
         }
 
         $self = new self(
-            title: $metadata['title'][0] ?? null,
-            track_number: $metadata['track_number'][0] ?? null,
-            disc_number: $metadata['disc_number'][0] ?? null,
-            compilation: $metadata['compilation'][0] ?? null,
-            album: $metadata['album'][0] ?? null,
-            genre: $metadata['genre'][0] ?? null,
-            composer: $metadata['composer'][0] ?? null,
-            creation_date: $metadata['creation_date'][0] ?? null,
-            copyright: $metadata['copyright'][0] ?? null,
-            artist: $metadata['artist'][0] ?? null,
-            album_artist: $metadata['album_artist'][0] ?? null,
-            encoded_by: $metadata['encoded_by'][0] ?? null,
-            encoding_tool: $metadata['encoding_tool'][0] ?? null,
-            description: $metadata['description'][0] ?? null,
-            description_long: $metadata['description_long'][0] ?? null,
-            lyrics: $metadata['lyrics'][0] ?? null,
-            comment: $metadata['comment'][0] ?? null,
-            stik: $metadata['stik'][0] ?? null,
+            title: $metadata['title'] ?? null,
+            track_number: $metadata['track_number'] ?? null,
+            disc_number: $metadata['disc_number'] ?? null,
+            compilation: $metadata['compilation'] ?? null,
+            album: $metadata['album'] ?? null,
+            genre: $metadata['genre'] ?? null,
+            composer: $metadata['composer'] ?? null,
+            creation_date: $metadata['creation_date'] ?? null,
+            copyright: $metadata['copyright'] ?? null,
+            artist: $metadata['artist'] ?? null,
+            album_artist: $metadata['album_artist'] ?? null,
+            encoded_by: $metadata['encoded_by'] ?? null,
+            encoding_tool: $metadata['encoding_tool'] ?? null,
+            description: $metadata['description'] ?? null,
+            description_long: $metadata['description_long'] ?? null,
+            language: $metadata['language'] ?? null,
+            lyrics: $metadata['lyrics'] ?? null,
+            comment: $metadata['comment'] ?? null,
+            stik: $metadata['stik'] ?? null,
         );
 
         return $self;
@@ -968,6 +1051,11 @@ class Id3TagQuicktime
         return $this->description_long;
     }
 
+    public function language(): ?string
+    {
+        return $this->language;
+    }
+
     public function lyrics(): ?string
     {
         return $this->lyrics;
@@ -1001,6 +1089,7 @@ class Id3TagQuicktime
             'encoding_tool' => $this->encoding_tool,
             'description' => $this->description,
             'description_long' => $this->description_long,
+            'language' => $this->language,
             'lyrics' => $this->lyrics,
             'comment' => $this->comment,
             'stik' => $this->stik,
@@ -1030,16 +1119,16 @@ class Id3TagAsf
             return null;
         }
         $self = new self(
-            title: $metadata['title'][0] ?? null,
-            artist: $metadata['artist'][0] ?? null,
-            album: $metadata['album'][0] ?? null,
-            albumartist: $metadata['albumartist'][0] ?? null,
-            composer: $metadata['composer'][0] ?? null,
-            partofset: $metadata['partofset'][0] ?? null,
-            genre: $metadata['genre'][0] ?? null,
-            track_number: $metadata['track_number'][0] ?? null,
-            year: $metadata['year'][0] ?? null,
-            encodingsettings: $metadata['encodingsettings'][0] ?? null,
+            title: $metadata['title'] ?? null,
+            artist: $metadata['artist'] ?? null,
+            album: $metadata['album'] ?? null,
+            albumartist: $metadata['albumartist'] ?? null,
+            composer: $metadata['composer'] ?? null,
+            partofset: $metadata['partofset'] ?? null,
+            genre: $metadata['genre'] ?? null,
+            track_number: $metadata['track_number'] ?? null,
+            year: $metadata['year'] ?? null,
+            encodingsettings: $metadata['encodingsettings'] ?? null,
         );
 
         return $self;
@@ -1137,19 +1226,19 @@ class Id3TagVorbisComment
             return null;
         }
         $self = new self(
-            description: $metadata['description'][0] ?? null,
-            encoder: $metadata['encoder'][0] ?? null,
-            title: $metadata['title'][0] ?? null,
-            artist: $metadata['artist'][0] ?? null,
-            album: $metadata['album'][0] ?? null,
-            genre: $metadata['genre'][0] ?? null,
-            comment: $metadata['comment'][0] ?? null,
-            albumartist: $metadata['albumartist'][0] ?? null,
-            composer: $metadata['composer'][0] ?? null,
-            discnumber: $metadata['discnumber'][0] ?? null,
-            compilation: $metadata['compilation'][0] ?? null,
-            date: $metadata['date'][0] ?? null,
-            tracknumber: $metadata['tracknumber'][0] ?? null,
+            description: $metadata['description'] ?? null,
+            encoder: $metadata['encoder'] ?? null,
+            title: $metadata['title'] ?? null,
+            artist: $metadata['artist'] ?? null,
+            album: $metadata['album'] ?? null,
+            genre: $metadata['genre'] ?? null,
+            comment: $metadata['comment'] ?? null,
+            albumartist: $metadata['albumartist'] ?? null,
+            composer: $metadata['composer'] ?? null,
+            discnumber: $metadata['discnumber'] ?? null,
+            compilation: $metadata['compilation'] ?? null,
+            date: $metadata['date'] ?? null,
+            tracknumber: $metadata['tracknumber'] ?? null,
         );
 
         return $self;
@@ -1259,13 +1348,13 @@ class Id3TagRiff
             return null;
         }
         $self = new self(
-            artist: $metadata['artist'][0] ?? null,
-            comment: $metadata['comment'][0] ?? null,
-            creationdate: $metadata['creationdate'][0] ?? null,
-            genre: $metadata['genre'][0] ?? null,
-            title: $metadata['title'][0] ?? null,
-            product: $metadata['product'][0] ?? null,
-            software: $metadata['software'][0] ?? null,
+            artist: $metadata['artist'] ?? null,
+            comment: $metadata['comment'] ?? null,
+            creationdate: $metadata['creationdate'] ?? null,
+            genre: $metadata['genre'] ?? null,
+            title: $metadata['title'] ?? null,
+            product: $metadata['product'] ?? null,
+            software: $metadata['software'] ?? null,
         );
 
         return $self;
@@ -1348,21 +1437,21 @@ class Id3TagMatroska
         }
 
         $self = new self(
-            title: $metadata['title'][0] ?? null,
-            muxingapp: $metadata['muxingapp'][0] ?? null,
-            writingapp: $metadata['writingapp'][0] ?? null,
-            album: $metadata['album'][0] ?? null,
-            artist: $metadata['artist'][0] ?? null,
-            album_artist: $metadata['album_artist'][0] ?? null,
-            comment: $metadata['comment'][0] ?? null,
-            composer: $metadata['composer'][0] ?? null,
-            disc: $metadata['disc'][0] ?? null,
-            genre: $metadata['genre'][0] ?? null,
-            compilation: $metadata['compilation'][0] ?? null,
-            part_number: $metadata['part_number'][0] ?? null,
-            date: $metadata['date'][0] ?? null,
-            encoder: $metadata['encoder'][0] ?? null,
-            duration: $metadata['duration'][0] ?? null,
+            title: $metadata['title'] ?? null,
+            muxingapp: $metadata['muxingapp'] ?? null,
+            writingapp: $metadata['writingapp'] ?? null,
+            album: $metadata['album'] ?? null,
+            artist: $metadata['artist'] ?? null,
+            album_artist: $metadata['album_artist'] ?? null,
+            comment: $metadata['comment'] ?? null,
+            composer: $metadata['composer'] ?? null,
+            disc: $metadata['disc'] ?? null,
+            genre: $metadata['genre'] ?? null,
+            compilation: $metadata['compilation'] ?? null,
+            part_number: $metadata['part_number'] ?? null,
+            date: $metadata['date'] ?? null,
+            encoder: $metadata['encoder'] ?? null,
+            duration: $metadata['duration'] ?? null,
         );
 
         return $self;
@@ -1480,6 +1569,12 @@ class Id3TagApe
         protected ?string $track = null,
         protected ?string $date = null,
         protected ?string $encoder = null,
+        protected ?string $description = null,
+        protected ?string $copyright = null,
+        protected ?string $lyrics = null,
+        protected ?string $podcastdesc = null,
+        protected ?string $language = null,
+        protected ?string $year = null,
     ) {
     }
 
@@ -1490,18 +1585,24 @@ class Id3TagApe
         }
 
         $self = new self(
-            title: $metadata['title'][0] ?? null,
-            artist: $metadata['artist'][0] ?? null,
-            album: $metadata['album'][0] ?? null,
-            album_artist: $metadata['album_artist'][0] ?? null,
-            composer: $metadata['composer'][0] ?? null,
-            comment: $metadata['comment'][0] ?? null,
-            genre: $metadata['genre'][0] ?? null,
-            disc: $metadata['disc'][0] ?? null,
-            compilation: $metadata['compilation'][0] ?? null,
-            track: $metadata['track'][0] ?? null,
-            date: $metadata['date'][0] ?? null,
-            encoder: $metadata['encoder'][0] ?? null,
+            title: $metadata['title'] ?? null,
+            artist: $metadata['artist'] ?? null,
+            album: $metadata['album'] ?? null,
+            album_artist: $metadata['album_artist'] ?? $metadata['albumartist'] ?? null,
+            composer: $metadata['composer'] ?? null,
+            comment: $metadata['comment'] ?? null,
+            genre: $metadata['genre'] ?? null,
+            disc: $metadata['disc'] ?? $metadata['discnumber'] ?? null,
+            compilation: $metadata['compilation'] ?? null,
+            track: $metadata['track'] ?? null,
+            date: $metadata['date'] ?? null,
+            encoder: $metadata['encoder'] ?? null,
+            description: $metadata['description'] ?? null,
+            copyright: $metadata['copyright'] ?? null,
+            lyrics: $metadata['unsyncedlyrics'] ?? null,
+            podcastdesc: $metadata['podcastdesc'] ?? null,
+            language: $metadata['language'] ?? null,
+            year: $metadata['year'] ?? null,
         );
 
         return $self;
@@ -1567,6 +1668,36 @@ class Id3TagApe
         return $this->encoder;
     }
 
+    public function description(): ?string
+    {
+        return $this->description;
+    }
+
+    public function copyright(): ?string
+    {
+        return $this->copyright;
+    }
+
+    public function lyrics(): ?string
+    {
+        return $this->lyrics;
+    }
+
+    public function podcastdesc(): ?string
+    {
+        return $this->podcastdesc;
+    }
+
+    public function language(): ?string
+    {
+        return $this->language;
+    }
+
+    public function year(): ?string
+    {
+        return $this->year;
+    }
+
     public function toArray(): array
     {
         return [
@@ -1582,6 +1713,12 @@ class Id3TagApe
             'track' => $this->track,
             'date' => $this->date,
             'encoder' => $this->encoder,
+            'description' => $this->description,
+            'copyright' => $this->copyright,
+            'lyrics' => $this->lyrics,
+            'podcastdesc' => $this->podcastdesc,
+            'language' => $this->language,
+            'year' => $this->year,
         ];
     }
 }
@@ -1606,15 +1743,24 @@ class Id3TagsHtml
             return null;
         }
 
+        $id3v1 = Id3Reader::cleanTags($metadata['id3v1'] ?? null);
+        $id3v2 = Id3Reader::cleanTags($metadata['id3v2'] ?? null);
+        $quicktime = Id3Reader::cleanTags($metadata['quicktime'] ?? null);
+        $asf = Id3Reader::cleanTags($metadata['asf'] ?? null);
+        $vorbiscomment = Id3Reader::cleanTags($metadata['vorbiscomment'] ?? null);
+        $riff = Id3Reader::cleanTags($metadata['riff'] ?? null);
+        $matroska = Id3Reader::cleanTags($metadata['matroska'] ?? null);
+        $ape = Id3Reader::cleanTags($metadata['ape'] ?? null);
+
         $self = new self(
-            id3v1: Id3AudioTagV1::make($metadata['id3v1'] ?? null),
-            id3v2: Id3AudioTagV2::make($metadata['id3v2'] ?? null),
-            quicktime: Id3TagQuicktime::make($metadata['quicktime'] ?? null),
-            asf: Id3TagAsf::make($metadata['asf'] ?? null),
-            vorbiscomment: Id3TagVorbisComment::make($metadata['vorbiscomment'] ?? null),
-            riff: Id3TagRiff::make($metadata['riff'] ?? null),
-            matroska: Id3TagMatroska::make($metadata['matroska'] ?? null),
-            ape: Id3TagApe::make($metadata['ape'] ?? null),
+            id3v1: Id3AudioTagV1::make($id3v1),
+            id3v2: Id3AudioTagV2::make($id3v2),
+            quicktime: Id3TagQuicktime::make($quicktime),
+            asf: Id3TagAsf::make($asf),
+            vorbiscomment: Id3TagVorbisComment::make($vorbiscomment),
+            riff: Id3TagRiff::make($riff),
+            matroska: Id3TagMatroska::make($matroska),
+            ape: Id3TagApe::make($ape),
         );
 
         return $self;
