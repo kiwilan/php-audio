@@ -201,6 +201,20 @@ class Id3Writer
         return $this;
     }
 
+    public function podcastDescription(?string $podcastDescription): self
+    {
+        $this->core->setPodcastDescription($podcastDescription);
+
+        return $this;
+    }
+
+    public function language(?string $language): self
+    {
+        $this->core->setLanguage($language);
+
+        return $this;
+    }
+
     public function lyrics(?string $lyrics): self
     {
         $this->core->setLyrics($lyrics);
