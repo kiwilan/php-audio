@@ -2,6 +2,14 @@
 
 All notable changes to `php-audio` will be documented in this file.
 
+## v3.0.07 - 2024-06-04
+
+By @panVag
+
+* use `DateTimeImmutable` super powers to parse date and datetime strings
+* catch and ignore exception when instantiating the aforementioned object so the whole script won't fail
+* remove the null safe operators when it's not needed
+
 ## v3.0.06 - 2024-02-04
 
 - Add `getAudioFormats()` to `Audio::class` to get an array with all audio formats of file.
