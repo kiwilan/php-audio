@@ -545,7 +545,7 @@ class AudioCore
                     // ignore the issue so the rest of the data will be available
                 }
 
-                if (!empty($parsedCreationDate)) {
+                if (! empty($parsedCreationDate)) {
                     $core->setCreationDate($parsedCreationDate->format('Y-m-d\TH:i:s\Z'));
                     $core->setYear((int) $parsedCreationDate->format('Y'));
                 }
