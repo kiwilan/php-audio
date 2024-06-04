@@ -62,6 +62,8 @@ $audio->getCreationDate(); // `?string` to get creation date (audiobook)
 $audio->getCopyright(); // `?string` to get copyright (audiobook)
 $audio->getEncoding(); // `?string` to get encoding
 $audio->getDescription(); // `?string` to get description (audiobook)
+$audio->getPodcastDescription(); // `?string` to get podcast description (audiobook)
+$audio->getLanguage(); // `?string` to get language
 $audio->getLyrics(); // `?string` (audiobook)
 $audio->getStik(); // `?string` (audiobook)
 $audio->getDuration(); // `?float` to get duration in seconds

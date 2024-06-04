@@ -275,6 +275,15 @@ it('can use tags with cover', function (string $path) {
     expect($tag->getCore()->getCover()->data())->toBe(base64_encode($content));
 })->with([MP3_WRITER]);
 
+// it('can change podcast description and language', function () {
+//     $audio = Audio::get(AUDIOBOOK);
+//     $tag = $audio->update()
+//         ->title('New Title')
+//         ->podcastDescription('New Podcast Description')
+//         ->language('New Language')
+//         ->save();
+// });
+
 // it('can not override tags', function (string $path) {
 //     $audio = Audio::get($path);
 
