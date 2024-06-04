@@ -539,9 +539,16 @@ class AudioCore
             if (strlen($creation_date) === 4) {
                 $core->setYear((int) $creation_date);
             } else {
-                $creation_date = date_create_from_format('Y-m-d\TH:i:s\Z', $creation_date);
-                $core->setCreationDate($creation_date?->format('Y-m-d\TH:i:s\Z'));
-                $core->setYear((int) $creation_date?->format('Y'));
+                try {
+                    $parsedCreationDate = new \DateTimeImmutable($creation_date);
+                } catch (\Exception $e) {
+                    // ignore the issue so the rest of the data will be available
+                }
+
+                if (!empty($parsedCreationDate)) {
+                    $core->setCreationDate($parsedCreationDate->format('Y-m-d\TH:i:s\Z'));
+                    $core->setYear((int) $parsedCreationDate->format('Y'));
+                }
             }
         }
 
