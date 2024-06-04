@@ -2,6 +2,47 @@
 
 All notable changes to `php-audio` will be documented in this file.
 
+## v3.0.06 - 2024-02-04
+
+- Add `getAudioFormats()` to `Audio::class` to get an array with all audio formats of file.
+- Add param to `getTags(?string $audioFormat = null)` to select a specific tag format, default will be maximum tags found.
+- Add same param to `getTag(string $tag, ?string $audioFormat = null)` to select a specific tag format, default will be maximum tags found.
+- Add `getPodcastDescription()` method to `Audio::class` to get the podcast description.
+- Add `getLanguage()` method to `Audio::class` to get the language of the podcast.
+
+## v3.0.05 - 2024-02-03
+
+- Add `toArray()` method to `Audio::class` to get all properties without cover.
+- Add `getTags()` method to `Audio::class` to get all tags as `array<string, string>`.
+- Add `getTag(string $tag)` method to `Audio::class` to get a single tag.
+
+## v3.0.04 - 2023-11-01
+
+- `AudioCore`, fix `fromId3()` with `null` check `Id3AudioTagV1` and `Id3AudioTagV2`, issue #18 thanks to @cospin
+
+## v3.0.03 - 2023-10-31
+
+- `AudioCore`, `fromId3()` method comment bug, issue #18 thanks to @cospin
+- `AudioMetadata`, add `path`, `dataformat`
+
+## v3.0.02 - 2023-09-21
+
+- Id3Writer: `trackNumber()` and `discNumber()` accept now integers (and strings)
+
+## v3.0.01 - 2023-09-20
+
+- Add `getContents()` to AudioCover
+- Old method `getContent()` is deprecated
+
+## 3.0.0 - 2023-08-08
+
+### BREAKING CHANGES
+
+- All simple getters have now `get` prefix. For example, `getTitle()` instead of `title()`, `getAlbum()` instead of `album()`, etc. It concerns all simple getters of `AudioCore`, `AudioCover`, `AudioMetadata`, `AudioStat`, `Id3Reader` classes.
+
+> Why?
+All these classes have some methods like setters or actions. To be consistent and clear, all simple getters have now `get` prefix.
+
 ## 2.0.0 - 2023-06-08
 
 **BREAKING CHANGES**
