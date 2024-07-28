@@ -30,12 +30,11 @@ class Id3Reader
         protected ?Id3TagsHtml $tags_html = null,
         protected ?float $bitrate = null,
         protected ?string $playtime_string = null,
-    ) {
-    }
+    ) {}
 
     public static function make(string $path): self
     {
-        $self = new self(new getID3());
+        $self = new self(new getID3);
 
         $self->raw = $self->instance->analyze($path);
         $self->is_writable = $self->instance->is_writable($path);
@@ -260,8 +259,7 @@ class Id3Audio
         protected bool $lossless = false,
         protected ?string $encoder_options = null,
         protected ?float $compression_ratio = null,
-    ) {
-    }
+    ) {}
 
     public static function make(?array $metadata): ?self
     {
@@ -369,8 +367,7 @@ class Id3Video
         protected ?float $resolution_x = null,
         protected ?float $resolution_y = null,
         protected ?float $frame_rate = null,
-    ) {
-    }
+    ) {}
 
     public static function make(?array $metadata): ?self
     {
@@ -429,8 +426,7 @@ class Id3Stream
         protected bool $lossless = false,
         protected ?string $encoder_options = null,
         protected ?float $compression_ratio = null,
-    ) {
-    }
+    ) {}
 
     public static function make(?array $metadata): ?self
     {
@@ -522,8 +518,7 @@ class Id3AudioTag
         protected ?Id3TagRiff $riff = null,
         protected ?Id3TagMatroska $matroska = null,
         protected ?Id3TagApe $ape = null,
-    ) {
-    }
+    ) {}
 
     public static function make(?array $metadata): ?self
     {
@@ -605,8 +600,7 @@ class Id3AudioTagV1
         protected ?string $genre = null,
         protected ?string $comment = null,
         protected ?string $track_number = null,
-    ) {
-    }
+    ) {}
 
     public static function make(?array $metadata): ?self
     {
@@ -694,8 +688,7 @@ class Id3AudioTagV2
         protected ?string $text = null,
         protected ?string $unsynchronised_lyric = null,
         protected ?string $language = null,
-    ) {
-    }
+    ) {}
 
     public static function make(?array $metadata): ?self
     {
@@ -826,8 +819,7 @@ class Id3Comments
     protected function __construct(
         protected ?string $language = null,
         protected ?Id3CommentsPicture $picture = null,
-    ) {
-    }
+    ) {}
 
     public static function make(?array $metadata): ?self
     {
@@ -862,8 +854,7 @@ class Id3CommentsPicture
         protected ?string $picturetype = null,
         protected ?string $description = null,
         protected ?int $datalength = null,
-    ) {
-    }
+    ) {}
 
     public static function make(?array $metadata): ?self
     {
@@ -942,8 +933,7 @@ class Id3TagQuicktime
         protected ?string $lyrics = null,
         protected ?string $comment = null,
         protected ?string $stik = null,
-    ) {
-    }
+    ) {}
 
     public static function make(?array $metadata): ?self
     {
@@ -1110,8 +1100,7 @@ class Id3TagAsf
         protected ?string $track_number = null,
         protected ?string $year = null,
         protected ?string $encodingsettings = null,
-    ) {
-    }
+    ) {}
 
     public static function make(?array $metadata): ?self
     {
@@ -1217,8 +1206,7 @@ class Id3TagVorbisComment
         protected ?string $compilation = null,
         protected ?string $date = null,
         protected ?string $tracknumber = null,
-    ) {
-    }
+    ) {}
 
     public static function make(?array $metadata): ?self
     {
@@ -1339,8 +1327,7 @@ class Id3TagRiff
         protected ?string $title = null,
         protected ?string $product = null,
         protected ?string $software = null,
-    ) {
-    }
+    ) {}
 
     public static function make(?array $metadata): ?self
     {
@@ -1427,8 +1414,7 @@ class Id3TagMatroska
         protected ?string $date = null,
         protected ?string $encoder = null,
         protected ?string $duration = null,
-    ) {
-    }
+    ) {}
 
     public static function make(?array $metadata): ?self
     {
@@ -1575,8 +1561,7 @@ class Id3TagApe
         protected ?string $podcastdesc = null,
         protected ?string $language = null,
         protected ?string $year = null,
-    ) {
-    }
+    ) {}
 
     public static function make(?array $metadata): ?self
     {
@@ -1734,8 +1719,7 @@ class Id3TagsHtml
         protected ?Id3TagRiff $riff = null,
         protected ?Id3TagMatroska $matroska = null,
         protected ?Id3TagApe $ape = null,
-    ) {
-    }
+    ) {}
 
     public static function make(?array $metadata): ?self
     {

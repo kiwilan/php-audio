@@ -29,6 +29,7 @@ it('can read audiobook file m4b', function (string $file) {
     expect($audio->getLyrics())->toBe('Lyrics');
     expect($audio->getStik())->toBe('Audiobook');
     expect($audio->getDuration())->toBe(11.00);
+    expect($audio->getDurationHumanReadable())->toBe('00:00:11');
     expect($audio->getExtras())->toBeArray();
     expect($audio->toArray())->toBeArray();
 

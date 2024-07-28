@@ -22,6 +22,7 @@ it('can read file mp3', function () {
     expect($audio->getPath())->toBe(MP3);
     expect($audio->getFormat())->toBe(AudioFormatEnum::mp3);
     expect($audio->getDuration())->toBe(11.05);
+    expect($audio->getDurationHumanReadable())->toBe('00:00:11');
     expect($audio->getExtras())->toBeArray();
 
     $audio = $audio->getAudio();

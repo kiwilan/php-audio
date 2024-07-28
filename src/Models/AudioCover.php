@@ -18,7 +18,7 @@ class AudioCover
             return null;
         }
 
-        $self = new self();
+        $self = new self;
 
         $self->contents = $comments->picture()->data();
         $self->mimeType = $comments->picture()->image_mime();
