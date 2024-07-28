@@ -2,6 +2,10 @@
 
 All notable changes to `php-audio` will be documented in this file.
 
+## v3.0.08 - 2024-07-28
+
+Add `getDurationHumanReadable()` method to get the duration in human readable format: `HH:MM:SS`.
+
 ## v3.0.07 - 2024-06-04
 
 By @panVag
