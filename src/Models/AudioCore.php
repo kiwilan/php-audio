@@ -27,8 +27,7 @@ class AudioCore
         protected ?string $stik = null,
         protected bool $hasCover = false,
         protected ?AudioCoreCover $cover = null,
-    ) {
-    }
+    ) {}
 
     public function getTitle(): ?string
     {
@@ -456,11 +455,11 @@ class AudioCore
     public static function fromId3(?Id3AudioTagV1 $v1, ?Id3AudioTagV2 $v2): AudioCore
     {
         if (! $v1) {
-            $v1 = new Id3AudioTagV1();
+            $v1 = new Id3AudioTagV1;
         }
 
         if (! $v2) {
-            $v2 = new Id3AudioTagV2();
+            $v2 = new Id3AudioTagV2;
         }
 
         return new AudioCore(
@@ -646,12 +645,11 @@ class AudioCoreCover
         protected ?string $picturetypeid = null,
         protected ?string $description = null,
         protected ?string $mime = null,
-    ) {
-    }
+    ) {}
 
     public static function make(string $pathOrData): self
     {
-        $self = new self();
+        $self = new self;
 
         if (file_exists($pathOrData)) {
             $image = getimagesize($pathOrData);

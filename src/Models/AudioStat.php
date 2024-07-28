@@ -21,8 +21,7 @@ class AudioStat
         protected ?DateTime $modifiedAt = null,
         protected ?int $blockSize = null,
         protected ?int $numberOfBlocks = null,
-    ) {
-    }
+    ) {}
 
     public static function make(string $path): self
     {

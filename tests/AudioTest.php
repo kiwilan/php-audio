@@ -153,6 +153,7 @@ it('can read file id3v1', function (string $path) {
     expect($audio->getgetExtension())->toBe($extension);
     expect($audio->getFormat())->toBe($format);
     expect($audio->getDuration())->toBeFloat();
+    expect($audio->getDurationHumanReadable())->toBe('00:00:11');
     expect($audio->getExtras())->toBeArray();
 
     expect($audio)->toBeInstanceOf(Audio::class);

@@ -74,8 +74,7 @@ class Audio
         protected AudioStat $stat,
         protected Id3Reader $reader,
         protected ?Id3Writer $writer = null,
-    ) {
-    }
+    ) {}
 
     public static function get(string $path): self
     {
@@ -302,6 +301,14 @@ class Audio
     public function getDuration(): ?float
     {
         return $this->duration;
+    }
+
+    /**
+     * Get `duration` in human readable format: `00:00:00`.
+     */
+    public function getDurationHumanReadable(): ?string
+    {
+        return gmdate('H:i:s', intval($this->duration));
     }
 
     /**

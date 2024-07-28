@@ -22,8 +22,7 @@ class AudioMetadata
         protected ?string $channelMode = null,
         protected bool $lossless = false,
         protected ?float $compressionRatio = null,
-    ) {
-    }
+    ) {}
 
     public static function make(Audio $audio): self
     {

@@ -51,15 +51,14 @@ class Id3Writer
         protected Audio $audio,
         protected getid3_writetags $instance,
         protected AudioCore $core,
-    ) {
-    }
+    ) {}
 
     public static function make(Audio $audio): self
     {
         $self = new self(
             audio: $audio,
-            instance: new getid3_writetags(),
-            core: new AudioCore()
+            instance: new getid3_writetags,
+            core: new AudioCore
         );
 
         return $self;
