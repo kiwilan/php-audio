@@ -5,6 +5,7 @@ namespace Kiwilan\Audio\Id3;
 use getid3_writetags;
 use Kiwilan\Audio\Audio;
 use Kiwilan\Audio\Core\AudioCore;
+use Kiwilan\Audio\Core\AudioCoreCover;
 use Kiwilan\Audio\Enums\AudioFormatEnum;
 use Kiwilan\Audio\Enums\AudioTypeEnum;
 
@@ -253,6 +254,16 @@ class Id3Writer
     }
 
     /**
+     * @param  string  $pathOrData  Path to cover image or binary data
+     */
+    public function cover(string $pathOrData): self
+    {
+        $this->core->cover = AudioCoreCover::make($pathOrData);
+
+        return $this;
+    }
+
+    /**
      * Set manually tags, to know which key used for which tag, you have to refer to documentation.
      *
      * @docs https://github.com/kiwilan/php-audio#convert-properties
@@ -426,25 +437,25 @@ class Id3Writer
         return $this;
     }
 
-    private function attachCover(array &$tags): void
-    {
-        $coverFormatsAllowed = [AudioFormatEnum::mp3];
-        // if ($this->core->getCover() && in_array($this->audio->getFormat(), $coverFormatsAllowed)) {
-        //     // $tags = [
-        //     //     ...$tags,
-        //     //     'CTOC' => $old_tags['id3v2']['CTOC'],
-        //     //     'CHAP' => $old_tags['id3v2']['CHAP'],
-        //     //     'chapters' => $old_tags['id3v2']['chapters'],
-        //     // ];
-        //     $tags['attached_picture'][0] = [
-        //         'data' => base64_decode($this->core->getCover()->data()),
-        //         'picturetypeid' => $this->core->getCover()->picturetypeid(),
-        //         'description' => $this->core->getCover()->description(),
-        //         'mime' => $this->core->getCover()->mime(),
-        //     ];
-        //     $this->core->setHasCover(true);
-        // }
-    }
+    // private function attachCover(array &$tags): void
+    // {
+    //     $coverFormatsAllowed = [AudioFormatEnum::mp3];
+    //     if ($this->core->cover && in_array($this->audio->getFormat(), $coverFormatsAllowed)) {
+    //         // $tags = [
+    //         //     ...$tags,
+    //         //     'CTOC' => $old_tags['id3v2']['CTOC'],
+    //         //     'CHAP' => $old_tags['id3v2']['CHAP'],
+    //         //     'chapters' => $old_tags['id3v2']['chapters'],
+    //         // ];
+    //         $tags['attached_picture'][0] = [
+    //             'data' => base64_decode($this->core->cover->data),
+    //             'picturetypeid' => $this->core->cover->picture_type_id,
+    //             'description' => $this->core->cover->description,
+    //             'mime' => $this->core->cover->mime,
+    //         ];
+    //         $this->core->has_cover = true;
+    //     }
+    // }
 
     /**
      * @param  array<string, string>  $tags

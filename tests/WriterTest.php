@@ -47,6 +47,7 @@ it('can update tags', function () {
         ->synopsis('New Synopsis')
         ->language('en')
         ->copyright('New Copyright')
+        ->cover(FOLDER)
         ->save();
 
     $audio = Audio::read(MP3_WRITER);
