@@ -1,8 +1,8 @@
 <?php
 
 use Kiwilan\Audio\Audio;
-use Kiwilan\Audio\Models\AudioCore;
-use Kiwilan\Audio\Models\AudioCoreCover;
+use Kiwilan\Audio\Core\AudioCore;
+use Kiwilan\Audio\Core\AudioCoreCover;
 
 it('can convert formats', function () {
     $audio = Audio::get(MP3);
@@ -12,19 +12,18 @@ it('can convert formats', function () {
         album: $audio->getAlbum(),
         genre: $audio->getGenre(),
         year: $audio->getYear(),
-        trackNumber: $audio->getTrackNumber(),
+        track_number: $audio->getTrackNumber(),
         comment: $audio->getComment(),
-        albumArtist: $audio->getAlbumArtist(),
+        album_artist: $audio->getAlbumArtist(),
         composer: $audio->getComposer(),
-        discNumber: $audio->getDiscNumber(),
-        isCompilation: $audio->isCompilation(),
-        creationDate: $audio->getCreationDate(),
+        disc_number: $audio->getDiscNumber(),
+        is_compilation: $audio->isCompilation(),
+        creation_date: $audio->getCreationDate(),
         copyright: $audio->getCopyright(),
-        encodingBy: $audio->getEncodingBy(),
+        encoding_by: $audio->getEncodingBy(),
         encoding: $audio->getEncoding(),
         description: $audio->getDescription(),
         lyrics: $audio->getLyrics(),
-        stik: $audio->getStik(),
     );
 
     expect($core->getTitle())->toBe('Introduction');

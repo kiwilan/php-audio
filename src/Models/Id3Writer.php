@@ -5,6 +5,7 @@ namespace Kiwilan\Audio\Models;
 use DateTime;
 use getid3_writetags;
 use Kiwilan\Audio\Audio;
+use Kiwilan\Audio\Core\AudioCore;
 use Kiwilan\Audio\Enums\AudioFormatEnum;
 use Kiwilan\Audio\Enums\AudioTypeEnum;
 
@@ -221,13 +222,6 @@ class Id3Writer
         return $this;
     }
 
-    public function stik(?string $stik): self
-    {
-        $this->core->setStik($stik);
-
-        return $this;
-    }
-
     /**
      * @param  string  $pathOrData  Path to cover image or binary data
      */
@@ -331,6 +325,13 @@ class Id3Writer
         $this->instance->tagformats = $this->tagFormats;
         $this->instance->tag_data = $this->tags;
 
+        // $this->instance->overwrite_tags = false;
+        // $this->instance->remove_other_tags = false;
+        // ray($this->instance);
+
+        // $this->core->setTitle('test');
+        // ray($this->core);
+        // ray($this->instance);
         $this->success = $this->instance->WriteTags();
 
         $this->errors = $this->instance->errors;
@@ -371,7 +372,7 @@ class Id3Writer
         }
 
         if (! $supported && $this->failOnError) {
-            throw new \Exception("Format {$this->audio->getFormat()?->value} is not supported.");
+            throw new \Exception("Format {$this->audio->getFormat()->value} is not supported.");
         }
 
         if (! empty($this->warnings)) {
@@ -379,6 +380,11 @@ class Id3Writer
         }
 
         return $this->success;
+    }
+
+    private function assignCurrentTags(): self
+    {
+        //
     }
 
     private function automaticConvert(): self

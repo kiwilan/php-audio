@@ -76,6 +76,9 @@ define('WEBM', __DIR__.'/media/test.webm');
 define('WMA', __DIR__.'/media/test.wma');
 define('WV', __DIR__.'/media/test.wv');
 
+define('AUDIOBOOK_RH', __DIR__.'/media/audiobook_rh.m4b');
+define('AUDIOBOOK_RH_NOCOVER', __DIR__.'/media/audiobook_rh-nocover.m4b');
+
 define('AUDIOBOOKS', [
     AUDIOBOOK,
     AUDIOBOOK_MP3,
@@ -131,3 +134,16 @@ define('AUDIO_WRITER', [
     // WMA_WRITER,
     // WV_WRITER,
 ]);
+
+function clearOutput()
+{
+    $files = glob('./tests/output/*');
+    foreach ($files as $file) {
+        if (is_file($file)) {
+            if ($file === './tests/output/.gitignore') {
+                continue;
+            }
+            unlink($file);
+        }
+    }
+}

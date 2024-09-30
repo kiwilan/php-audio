@@ -413,41 +413,33 @@ You want to add a format? [See FAQ](#faq)
 
 `Audio::class` convert some properties to be more readable.
 
-|    ID3 type     |        Original         |     New property     |
-| :-------------: | :---------------------: | :------------------: |
-|     `id3v2`     |         `band`          |    `albumArtist`     |
-|     `id3v2`     |     `track_number`      |    `trackNumber`     |
-|     `id3v2`     |     `part_of_a_set`     |     `discNumber`     |
-|     `id3v2`     | `part_of_a_compilation` |   `isCompilation`    |
-|   `quicktime`   |     `track_number`      |    `trackNumber`     |
-|   `quicktime`   |      `disc_number`      |     `discNumber`     |
-|   `quicktime`   |      `compilation`      |   `isCompilation`    |
-|   `quicktime`   |     `creation_date`     |    `creationDate`    |
-|   `quicktime`   |     `album_artist`      |    `albumArtist`     |
-|   `quicktime`   |      `encoded_by`       |     `encodingBy`     |
-|   `quicktime`   |     `encoding_tool`     |      `encoding`      |
-|   `quicktime`   |   `description_long`    | `podcastDescription` |
-|      `asf`      |      `albumartist`      |    `albumArtist`     |
-|      `asf`      |       `partofset`       |     `discNumber`     |
-|      `asf`      |     `track_number`      |    `trackNumber`     |
-|      `asf`      |   `encodingsettings`    |      `encoding`      |
-| `vorbiscomment` |        `encoder`        |      `encoding`      |
-| `vorbiscomment` |      `albumartist`      |    `albumArtist`     |
-| `vorbiscomment` |      `discnumber`       |     `discNumber`     |
-| `vorbiscomment` |      `compilation`      |   `isCompilation`    |
-| `vorbiscomment` |      `tracknumber`      |    `trackNumber`     |
-|   `matroska`    |     `album_artist`      |    `albumArtist`     |
-|   `matroska`    |         `disc`          |     `discNumber`     |
-|   `matroska`    |      `part_number`      |    `trackNumber`     |
-|   `matroska`    |         `date`          |        `year`        |
-|   `matroska`    |      `compilation`      |   `isCompilation`    |
-|   `matroska`    |        `encoder`        |      `encoding`      |
-|      `ape`      |     `album_artist`      |    `albumArtist`     |
-|      `ape`      |         `disc`          |     `discNumber`     |
-|      `ape`      |      `compilation`      |   `isCompilation`    |
-|      `ape`      |         `track`         |    `trackNumber`     |
-|      `ape`      |         `date`          |        `year`        |
-|      `ape`      |        `encoder`        |      `encoding`      |
+|    ID3 type     |        Original         |   New property   |
+| :-------------: | :---------------------: | :--------------: |
+|     `id3v2`     |         `band`          |  `album_artist`  |
+|     `id3v2`     |     `part_of_a_set`     |  `disc_number`   |
+|     `id3v2`     | `part_of_a_compilation` | `is_compilation` |
+|   `quicktime`   |      `compilation`      | `is_compilation` |
+|   `quicktime`   |      `encoded_by`       |  `encoding_by`   |
+|   `quicktime`   |     `encoding_tool`     |    `encoding`    |
+|   `quicktime`   |   `description_long`    |    `synopsis`    |
+|      `asf`      |      `albumartist`      |  `album_artist`  |
+|      `asf`      |       `partofset`       |  `disc_number`   |
+|      `asf`      |   `encodingsettings`    |    `encoding`    |
+| `vorbiscomment` |        `encoder`        |    `encoding`    |
+| `vorbiscomment` |      `albumartist`      |  `album_artist`  |
+| `vorbiscomment` |      `discnumber`       |  `disc_number`   |
+| `vorbiscomment` |      `compilation`      | `is_compilation` |
+| `vorbiscomment` |      `tracknumber`      |  `track_number`  |
+|   `matroska`    |         `disc`          |  `disc_number`   |
+|   `matroska`    |      `part_number`      |  `track_number`  |
+|   `matroska`    |         `date`          |      `year`      |
+|   `matroska`    |      `compilation`      | `is_compilation` |
+|   `matroska`    |        `encoder`        |    `encoding`    |
+|      `ape`      |         `disc`          |  `disc_number`   |
+|      `ape`      |      `compilation`      | `is_compilation` |
+|      `ape`      |         `track`         |  `track_number`  |
+|      `ape`      |         `date`          |      `year`      |
+|      `ape`      |        `encoder`        |    `encoding`    |
 
 ## Testing
 

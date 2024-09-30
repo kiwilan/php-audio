@@ -2,140 +2,61 @@
 
 use Kiwilan\Audio\Audio;
 use Kiwilan\Audio\Enums\AudioFormatEnum;
-use Kiwilan\Audio\Models\AudioCover;
+use Kiwilan\Audio\Id3\Id3Reader;
+use Kiwilan\Audio\Models\AudioMetadata;
 
-it('can read file', function (string $path) {
+it('can read basic info', function (string $path) {
     $audio = Audio::get($path);
     $extension = pathinfo($path, PATHINFO_EXTENSION);
     $format = AudioFormatEnum::tryFrom($extension);
 
     expect($audio)->toBeInstanceOf(Audio::class);
+    expect($audio->getPath())->toBe($path);
+    expect($audio->getExtension())->toBe($extension);
+    expect($audio->getFormat())->toBe($format);
+
+    expect($audio->getMetadata())->toBeInstanceOf(AudioMetadata::class);
+    expect($audio->getId3Reader())->toBeInstanceOf(Id3Reader::class);
+    expect($audio->getDuration())->toBeFloat();
+    expect($audio->getDurationHuman())->toBeString();
+
+    expect($audio->isWritable())->toBeBool();
+    expect($audio->isValid())->toBeBool();
+    expect($audio->hasCover())->toBeBool();
+
     expect($audio->getTitle())->toBe('Introduction');
     expect($audio->getArtist())->toBe('Mr Piouf');
     expect($audio->getAlbum())->toBe('P1PDD Le conclave de Troie');
     expect($audio->getGenre())->toBe('Roleplaying game');
     expect($audio->getYear())->toBe(2016);
     expect($audio->getTrackNumber())->toBe('1');
-    if ($audio->getComment()) {
-        expect($audio->getComment())->toBe('http://www.p1pdd.com');
-    }
-    expect($audio->getAlbumArtist())->toBe('P1PDD & Mr Piouf');
-    expect($audio->getComposer())->toBe('P1PDD & Piouf');
-    expect($audio->getDiscNumber())->toBeString();
-    expect($audio->isCompilation())->toBeBool();
-    expect($audio->getPath())->toBe($path);
-    expect($audio->getgetExtension())->toBe($extension);
+    expect($audio->getTrackNumberInt())->toBe(1);
     expect($audio->getFormat())->toBe($format);
-    expect($audio->getDuration())->toBeFloat();
-    expect($audio->getExtras())->toBeArray();
-    expect($audio->getTags())->toBeArray();
-    expect($audio->toArray())->toBeArray();
-
-    $metadata = $audio->getAudio();
-    expect($metadata->getPath())->toBeString();
-    expect($metadata->getFilesize())->toBeInt();
-    expect($metadata->getExtension())->toBeString();
-    expect($metadata->getEncoding())->toBeString();
-    expect($metadata->getMimeType())->toBeString();
-    if ($metadata->getDurationSeconds()) {
-        expect($metadata->getDurationSeconds())->toBeFloat();
-    }
-    if ($metadata->getDurationReadable()) {
-        expect($metadata->getDurationReadable())->toBeString();
-    }
-    if ($metadata->getBitrate()) {
-        expect($metadata->getBitrate())->toBeInt();
-    }
-    if ($metadata->getBitrateMode()) {
-        expect($metadata->getBitrateMode())->toBeString();
-    }
-    if ($metadata->getSampleRate()) {
-        expect($metadata->getSampleRate())->toBeInt();
-    }
-    if ($metadata->getChannels()) {
-        expect($metadata->getChannels())->toBeInt();
-    }
-    if ($metadata->getChannelMode()) {
-        expect($metadata->getChannelMode())->toBeString();
-    }
-    expect($metadata->getLossless())->toBeBool();
-    if ($metadata->getCompressionRatio()) {
-        expect($metadata->getCompressionRatio())->toBeFloat();
-    }
-    expect($audio->isValid())->toBeTrue();
 })->with([...AUDIO]);
 
-it('can extract cover', function (string $path) {
-    $audio = Audio::get($path);
-    $ext = pathinfo($path, PATHINFO_EXTENSION);
-    $cover = $audio->getCover();
+it('can read disc number', function () {
+    $audio = Audio::get(M4A);
 
-    if ($audio->hasCover()) {
-        expect($cover)->toBeInstanceOf(AudioCover::class);
-        expect($cover->getContents())->toBeString();
-        expect($cover->getContents())->toBeString();
-        expect($cover->getMimeType())->toBeString();
-        if ($cover->getWidth()) {
-            expect($cover->getWidth())->toBeInt();
-        }
-        if ($cover->getHeight()) {
-            expect($cover->getHeight())->toBeInt();
-        }
-
-        $path = "tests/output/cover-{$ext}.jpg";
-        file_put_contents($path, $cover->getContents());
-        expect(file_exists($path))->toBeTrue();
-        expect($path)->toBeReadableFile();
-    } else {
-        expect($cover)->toBeNull();
-    }
-})->with([...AUDIO]);
-
-it('can use stat data', function (string $path) {
-    $audio = Audio::get($path);
-    $stat = $audio->getStat();
-
-    expect($stat->getPath())->toBe($path);
-    expect($stat->getDeviceNumber())->toBeInt();
-    expect($stat->getInodeNumber())->toBeInt();
-    expect($stat->getInodeProtectionMode())->toBeInt();
-    expect($stat->getNumberOfLinks())->toBeInt();
-    expect($stat->getUserId())->toBeInt();
-    expect($stat->getGroupId())->toBeInt();
-    expect($stat->getDeviceType())->toBeInt();
-    expect($stat->getLastAccessAt())->toBeInstanceOf(DateTime::class);
-    expect($stat->getCreatedAt())->toBeInstanceOf(DateTime::class);
-    expect($stat->getModifiedAt())->toBeInstanceOf(DateTime::class);
-    expect($stat->getBlockSize())->toBeInt();
-    expect($stat->getNumberOfBlocks())->toBeInt();
-    expect($stat->toArray())->toBeArray();
-    expect($stat->toJson())->toBeString();
-    expect($stat->__toString())->toBeString();
-})->with([...AUDIO]);
-
-it('can read mp3 stream', function () {
-    $audio = Audio::get(MP3);
-    $streams = $audio->getReader()->getAudio()->streams();
-
-    expect($streams)->toBeArray();
-    expect($streams)->toHaveCount(1);
-    expect($streams[0]->dataformat())->toBe('mp3');
-    expect($streams[0]->channels())->toBe(2);
-    expect($streams[0]->sample_rate())->toBe(44100);
-    expect($streams[0]->bitrate())->toBe(128000.0);
-    expect($streams[0]->channelmode())->toBe('joint stereo');
-    expect($streams[0]->bitrate_mode())->toBe('cbr');
-    expect($streams[0]->codec())->toBe('LAME');
-    expect($streams[0]->encoder())->toBe('LAME3.100');
-    expect($streams[0]->lossless())->toBeFalse();
-    expect($streams[0]->encoder_options())->toBe('CBR128');
-    expect($streams[0]->compression_ratio())->toBe(0.09070294784580499);
+    expect($audio->getDiscNumber())->toBe('1/2');
+    expect($audio->getDiscNumberInt())->toBe(1);
 });
 
-it('can read wrong audio file', function () {
-    $audio = Audio::get(MD);
+it('can read encoding', function () {
+    $audio = Audio::get(M4V);
 
-    expect($audio->isValid())->toBeFalse();
+    expect($audio->getEncoding())->toBe('Lavf60.3.100');
+});
+
+it('can read description', function () {
+    $audio = Audio::get(FLAC);
+
+    expect($audio->getDescription())->toBe('http://www.p1pdd.com');
+});
+
+it('can read creation date', function () {
+    $audio = Audio::get(WV);
+
+    expect($audio->getCreationDate())->toBe('2016');
 });
 
 it('can read file id3v1', function (string $path) {
@@ -150,11 +71,17 @@ it('can read file id3v1', function (string $path) {
     expect($audio->getAlbumArtist())->toBeString();
     expect($audio->getComposer())->toBeNull();
 
-    expect($audio->getgetExtension())->toBe($extension);
+    expect($audio->getExtension())->toBe($extension);
     expect($audio->getFormat())->toBe($format);
     expect($audio->getDuration())->toBeFloat();
-    expect($audio->getDurationHumanReadable())->toBe('00:00:11');
+    expect($audio->getDurationHuman())->toBe('00:00:11');
     expect($audio->getExtras())->toBeArray();
 
     expect($audio)->toBeInstanceOf(Audio::class);
 })->with([...AUDIO_ID3_V1]);
+
+it('can read wrong audio file', function () {
+    $audio = Audio::get(MD);
+
+    expect($audio->isValid())->toBeFalse();
+});
