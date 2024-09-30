@@ -4,39 +4,82 @@ use Kiwilan\Audio\Audio;
 use Kiwilan\Audio\Enums\AudioFormatEnum;
 use Kiwilan\Audio\Models\AudioCore;
 
-it('can update tags', function () {
+beforeEach(function () {
     $audio = Audio::get(MP3_WRITER);
 
-    expect($audio->getTitle())->toBe('Introduction');
-    expect($audio->getArtist())->toBe('Mr Piouf');
-    expect($audio->getAlbum())->toBe('P1PDD Le conclave de Troie');
-    expect($audio->getGenre())->toBe('Roleplaying game');
-    expect($audio->getYear())->toBe(2016);
-    expect($audio->getTrackNumber())->toBe('1');
-    expect($audio->getComment())->toBe('http://www.p1pdd.com');
-    expect($audio->getAlbumArtist())->toBe('P1PDD & Mr Piouf');
-    expect($audio->getComposer())->toBe('P1PDD & Piouf');
-    expect($audio->getDiscNumber())->toBe('1');
-    expect($audio->isCompilation())->toBeTrue();
+    $audio->update()
+        ->title('Introduction')
+        ->artist('Mr Piouf')
+        ->album('P1PDD Le conclave de Troie')
+        ->genre('Roleplaying game')
+        ->year(2016)
+        ->trackNumber('1')
+        ->comment('http://www.p1pdd.com')
+        ->albumArtist('P1PDD & Mr Piouf')
+        ->composer('P1PDD & Piouf')
+        ->discNumber('1')
+        ->isCompilation()
+        ->save();
+});
+
+it('can update tags', function () {
+    $audio = Audio::get(MP3_WRITER);
+    testMp3Writer($audio);
 
     $audio->update()
-        ->album('P1PDD')
+        ->title('New Title')
+        ->artist('New Artist')
+        ->album('New Album')
+        ->genre('New Genre')
+        ->year(2022)
+        ->trackNumber('2/10')
+        ->albumArtist('New Album Artist')
+        ->comment('New Comment')
+        ->composer('New Composer')
+        ->discNumber('2/2')
+        ->isNotCompilation()
+        ->lyrics('New Lyrics')
+        ->creationDate('2021-01-01')
+        ->copyright('New Copyright')
+        ->encodingBy('New Encoding By')
+        ->encoding('New Encoding')
+        ->description('New Description')
+        ->synopsis('New Synopsis')
+        ->language('en')
+        ->failOnErrors()
         ->save();
 
-    expect($audio->getAlbum())->toBe('P1PDD');
-
-    // $audio->update()
-    //     ->album('P1PDD')
-    //     ->save();
-
-    // $tag = $audio->update()
-    //     ->tags([
-    //         'title' => 'New Title',
-    //     ])
-    //     ->save();
-
-    // expect($audio->getAlbum())->toBe('P1PDD');
+    $audio = Audio::get(MP3_WRITER);
+    testMp3Writed($audio);
 });
+
+// it('can update tags manually', function () {
+//     $audio = Audio::get(MP3_WRITER);
+//     testMp3Writer($audio);
+
+//     $audio->update()
+//         ->tags([
+//             'title' => 'New Title',
+//             'artist' => 'New Artist',
+//             'album' => 'New Album',
+//             'genre' => 'New Genre',
+//             'year' => '2022',
+//             'track_number' => '2/10',
+//             'band' => 'New Album Artist',
+//             'comment' => 'New Comment',
+//             'composer' => 'New Composer',
+//             'part_of_a_set' => '2/2',
+//             'part_of_a_compilation' => false,
+//             'unsynchronised_lyric' => 'New Lyrics',
+//             'language' => 'en',
+//             'copyright' => 'New Copyright',
+//             'text' => 'New Text',
+//         ])
+//         ->save();
+
+//     $audio = Audio::get(MP3_WRITER);
+//     testMp3Writed($audio);
+// });
 
 // it('can update file', function (string $path) {
 //     $audio = Audio::get($path);

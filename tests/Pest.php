@@ -1,5 +1,7 @@
 <?php
 
+use Kiwilan\Audio\Audio;
+
 define('MP3_NO_META', __DIR__.'/media/test-no-meta.mp3');
 define('AUDIOBOOK', __DIR__.'/media/audiobook.m4b');
 define('AUDIOBOOK_MP3', __DIR__.'/media/audiobook.mp3');
@@ -146,4 +148,33 @@ function clearOutput()
             unlink($file);
         }
     }
+}
+
+function testMp3Writer(Audio $audio)
+{
+    expect($audio->getTitle())->toBe('Introduction');
+    expect($audio->getArtist())->toBe('Mr Piouf');
+    expect($audio->getAlbum())->toBe('P1PDD Le conclave de Troie');
+    expect($audio->getGenre())->toBe('Roleplaying game');
+    expect($audio->getYear())->toBe(2016);
+    expect($audio->getTrackNumber())->toBe('1');
+    expect($audio->getComment())->toBe('http://www.p1pdd.com');
+    expect($audio->getAlbumArtist())->toBe('P1PDD & Mr Piouf');
+    expect($audio->getComposer())->toBe('P1PDD & Piouf');
+    expect($audio->getDiscNumber())->toBe('1');
+    expect($audio->isCompilation())->toBeTrue();
+}
+
+function testMp3Writed(Audio $audio)
+{
+    expect($audio->getTitle())->toBe('New Title');
+    expect($audio->getArtist())->toBe('New Artist');
+    expect($audio->getAlbum())->toBe('New Album');
+    expect($audio->getGenre())->toBe('New Genre');
+    expect($audio->getYear())->toBe(2022);
+    expect($audio->getAlbumArtist())->toBe('New Album Artist');
+    expect($audio->getComment())->toBe('New Comment');
+    expect($audio->getComposer())->toBe('New Composer');
+    expect($audio->getDiscNumber())->toBe('2/2');
+    expect($audio->isCompilation())->toBeFalse();
 }

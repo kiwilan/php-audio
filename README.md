@@ -413,6 +413,16 @@ You want to add a format? [See FAQ](#faq)
 
 `Audio::class` convert some properties to be more readable.
 
+-   `ape` format: [`Id3TagApe`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagApe.php)
+-   `asf` format: [`Id3TagAsf`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagAsf.php)
+-   `id3v1` format: [`Id3TagAudioV1`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagAudioV1.php)
+-   `id3v2` format: [`Id3TagAudioV2`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagAudioV2.php)
+-   `matroska` format: [`Id3TagMatroska`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagMatroska.php)
+-   `quicktime` format: [`Id3TagQuicktime`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagQuicktime.php)
+-   `vorbiscomment` format: [`Id3TagVorbisComment`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagVorbisComment.php)
+-   `riff` format: [`Id3TagRiff`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagRiff.php)
+-   `unknown` format: [`Id3TagVorbisComment`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagVorbisComment.php)
+
 |    ID3 type     |        Original         |   New property   |
 | :-------------: | :---------------------: | :--------------: |
 |     `id3v2`     |         `band`          |  `album_artist`  |

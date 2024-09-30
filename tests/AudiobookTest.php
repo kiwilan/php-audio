@@ -39,6 +39,7 @@ it('can read audiobook', function () {
     expect($raw['comment'])->toBe('English');
     expect($raw['asin'])->toBe('ASIN');
     expect($raw['album_artist'])->toBe('Robin Hobb');
+    ray($raw);
 
     expect($audiobook->isWritable())->toBeTrue();
     expect($audiobook->isValid())->toBeTrue();
