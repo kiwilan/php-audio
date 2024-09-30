@@ -46,14 +46,14 @@ it('can read mp3 info', function () {
     expect($audio->getLyrics())->toBeNull();
     expect($audio->getComment())->toBe('http://www.p1pdd.com');
 
-    expect($audio->getRawTagsAll())->toBeArray();
-    expect($audio->getRawTagsAll()['id3v1'])->toBeArray();
-    expect($audio->getRawTagsAll()['id3v1'])->toHaveCount(6);
-    expect($audio->getRawTagsAll()['id3v2'])->toBeArray();
-    expect($audio->getRawTagsAll()['id3v2'])->toHaveCount(11);
-    expect($audio->getRawTags())->toHaveCount(11);
-    expect($audio->getRawTags('id3v2'))->toHaveCount(11);
-    expect($audio->getRawTagsKey('title'))->toBe('Introduction');
+    expect($audio->getRawAll())->toBeArray();
+    expect($audio->getRawAll()['id3v1'])->toBeArray();
+    expect($audio->getRawAll()['id3v1'])->toHaveCount(6);
+    expect($audio->getRawAll()['id3v2'])->toBeArray();
+    expect($audio->getRawAll()['id3v2'])->toHaveCount(11);
+    expect($audio->getRaw())->toHaveCount(11);
+    expect($audio->getRaw('id3v2'))->toHaveCount(11);
+    expect($audio->getRawKey('title'))->toBe('Introduction');
     expect($audio->getExtras())->toBeArray();
 
     $cover = $audio->getCover();

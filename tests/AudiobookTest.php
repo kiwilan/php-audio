@@ -15,7 +15,7 @@ it('can read audiobook', function () {
 
     expect($audiobook->getMetadata())->toBeInstanceOf(AudioMetadata::class);
 
-    $raw = $audiobook->getRawTags();
+    $raw = $audiobook->getRaw();
     expect($raw['title'])->toBe('Assassin’s Apprentice');
     expect($raw['artist'])->toBe('Robin Hobb');
     expect($raw['album'])->toBe('Assassin’s Apprentice');
@@ -39,7 +39,34 @@ it('can read audiobook', function () {
     expect($raw['comment'])->toBe('English');
     expect($raw['asin'])->toBe('ASIN');
     expect($raw['album_artist'])->toBe('Robin Hobb');
-    ray($raw);
+    expect($raw['series-part'])->toBe('1');
+    expect($raw['series'])->toBe('The Farseer');
+
+    expect($audiobook->getRawKey('title'))->toBe('Assassin’s Apprentice');
+    expect($audiobook->getRawKey('artist'))->toBe('Robin Hobb');
+    expect($audiobook->getRawKey('album'))->toBe('Assassin’s Apprentice');
+    expect($audiobook->getRawKey('genre'))->toBe('Animals/Political/Epic/Military');
+    expect($audiobook->getRawKey('origyear'))->toBe('2024/09/30');
+    expect($audiobook->getRawKey('track_number'))->toBe('1/1');
+    expect($audiobook->getRawKey('disc_number'))->toBe('1');
+    expect($audiobook->getRawKey('compilation'))->toBe(1);
+    expect($audiobook->getRawKey('creation_date'))->toBe('2024-9-30T12:00:00Z');
+    expect($audiobook->getRawKey('encoding_tool'))->toBe('Audiobook Builder 2.2.9 (www.splasm.com), macOS 15.0');
+    expect($audiobook->getRawKey('subtitle'))->toBe('Subtitle');
+    expect($audiobook->getRawKey('description_long'))->toBeString();
+    expect($audiobook->getRawKey('language'))->toBe('English');
+    expect($audiobook->getRawKey('lyrics'))->toBe('The Farseer #01');
+    expect($audiobook->getRawKey('stik'))->toBe('Audiobook');
+    expect($audiobook->getRawKey('encoded_by'))->toBe('©2012 Robin Hobb (P)2012 HarperCollins Publishers Limited');
+    expect($audiobook->getRawKey('description'))->toBeString();
+    expect($audiobook->getRawKey('copyright'))->toBe('HarperCollins');
+    expect($audiobook->getRawKey('isbn'))->toBe('ISBN');
+    expect($audiobook->getRawKey('composer'))->toBe('Paul Boehmer');
+    expect($audiobook->getRawKey('comment'))->toBe('English');
+    expect($audiobook->getRawKey('asin'))->toBe('ASIN');
+    expect($audiobook->getRawKey('album_artist'))->toBe('Robin Hobb');
+    expect($audiobook->getRawKey('series-part'))->toBe('1');
+    expect($audiobook->getRawKey('series'))->toBe('The Farseer');
 
     expect($audiobook->isWritable())->toBeTrue();
     expect($audiobook->isValid())->toBeTrue();
@@ -96,18 +123,18 @@ it('can read audiobook file m4b', function (string $file) {
     expect($audio->getDurationHuman())->toBe('00:00:11');
     expect($audio->getExtras())->toBeArray();
 
-    expect($audio->getRawTags())->toBeArray();
-    expect($audio->getRawTagsKey('title'))->toBe('P1PDD Saison 1');
-    expect($audio->getRawTagsKey('artist'))->toBe('Mr Piouf');
-    expect($audio->getRawTagsKey('album'))->toBe('P1PDD Saison 1');
-    expect($audio->getRawTagsKey('genre'))->toBe('Audiobooks');
-    expect($audio->getRawTagsKey('track_number'))->toBe('1/1');
-    expect($audio->getRawTagsKey('comment'))->toBe('P1PDD team');
+    expect($audio->getRaw())->toBeArray();
+    expect($audio->getRawKey('title'))->toBe('P1PDD Saison 1');
+    expect($audio->getRawKey('artist'))->toBe('Mr Piouf');
+    expect($audio->getRawKey('album'))->toBe('P1PDD Saison 1');
+    expect($audio->getRawKey('genre'))->toBe('Audiobooks');
+    expect($audio->getRawKey('track_number'))->toBe('1/1');
+    expect($audio->getRawKey('comment'))->toBe('P1PDD team');
 })->with([AUDIOBOOK]);
 
 it('can read audiobook file mp3', function (string $file) {
     $audio = Audio::get($file);
 
-    expect(count($audio->getRawTags()))->toBe(15);
-    expect(count($audio->getRawTags('id3v2')))->toBe(15);
+    expect(count($audio->getRaw()))->toBe(15);
+    expect(count($audio->getRaw('id3v2')))->toBe(15);
 })->with([AUDIOBOOK_MP3]);

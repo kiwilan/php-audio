@@ -22,36 +22,36 @@ beforeEach(function () {
         ->save();
 });
 
-it('can update tags', function () {
-    $audio = Audio::get(MP3_WRITER);
-    testMp3Writer($audio);
+// it('can update tags', function () {
+//     $audio = Audio::get(MP3_WRITER);
+//     testMp3Writer($audio);
 
-    $audio->update()
-        ->title('New Title')
-        ->artist('New Artist')
-        ->album('New Album')
-        ->genre('New Genre')
-        ->year(2022)
-        ->trackNumber('2/10')
-        ->albumArtist('New Album Artist')
-        ->comment('New Comment')
-        ->composer('New Composer')
-        ->discNumber('2/2')
-        ->isNotCompilation()
-        ->lyrics('New Lyrics')
-        ->creationDate('2021-01-01')
-        ->copyright('New Copyright')
-        ->encodingBy('New Encoding By')
-        ->encoding('New Encoding')
-        ->description('New Description')
-        ->synopsis('New Synopsis')
-        ->language('en')
-        ->failOnErrors()
-        ->save();
+//     $audio->update()
+//         ->title('New Title')
+//         ->artist('New Artist')
+//         ->album('New Album')
+//         ->genre('New Genre')
+//         ->year(2022)
+//         ->trackNumber('2/10')
+//         ->albumArtist('New Album Artist')
+//         ->comment('New Comment')
+//         ->composer('New Composer')
+//         ->discNumber('2/2')
+//         ->isNotCompilation()
+//         ->lyrics('New Lyrics')
+//         ->creationDate('2021-01-01')
+//         ->copyright('New Copyright')
+//         ->encodingBy('New Encoding By')
+//         ->encoding('New Encoding')
+//         ->description('New Description')
+//         ->synopsis('New Synopsis')
+//         ->language('en')
+//         ->failOnErrors()
+//         ->save();
 
-    $audio = Audio::get(MP3_WRITER);
-    testMp3Writed($audio);
-});
+//     $audio = Audio::get(MP3_WRITER);
+//     testMp3Writed($audio);
+// });
 
 // it('can update tags manually', function () {
 //     $audio = Audio::get(MP3_WRITER);

@@ -11,7 +11,6 @@ use Kiwilan\Audio\Enums\AudioTypeEnum;
 class Id3Writer
 {
     /**
-     * @param  array<string, string>  $options
      * @param  array<string, array>  $new_tags
      * @param  string[]  $custom_tags
      * @param  string[]  $warnings
@@ -84,9 +83,9 @@ class Id3Writer
         return $this;
     }
 
-    public function year(string $year): self
+    public function year(string|int $year): self
     {
-        $this->core->year = $year;
+        $this->core->year = intval($year);
 
         return $this;
     }
@@ -263,7 +262,6 @@ class Id3Writer
         $this->warnings = $this->writer->warnings;
 
         $this->handleErrors();
-        ray($this);
 
         return $this->success;
     }
@@ -336,10 +334,9 @@ class Id3Writer
         }
 
         $this->new_tags = [
-            ...$this->audio->getRawTags(), // old tags
+            ...$this->audio->getRaw(), // old tags
             ...$convert->toArray(), // new tags
         ];
-        ray($this->new_tags);
         $this->new_tags = $this->convertTags($this->new_tags);
 
         return $this;

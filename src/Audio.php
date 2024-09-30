@@ -389,7 +389,7 @@ class Audio
      *
      * For example, for `mp3` format: `['id3v1' => [...], 'id3v2' => [...]]`.
      */
-    public function getRawTagsAll(): array
+    public function getRawAll(): array
     {
         return $this->raw_tags_all;
     }
@@ -402,7 +402,7 @@ class Audio
      * @param  string|null  $format  If not provided, main format will be returned.
      * @return string[]
      */
-    public function getRawTags(?string $format = null): ?array
+    public function getRaw(?string $format = null): ?array
     {
         if ($format) {
             return $this->raw_tags_all[$format] ?? null;
@@ -427,21 +427,21 @@ class Audio
      * @param  string  $key  Key name.
      * @param  string|null  $format  If not provided, main format will be used.
      */
-    public function getRawTagsKey(string $key, ?string $format = null): ?string
+    public function getRawKey(string $key, ?string $format = null): string|int|bool|null
     {
-        $tags = $this->getRawTags($format);
+        $tags = $this->getRaw($format);
 
         return $tags[$key] ?? null;
     }
 
     /**
-     * Get raw tags as array with main format, same as `getRawTags()`.
+     * Get raw tags as array with main format, same as `getRaw()`.
      *
      * @return string[]
      */
     public function getExtras(): array
     {
-        return $this->getRawTags();
+        return $this->getRaw();
     }
 
     private function parseTags(?\Kiwilan\Audio\Id3\Id3Reader $id3_reader): self
