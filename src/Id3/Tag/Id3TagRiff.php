@@ -2,7 +2,7 @@
 
 namespace Kiwilan\Audio\Id3\Tag;
 
-class Id3TagRiff
+class Id3TagRiff extends Id3Tag
 {
     public function __construct(
         readonly public ?string $artist = null,
@@ -20,13 +20,13 @@ class Id3TagRiff
             return null;
         }
         $self = new self(
-            artist: $metadata['artist'] ?? null,
-            comment: $metadata['comment'] ?? null,
-            creationdate: $metadata['creationdate'] ?? null,
-            genre: $metadata['genre'] ?? null,
-            title: $metadata['title'] ?? null,
-            product: $metadata['product'] ?? null,
-            software: $metadata['software'] ?? null,
+            artist: self::parseTag($metadata, 'artist'),
+            comment: self::parseTag($metadata, 'comment'),
+            creationdate: self::parseTag($metadata, 'creationdate'),
+            genre: self::parseTag($metadata, 'genre'),
+            title: self::parseTag($metadata, 'title'),
+            product: self::parseTag($metadata, 'product'),
+            software: self::parseTag($metadata, 'software'),
         );
 
         return $self;

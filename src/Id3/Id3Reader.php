@@ -10,8 +10,6 @@ use Kiwilan\Audio\Id3\Reader\Id3Video;
 
 class Id3Reader
 {
-    protected array $raw = [];
-
     protected function __construct(
         protected getID3 $instance,
         protected bool $is_writable = false,
@@ -33,6 +31,7 @@ class Id3Reader
         protected ?float $playtime_seconds = null,
         protected ?float $bitrate = null,
         protected ?string $playtime_string = null,
+        protected array $raw = [],
     ) {}
 
     public static function make(string $path): self

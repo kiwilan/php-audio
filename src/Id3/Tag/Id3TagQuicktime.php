@@ -2,7 +2,7 @@
 
 namespace Kiwilan\Audio\Id3\Tag;
 
-class Id3TagQuicktime
+class Id3TagQuicktime extends Id3Tag
 {
     public function __construct(
         readonly public ?string $title = null,
@@ -33,25 +33,25 @@ class Id3TagQuicktime
         }
 
         $self = new self(
-            title: $metadata['title'] ?? null,
-            track_number: $metadata['track_number'] ?? null,
-            disc_number: $metadata['disc_number'] ?? null,
-            compilation: $metadata['compilation'] ?? null,
-            album: $metadata['album'] ?? null,
-            genre: $metadata['genre'] ?? null,
-            composer: $metadata['composer'] ?? null,
-            creation_date: $metadata['creation_date'] ?? null,
-            copyright: $metadata['copyright'] ?? null,
-            artist: $metadata['artist'] ?? null,
-            album_artist: $metadata['album_artist'] ?? null,
-            encoded_by: $metadata['encoded_by'] ?? null,
-            encoding_tool: $metadata['encoding_tool'] ?? null,
-            description: $metadata['description'] ?? null,
-            description_long: $metadata['description_long'] ?? null,
-            language: $metadata['language'] ?? null,
-            lyrics: $metadata['lyrics'] ?? null,
-            comment: $metadata['comment'] ?? null,
-            stik: $metadata['stik'] ?? null,
+            title: self::parseTag($metadata, 'title'),
+            track_number: self::parseTag($metadata, 'track_number'),
+            disc_number: self::parseTag($metadata, 'disc_number'),
+            compilation: self::parseTag($metadata, 'compilation'),
+            album: self::parseTag($metadata, 'album'),
+            genre: self::parseTag($metadata, 'genre'),
+            composer: self::parseTag($metadata, 'composer'),
+            creation_date: self::parseTag($metadata, 'creation_date'),
+            copyright: self::parseTag($metadata, 'copyright'),
+            artist: self::parseTag($metadata, 'artist'),
+            album_artist: self::parseTag($metadata, 'album_artist'),
+            encoded_by: self::parseTag($metadata, 'encoded_by'),
+            encoding_tool: self::parseTag($metadata, 'encoding_tool'),
+            description: self::parseTag($metadata, 'description'),
+            description_long: self::parseTag($metadata, 'description_long'),
+            language: self::parseTag($metadata, 'language'),
+            lyrics: self::parseTag($metadata, 'lyrics'),
+            comment: self::parseTag($metadata, 'comment'),
+            stik: self::parseTag($metadata, 'stik'),
         );
 
         return $self;

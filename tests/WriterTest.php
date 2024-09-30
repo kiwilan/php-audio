@@ -4,6 +4,40 @@ use Kiwilan\Audio\Audio;
 use Kiwilan\Audio\Enums\AudioFormatEnum;
 use Kiwilan\Audio\Models\AudioCore;
 
+it('can update tags', function () {
+    $audio = Audio::get(MP3_WRITER);
+
+    expect($audio->getTitle())->toBe('Introduction');
+    expect($audio->getArtist())->toBe('Mr Piouf');
+    expect($audio->getAlbum())->toBe('P1PDD Le conclave de Troie');
+    expect($audio->getGenre())->toBe('Roleplaying game');
+    expect($audio->getYear())->toBe(2016);
+    expect($audio->getTrackNumber())->toBe('1');
+    expect($audio->getComment())->toBe('http://www.p1pdd.com');
+    expect($audio->getAlbumArtist())->toBe('P1PDD & Mr Piouf');
+    expect($audio->getComposer())->toBe('P1PDD & Piouf');
+    expect($audio->getDiscNumber())->toBe('1');
+    expect($audio->isCompilation())->toBeTrue();
+
+    $audio->update()
+        ->album('P1PDD')
+        ->save();
+
+    expect($audio->getAlbum())->toBe('P1PDD');
+
+    // $audio->update()
+    //     ->album('P1PDD')
+    //     ->save();
+
+    // $tag = $audio->update()
+    //     ->tags([
+    //         'title' => 'New Title',
+    //     ])
+    //     ->save();
+
+    // expect($audio->getAlbum())->toBe('P1PDD');
+});
+
 // it('can update file', function (string $path) {
 //     $audio = Audio::get($path);
 //     $random = (string) rand(1, 1000);
@@ -297,33 +331,3 @@ use Kiwilan\Audio\Models\AudioCore;
 //     $audio = Audio::get('tests/output/new.mp3');
 //     expect($audio->getTitle())->toBe('Introduction');
 // })->with([MP3]);
-
-it('can update tags', function () {
-    $audio = Audio::get(MP3);
-
-    expect($audio->getAlbum())->toBe('P1PDD Le conclave de Troie');
-    expect($audio->getArtist())->toBe('Mr Piouf');
-    expect($audio->getAlbumArtist())->toBe('P1PDD & Mr Piouf');
-    expect($audio->getTitle())->toBe('Introduction');
-    expect($audio->getTrackNumber())->toBe('1');
-    expect($audio->getYear())->toBe(2016);
-
-    ray($audio->getGenre());
-    expect($audio->getGenre())->toBe('Roleplaying game');
-
-    // $audio->update()
-    //     ->album('P1PDD')
-    //     ->save();
-
-    // $audio->update()
-    //     ->album('P1PDD')
-    //     ->save();
-
-    // $tag = $audio->update()
-    //     ->tags([
-    //         'title' => 'New Title',
-    //     ])
-    //     ->save();
-
-    // expect($audio->getAlbum())->toBe('P1PDD');
-});

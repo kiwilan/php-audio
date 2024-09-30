@@ -2,10 +2,25 @@
 
 namespace Kiwilan\Audio\Id3\Reader;
 
-class Id3Audio extends Id3AudioBase
+class Id3Audio
 {
-    /** @var Id3Stream[] */
-    protected array $streams = [];
+    /**
+     * @param  Id3Stream[]  $streams
+     */
+    protected function __construct(
+        readonly public ?string $data_format = null,
+        readonly public ?int $channels = null,
+        readonly public ?int $sample_rate = null,
+        readonly public ?float $bitrate = null,
+        readonly public ?string $channel_mode = null,
+        readonly public ?string $bitrate_mode = null,
+        readonly public ?string $codec = null,
+        readonly public ?string $encoder = null,
+        readonly public bool $lossless = false,
+        readonly public ?string $encoder_options = null,
+        readonly public ?float $compression_ratio = null,
+        readonly public array $streams = [],
+    ) {}
 
     public static function make(?array $metadata): ?self
     {
@@ -20,71 +35,22 @@ class Id3Audio extends Id3AudioBase
             }
         }
 
-        $self = new self($metadata);
-        $self->streams = $streams;
+        $self = new self(
+            data_format: $metadata['dataformat'] ?? null,
+            channels: $metadata['channels'] ?? null,
+            sample_rate: $metadata['sample_rate'] ?? null,
+            bitrate: $metadata['bitrate'] ?? null,
+            channel_mode: $metadata['channelmode'] ?? null,
+            bitrate_mode: $metadata['bitrate_mode'] ?? null,
+            codec: $metadata['codec'] ?? null,
+            encoder: $metadata['encoder'] ?? null,
+            lossless: $metadata['lossless'] ?? false,
+            encoder_options: $metadata['encoder_options'] ?? null,
+            compression_ratio: $metadata['compression_ratio'] ?? null,
+            streams: $streams,
+        );
 
         return $self;
-    }
-
-    /** @return Id3Stream[] */
-    public function streams(): array
-    {
-        return $this->streams;
-    }
-
-    public function dataFormat(): ?string
-    {
-        return $this->data_format;
-    }
-
-    public function channels(): ?int
-    {
-        return $this->channels;
-    }
-
-    public function sampleRate(): ?int
-    {
-        return $this->sample_rate;
-    }
-
-    public function bitrate(): ?float
-    {
-        return $this->bitrate;
-    }
-
-    public function channelMode(): ?string
-    {
-        return $this->channel_mode;
-    }
-
-    public function bitrateMode(): ?string
-    {
-        return $this->bitrate_mode;
-    }
-
-    public function codec(): ?string
-    {
-        return $this->codec;
-    }
-
-    public function encoder(): ?string
-    {
-        return $this->encoder;
-    }
-
-    public function lossless(): bool
-    {
-        return $this->lossless;
-    }
-
-    public function encoderOptions(): ?string
-    {
-        return $this->encoder_options;
-    }
-
-    public function compressionRatio(): ?float
-    {
-        return $this->compression_ratio;
     }
 
     public function stream(): ?Id3Stream

@@ -2,7 +2,7 @@
 
 namespace Kiwilan\Audio\Id3\Tag;
 
-class Id3TagAsf
+class Id3TagAsf extends Id3Tag
 {
     public function __construct(
         readonly public ?string $title = null,
@@ -23,16 +23,16 @@ class Id3TagAsf
             return null;
         }
         $self = new self(
-            title: $metadata['title'] ?? null,
-            artist: $metadata['artist'] ?? null,
-            album: $metadata['album'] ?? null,
-            albumartist: $metadata['albumartist'] ?? null,
-            composer: $metadata['composer'] ?? null,
-            partofset: $metadata['partofset'] ?? null,
-            genre: $metadata['genre'] ?? null,
-            track_number: $metadata['track_number'] ?? null,
-            year: $metadata['year'] ?? null,
-            encodingsettings: $metadata['encodingsettings'] ?? null,
+            title: self::parseTag($metadata, 'title'),
+            artist: self::parseTag($metadata, 'artist'),
+            album: self::parseTag($metadata, 'album'),
+            albumartist: self::parseTag($metadata, 'albumartist'),
+            composer: self::parseTag($metadata, 'composer'),
+            partofset: self::parseTag($metadata, 'partofset'),
+            genre: self::parseTag($metadata, 'genre'),
+            track_number: self::parseTag($metadata, 'track_number'),
+            year: self::parseTag($metadata, 'year'),
+            encodingsettings: self::parseTag($metadata, 'encodingsettings'),
         );
 
         return $self;

@@ -7,435 +7,174 @@ use Kiwilan\Audio\Id3\Tag;
 class AudioCore
 {
     public function __construct(
-        protected ?string $title = null,
-        protected ?string $artist = null,
-        protected ?string $album = null,
-        protected ?string $genre = null,
-        protected ?int $year = null,
-        protected ?string $track_number = null,
-        protected ?string $comment = null,
-        protected ?string $album_artist = null,
-        protected ?string $composer = null,
-        protected ?string $disc_number = null,
-        protected ?bool $is_compilation = false,
-        protected ?string $creation_date = null,
-        protected ?string $copyright = null,
-        protected ?string $encoding_by = null,
-        protected ?string $encoding = null,
-        protected ?string $description = null,
-        protected ?string $synopsis = null,
-        protected ?string $language = null,
-        protected ?string $lyrics = null,
-        protected bool $has_cover = false,
-        protected ?AudioCoreCover $cover = null,
+        public ?string $title = null,
+        public ?string $artist = null,
+        public ?string $album = null,
+        public ?string $genre = null,
+        public ?int $year = null,
+        public ?string $track_number = null,
+        public ?string $comment = null,
+        public ?string $album_artist = null,
+        public ?string $composer = null,
+        public ?string $disc_number = null,
+        public ?bool $is_compilation = null,
+        public ?string $creation_date = null,
+        public ?string $copyright = null,
+        public ?string $encoding_by = null,
+        public ?string $encoding = null,
+        public ?string $description = null,
+        public ?string $synopsis = null,
+        public ?string $language = null,
+        public ?string $lyrics = null,
+        public bool $has_cover = false,
+        public ?AudioCoreCover $cover = null,
     ) {}
-
-    public function getTitle(): ?string
-    {
-        return $this->title;
-    }
-
-    public function getArtist(): ?string
-    {
-        return $this->artist;
-    }
-
-    public function getAlbum(): ?string
-    {
-        return $this->album;
-    }
-
-    public function getGenre(): ?string
-    {
-        return $this->genre;
-    }
-
-    public function getYear(): ?int
-    {
-        return $this->year;
-    }
-
-    public function getTrackNumber(): ?string
-    {
-        return $this->track_number;
-    }
-
-    public function getComment(): ?string
-    {
-        return $this->comment;
-    }
-
-    public function getAlbumArtist(): ?string
-    {
-        return $this->album_artist;
-    }
-
-    public function getComposer(): ?string
-    {
-        return $this->composer;
-    }
-
-    public function getDiscNumber(): ?string
-    {
-        return $this->disc_number;
-    }
-
-    public function isCompilation(): bool
-    {
-        if ($this->is_compilation === null) {
-            return false;
-        }
-
-        return $this->is_compilation;
-    }
-
-    public function getCreationDate(): ?string
-    {
-        return $this->creation_date;
-    }
-
-    public function getCopyright(): ?string
-    {
-        return $this->copyright;
-    }
-
-    public function getEncodingBy(): ?string
-    {
-        return $this->encoding_by;
-    }
-
-    public function getEncoding(): ?string
-    {
-        return $this->encoding;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function getSynopsis(): ?string
-    {
-        return $this->synopsis;
-    }
-
-    public function getLanguage(): ?string
-    {
-        return $this->language;
-    }
-
-    public function getLyrics(): ?string
-    {
-        return $this->lyrics;
-    }
-
-    public function hasCover(): bool
-    {
-        return $this->has_cover;
-    }
-
-    public function getCover(): ?AudioCoreCover
-    {
-        return $this->cover;
-    }
-
-    public function setTitle(?string $title): self
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    public function setArtist(?string $artist): self
-    {
-        $this->artist = $artist;
-
-        return $this;
-    }
-
-    public function setAlbum(?string $album): self
-    {
-        $this->album = $album;
-
-        return $this;
-    }
-
-    public function setGenre(?string $genre): self
-    {
-        $this->genre = $genre;
-
-        return $this;
-    }
-
-    public function setYear(int $year): self
-    {
-        $this->year = $year;
-
-        return $this;
-    }
-
-    public function setTrackNumber(?string $track_number): self
-    {
-        $this->track_number = $track_number;
-
-        return $this;
-    }
-
-    public function setComment(?string $comment): self
-    {
-        $this->comment = $comment;
-
-        return $this;
-    }
-
-    public function setAlbumArtist(?string $album_artist): self
-    {
-        $this->album_artist = $album_artist;
-
-        return $this;
-    }
-
-    public function setComposer(?string $composer): self
-    {
-        $this->composer = $composer;
-
-        return $this;
-    }
-
-    public function setDiscNumber(?string $disc_number): self
-    {
-        $this->disc_number = $disc_number;
-
-        return $this;
-    }
-
-    public function setIsCompilation(bool $is_compilation): self
-    {
-        $this->is_compilation = $is_compilation;
-
-        return $this;
-    }
-
-    public function setCreationDate(?string $creation_date): self
-    {
-        $this->creation_date = $creation_date;
-
-        return $this;
-    }
-
-    public function setCopyright(?string $copyright): self
-    {
-        $this->copyright = $copyright;
-
-        return $this;
-    }
-
-    public function setEncodingBy(?string $encoding_by): self
-    {
-        $this->encoding_by = $encoding_by;
-
-        return $this;
-    }
-
-    public function setEncoding(?string $encoding): self
-    {
-        $this->encoding = $encoding;
-
-        return $this;
-    }
-
-    public function setDescription(?string $description): self
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    public function setPodcastDescription(?string $synopsis): self
-    {
-        $this->synopsis = $synopsis;
-
-        return $this;
-    }
-
-    public function setLanguage(?string $language): self
-    {
-        $this->language = $language;
-
-        return $this;
-    }
-
-    public function setLyrics(?string $lyrics): self
-    {
-        $this->lyrics = $lyrics;
-
-        return $this;
-    }
-
-    public function setHasCover(bool $has_cover): self
-    {
-        $this->has_cover = $has_cover;
-
-        return $this;
-    }
-
-    public function setCover(string $pathOrData): self
-    {
-        $this->cover = AudioCoreCover::make($pathOrData);
-
-        return $this;
-    }
 
     public function toArray(): array
     {
-        return [
-            'title' => $this->title,
-            'artist' => $this->artist,
-            'album' => $this->album,
-            'genre' => $this->genre,
-            'year' => $this->year,
-            'track_number' => $this->track_number,
-            'comment' => $this->comment,
-            'album_artist' => $this->album_artist,
-            'composer' => $this->composer,
-            'disc_number' => $this->disc_number,
-            'is_compilation' => $this->is_compilation,
-            'creation_date' => $this->creation_date,
-            'encoding_by' => $this->encoding_by,
-            'encoding' => $this->encoding,
-            'description' => $this->description,
-            'synopsis' => $this->synopsis,
-            'language' => $this->language,
-            'lyrics' => $this->lyrics,
-            'has_cover' => $this->has_cover,
-            'cover' => $this->cover?->toArray(),
-        ];
+        // parse all properties
+        $properties = get_object_vars($this);
+
+        // filter out null values
+        $properties = array_filter($properties, fn ($value) => $value !== null);
+        $properties = array_filter($properties, fn ($value) => $value !== '');
+
+        return $properties;
+    }
+
+    private function parseCompilation(AudioCore $core): ?string
+    {
+        if ($core->is_compilation === null) {
+            return null;
+        }
+
+        return $core->is_compilation ? '1' : '0';
     }
 
     public static function toId3v2(AudioCore $core): Tag\Id3TagAudioV2
     {
         return new Tag\Id3TagAudioV2(
-            album: $core->getAlbum(),
-            artist: $core->getArtist(),
-            band: $core->getAlbumArtist(),
-            comment: $core->getComment(),
-            composer: $core->getComposer(),
-            part_of_a_set: $core->getDiscNumber(),
-            genre: $core->getGenre(),
-            part_of_a_compilation: $core->isCompilation() ? '1' : '0',
-            title: $core->getTitle(),
-            track_number: $core->getTrackNumber(),
-            year: (string) $core->getYear(),
-            copyright: $core->getCopyright(),
-            text: $core->getSynopsis(),
-            unsynchronised_lyric: $core->getLyrics(),
-            language: $core->getLanguage(),
+            album: $core->album,
+            artist: $core->artist,
+            band: $core->album_artist,
+            comment: $core->comment,
+            composer: $core->composer,
+            part_of_a_set: $core->disc_number,
+            genre: $core->genre,
+            part_of_a_compilation: $core->parseCompilation($core),
+            title: $core->title,
+            track_number: $core->track_number,
+            year: (string) $core->year,
+            copyright: $core->copyright,
+            text: $core->synopsis,
+            unsynchronised_lyric: $core->lyrics,
+            language: $core->language,
         );
     }
 
     public static function toId3v1(AudioCore $core): Tag\Id3TagAudioV1
     {
         return new Tag\Id3TagAudioV1(
-            album: $core->getAlbum(),
-            artist: $core->getArtist(),
-            comment: $core->getComment(),
-            genre: $core->getGenre(),
-            title: $core->getTitle(),
-            track_number: $core->getTrackNumber(),
-            year: (string) $core->getYear(),
+            album: $core->album,
+            artist: $core->artist,
+            comment: $core->comment,
+            genre: $core->genre,
+            title: $core->title,
+            track_number: $core->track_number,
+            year: (string) $core->year,
         );
     }
 
     public static function toVorbisComment(AudioCore $core): Tag\Id3TagVorbisComment
     {
         return new Tag\Id3TagVorbisComment(
-            album: $core->getAlbum(),
-            artist: $core->getArtist(),
-            albumartist: $core->getAlbumArtist(),
-            comment: $core->getComment(),
-            composer: $core->getComposer(),
-            compilation: $core->isCompilation() ? '1' : '0',
-            discnumber: $core->getDiscNumber(),
-            genre: $core->getGenre(),
-            title: $core->getTitle(),
-            tracknumber: $core->getTrackNumber(),
-            date: (string) $core->getYear(),
-            encoder: $core->getEncoding(),
-            description: $core->getDescription(),
+            album: $core->album,
+            artist: $core->artist,
+            albumartist: $core->album_artist,
+            comment: $core->comment,
+            composer: $core->composer,
+            compilation: $core->parseCompilation($core),
+            discnumber: $core->disc_number,
+            genre: $core->genre,
+            title: $core->title,
+            tracknumber: $core->track_number,
+            date: (string) $core->year,
+            encoder: $core->encoding,
+            description: $core->description,
         );
     }
 
     public static function toQuicktime(AudioCore $core): Tag\Id3TagQuicktime
     {
         return new Tag\Id3TagQuicktime(
-            title: $core->getTitle(),
-            track_number: $core->getTrackNumber(),
-            disc_number: $core->getDiscNumber(),
-            compilation: $core->isCompilation() ? '1' : '0',
-            album: $core->getAlbum(),
-            genre: $core->getGenre(),
-            composer: $core->getComposer(),
-            creation_date: $core->getCreationDate(),
-            copyright: $core->getCopyright(),
-            artist: $core->getArtist(),
-            album_artist: $core->getAlbumArtist(),
-            encoded_by: $core->getEncoding(),
-            encoding_tool: $core->getEncoding(),
-            description: $core->getDescription(),
-            description_long: $core->getSynopsis(),
-            lyrics: $core->getLyrics(),
-            comment: $core->getComment(),
+            title: $core->title,
+            track_number: $core->track_number,
+            disc_number: $core->disc_number,
+            compilation: $core->parseCompilation($core),
+            album: $core->album,
+            genre: $core->genre,
+            composer: $core->composer,
+            creation_date: $core->creation_date,
+            copyright: $core->copyright,
+            artist: $core->artist,
+            album_artist: $core->album_artist,
+            encoded_by: $core->encoding,
+            encoding_tool: $core->encoding,
+            description: $core->description,
+            description_long: $core->synopsis,
+            lyrics: $core->lyrics,
+            comment: $core->comment,
         );
     }
 
     public static function toMatroska(AudioCore $core): Tag\Id3TagMatroska
     {
         return new Tag\Id3TagMatroska(
-            title: $core->getTitle(),
-            album: $core->getAlbum(),
-            artist: $core->getArtist(),
-            album_artist: $core->getAlbumArtist(),
-            comment: $core->getComment(),
-            composer: $core->getComposer(),
-            disc: $core->getDiscNumber(),
-            compilation: $core->isCompilation() ? '1' : '0',
-            genre: $core->getGenre(),
-            part_number: $core->getTrackNumber(),
-            date: (string) $core->getYear(),
-            encoder: $core->getEncoding(),
+            title: $core->title,
+            album: $core->album,
+            artist: $core->artist,
+            album_artist: $core->album_artist,
+            comment: $core->comment,
+            composer: $core->composer,
+            disc: $core->disc_number,
+            compilation: $core->parseCompilation($core),
+            genre: $core->genre,
+            part_number: $core->track_number,
+            date: (string) $core->year,
+            encoder: $core->encoding,
         );
     }
 
     public static function toApe(AudioCore $core): Tag\Id3TagApe
     {
         return new Tag\Id3TagApe(
-            album: $core->getAlbum(),
-            artist: $core->getArtist(),
-            album_artist: $core->getAlbumArtist(),
-            comment: $core->getComment(),
-            composer: $core->getComposer(),
-            disc: $core->getDiscNumber(),
-            compilation: $core->isCompilation() ? '1' : '0',
-            genre: $core->getGenre(),
-            title: $core->getTitle(),
-            track: $core->getTrackNumber(),
-            date: (string) $core->getYear(),
-            encoder: $core->getEncoding(),
+            album: $core->album,
+            artist: $core->artist,
+            album_artist: $core->album_artist,
+            comment: $core->comment,
+            composer: $core->composer,
+            disc: $core->disc_number,
+            compilation: $core->parseCompilation($core),
+            genre: $core->genre,
+            title: $core->title,
+            track: $core->track_number,
+            date: (string) $core->year,
+            encoder: $core->encoding,
         );
     }
 
     public static function toAsf(AudioCore $core): Tag\Id3TagAsf
     {
         return new Tag\Id3TagAsf(
-            album: $core->getAlbum(),
-            artist: $core->getArtist(),
-            albumartist: $core->getAlbumArtist(),
-            composer: $core->getComposer(),
-            partofset: $core->getDiscNumber(),
-            genre: $core->getGenre(),
-            track_number: $core->getTrackNumber(),
-            year: (string) $core->getYear(),
-            encodingsettings: $core->getEncoding(),
+            album: $core->album,
+            artist: $core->artist,
+            albumartist: $core->album_artist,
+            composer: $core->composer,
+            partofset: $core->disc_number,
+            genre: $core->genre,
+            track_number: $core->track_number,
+            year: (string) $core->year,
+            encodingsettings: $core->encoding,
         );
     }
 
@@ -500,9 +239,29 @@ class AudioCore
 
     public static function fromQuicktime(Tag\Id3TagQuicktime $tag): AudioCore
     {
-        $creation_date = $tag->creation_date;
+        $date = $tag->creation_date;
         $description = $tag->description;
         $description_long = $tag->description_long;
+
+        $creation_date = null;
+        $year = null;
+
+        if ($date) {
+            if (strlen($date) === 4) {
+                $year = (int) $date;
+            } else {
+                try {
+                    $parsedCreationDate = new \DateTimeImmutable($date);
+                } catch (\Exception $e) {
+                    // ignore the issue so the rest of the data will be available
+                }
+
+                if (! empty($parsedCreationDate)) {
+                    $creation_date = $parsedCreationDate->format('Y-m-d\TH:i:s\Z');
+                    $year = (int) $parsedCreationDate->format('Y');
+                }
+            }
+        }
 
         $core = new AudioCore(
             title: $tag->title,
@@ -518,29 +277,13 @@ class AudioCore
             encoding_by: $tag->encoded_by,
             encoding: $tag->encoding_tool,
             language: $tag->language,
+            copyright: $tag->copyright,
+            description: $description,
+            synopsis: $description_long,
+            lyrics: $tag->lyrics,
+            creation_date: $creation_date,
+            year: $year,
         );
-
-        if ($creation_date) {
-            if (strlen($creation_date) === 4) {
-                $core->setYear((int) $creation_date);
-            } else {
-                try {
-                    $parsedCreationDate = new \DateTimeImmutable($creation_date);
-                } catch (\Exception $e) {
-                    // ignore the issue so the rest of the data will be available
-                }
-
-                if (! empty($parsedCreationDate)) {
-                    $core->setCreationDate($parsedCreationDate->format('Y-m-d\TH:i:s\Z'));
-                    $core->setYear((int) $parsedCreationDate->format('Y'));
-                }
-            }
-        }
-
-        $core->setCopyright($tag->copyright);
-        $core->setDescription($description);
-        $core->setPodcastDescription($description_long);
-        $core->setLyrics($tag->lyrics);
 
         return $core;
     }

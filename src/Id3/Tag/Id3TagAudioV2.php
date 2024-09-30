@@ -2,7 +2,7 @@
 
 namespace Kiwilan\Audio\Id3\Tag;
 
-class Id3TagAudioV2
+class Id3TagAudioV2 extends Id3Tag
 {
     public function __construct(
         readonly public ?string $album = null,
@@ -29,21 +29,21 @@ class Id3TagAudioV2
         }
 
         $self = new self(
-            album: $metadata['album'] ?? null,
-            artist: $metadata['artist'] ?? null,
-            band: $metadata['band'] ?? null,
-            comment: $metadata['comment'] ?? null,
-            composer: $metadata['composer'] ?? null,
-            part_of_a_set: $metadata['part_of_a_set'] ?? null,
-            genre: $metadata['genre'] ?? null,
-            part_of_a_compilation: $metadata['part_of_a_compilation'] ?? null,
-            title: $metadata['title'] ?? null,
-            track_number: $metadata['track_number'] ?? null,
-            year: $metadata['year'] ?? null,
-            copyright: $metadata['copyright_message'] ?? null,
-            text: $metadata['text'] ?? null,
-            unsynchronised_lyric: $metadata['unsynchronised_lyric'] ?? null,
-            language: $metadata['language'] ?? null,
+            album: self::parseTag($metadata, 'album'),
+            artist: self::parseTag($metadata, 'artist'),
+            band: self::parseTag($metadata, 'band'),
+            comment: self::parseTag($metadata, 'comment'),
+            composer: self::parseTag($metadata, 'composer'),
+            part_of_a_set: self::parseTag($metadata, 'part_of_a_set'),
+            genre: self::parseTag($metadata, 'genre'),
+            part_of_a_compilation: self::parseTag($metadata, 'part_of_a_compilation'),
+            title: self::parseTag($metadata, 'title'),
+            track_number: self::parseTag($metadata, 'track_number'),
+            year: self::parseTag($metadata, 'year'),
+            copyright: self::parseTag($metadata, 'copyright_message'),
+            text: self::parseTag($metadata, 'text'),
+            unsynchronised_lyric: self::parseTag($metadata, 'unsynchronised_lyric'),
+            language: self::parseTag($metadata, 'language'),
         );
 
         return $self;

@@ -2,7 +2,7 @@
 
 namespace Kiwilan\Audio\Id3\Tag;
 
-class Id3TagMatroska
+class Id3TagMatroska extends Id3Tag
 {
     public function __construct(
         readonly public ?string $title = null,
@@ -29,21 +29,21 @@ class Id3TagMatroska
         }
 
         $self = new self(
-            title: $metadata['title'] ?? null,
-            muxingapp: $metadata['muxingapp'] ?? null,
-            writingapp: $metadata['writingapp'] ?? null,
-            album: $metadata['album'] ?? null,
-            artist: $metadata['artist'] ?? null,
-            album_artist: $metadata['album_artist'] ?? null,
-            comment: $metadata['comment'] ?? null,
-            composer: $metadata['composer'] ?? null,
-            disc: $metadata['disc'] ?? null,
-            genre: $metadata['genre'] ?? null,
-            compilation: $metadata['compilation'] ?? null,
-            part_number: $metadata['part_number'] ?? null,
-            date: $metadata['date'] ?? null,
-            encoder: $metadata['encoder'] ?? null,
-            duration: $metadata['duration'] ?? null,
+            title: self::parseTag($metadata, 'title'),
+            muxingapp: self::parseTag($metadata, 'muxingapp'),
+            writingapp: self::parseTag($metadata, 'writingapp'),
+            album: self::parseTag($metadata, 'album'),
+            artist: self::parseTag($metadata, 'artist'),
+            album_artist: self::parseTag($metadata, 'album_artist'),
+            comment: self::parseTag($metadata, 'comment'),
+            composer: self::parseTag($metadata, 'composer'),
+            disc: self::parseTag($metadata, 'disc'),
+            genre: self::parseTag($metadata, 'genre'),
+            compilation: self::parseTag($metadata, 'compilation'),
+            part_number: self::parseTag($metadata, 'part_number'),
+            date: self::parseTag($metadata, 'date'),
+            encoder: self::parseTag($metadata, 'encoder'),
+            duration: self::parseTag($metadata, 'duration'),
         );
 
         return $self;

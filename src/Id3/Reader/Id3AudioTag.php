@@ -8,15 +8,15 @@ use Kiwilan\Audio\Id3\Tag;
 class Id3AudioTag
 {
     protected function __construct(
-        protected ?Tag\Id3TagAudioV1 $id3v1 = null,
-        protected ?Tag\Id3TagAudioV2 $id3v2 = null,
-        protected ?Tag\Id3TagQuicktime $quicktime = null,
-        protected ?Tag\Id3TagAsf $asf = null,
-        protected ?Tag\Id3TagVorbisComment $vorbiscomment = null,
-        protected ?Tag\Id3TagRiff $riff = null,
-        protected ?Tag\Id3TagMatroska $matroska = null,
-        protected ?Tag\Id3TagApe $ape = null,
-        protected bool $is_empty = false,
+        readonly public ?Tag\Id3TagAudioV1 $id3v1 = null,
+        readonly public ?Tag\Id3TagAudioV2 $id3v2 = null,
+        readonly public ?Tag\Id3TagQuicktime $quicktime = null,
+        readonly public ?Tag\Id3TagAsf $asf = null,
+        readonly public ?Tag\Id3TagVorbisComment $vorbiscomment = null,
+        readonly public ?Tag\Id3TagRiff $riff = null,
+        readonly public ?Tag\Id3TagMatroska $matroska = null,
+        readonly public ?Tag\Id3TagApe $ape = null,
+        readonly public bool $is_empty = false,
     ) {}
 
     public static function make(?array $metadata): ?self
@@ -34,6 +34,11 @@ class Id3AudioTag
         $matroska = Id3Reader::cleanTags($metadata['matroska'] ?? null);
         $ape = Id3Reader::cleanTags($metadata['ape'] ?? null);
 
+        $is_empty = false;
+        if (! $id3v1 && ! $id3v2 && ! $quicktime && ! $asf && ! $vorbiscomment && ! $riff && ! $matroska && ! $ape) {
+            $is_empty = true;
+        }
+
         $self = new self(
             id3v1: Tag\Id3TagAudioV1::make($id3v1),
             id3v2: Tag\Id3TagAudioV2::make($id3v2),
@@ -43,57 +48,9 @@ class Id3AudioTag
             riff: Tag\Id3TagRiff::make($riff),
             matroska: Tag\Id3TagMatroska::make($matroska),
             ape: Tag\Id3TagApe::make($ape),
+            is_empty: $is_empty,
         );
 
-        if (! $self->id3v1 && ! $self->id3v2 && ! $self->quicktime && ! $self->asf && ! $self->vorbiscomment && ! $self->riff && ! $self->matroska && ! $self->ape) {
-            $self->is_empty = true;
-        }
-
         return $self;
-    }
-
-    public function id3v1(): ?Tag\Id3TagAudioV1
-    {
-        return $this->id3v1;
-    }
-
-    public function id3v2(): ?Tag\Id3TagAudioV2
-    {
-        return $this->id3v2;
-    }
-
-    public function quicktime(): ?Tag\Id3TagQuicktime
-    {
-        return $this->quicktime;
-    }
-
-    public function asf(): ?Tag\Id3TagAsf
-    {
-        return $this->asf;
-    }
-
-    public function vorbiscomment(): ?Tag\Id3TagVorbisComment
-    {
-        return $this->vorbiscomment;
-    }
-
-    public function riff(): ?Tag\Id3TagRiff
-    {
-        return $this->riff;
-    }
-
-    public function matroska(): ?Tag\Id3TagMatroska
-    {
-        return $this->matroska;
-    }
-
-    public function ape(): ?Tag\Id3TagApe
-    {
-        return $this->ape;
-    }
-
-    public function isEmpty(): bool
-    {
-        return $this->is_empty;
     }
 }

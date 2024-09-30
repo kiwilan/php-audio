@@ -2,7 +2,7 @@
 
 namespace Kiwilan\Audio\Id3\Tag;
 
-class Id3TagVorbisComment
+class Id3TagVorbisComment extends Id3Tag
 {
     public function __construct(
         readonly public ?string $description = null,
@@ -26,19 +26,19 @@ class Id3TagVorbisComment
             return null;
         }
         $self = new self(
-            description: $metadata['description'] ?? null,
-            encoder: $metadata['encoder'] ?? null,
-            title: $metadata['title'] ?? null,
-            artist: $metadata['artist'] ?? null,
-            album: $metadata['album'] ?? null,
-            genre: $metadata['genre'] ?? null,
-            comment: $metadata['comment'] ?? null,
-            albumartist: $metadata['albumartist'] ?? null,
-            composer: $metadata['composer'] ?? null,
-            discnumber: $metadata['discnumber'] ?? null,
-            compilation: $metadata['compilation'] ?? null,
-            date: $metadata['date'] ?? null,
-            tracknumber: $metadata['tracknumber'] ?? null,
+            description: self::parseTag($metadata, 'description'),
+            encoder: self::parseTag($metadata, 'encoder'),
+            title: self::parseTag($metadata, 'title'),
+            artist: self::parseTag($metadata, 'artist'),
+            album: self::parseTag($metadata, 'album'),
+            genre: self::parseTag($metadata, 'genre'),
+            comment: self::parseTag($metadata, 'comment'),
+            albumartist: self::parseTag($metadata, 'albumartist'),
+            composer: self::parseTag($metadata, 'composer'),
+            discnumber: self::parseTag($metadata, 'discnumber'),
+            compilation: self::parseTag($metadata, 'compilation'),
+            date: self::parseTag($metadata, 'date'),
+            tracknumber: self::parseTag($metadata, 'tracknumber'),
         );
 
         return $self;

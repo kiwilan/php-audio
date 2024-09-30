@@ -6,6 +6,7 @@ use Kiwilan\Audio\Core\AudioCore;
 use Kiwilan\Audio\Enums\AudioFormatEnum;
 use Kiwilan\Audio\Enums\AudioTypeEnum;
 use Kiwilan\Audio\Id3\Id3Reader;
+use Kiwilan\Audio\Id3\Id3Writer;
 use Kiwilan\Audio\Models\AudioCover;
 use Kiwilan\Audio\Models\AudioMetadata;
 
@@ -132,6 +133,11 @@ class Audio
     public function getId3Reader(): ?Id3Reader
     {
         return Id3Reader::make($this->path);
+    }
+
+    public function update(): Id3Writer
+    {
+        return Id3Writer::make($this);
     }
 
     /**
@@ -465,7 +471,7 @@ class Audio
         };
 
         $tags = $id3_reader->getTags();
-        if (! $tags || $tags->isEmpty()) {
+        if (! $tags || $tags->is_empty) {
             return $this;
         }
 
@@ -475,12 +481,12 @@ class Audio
         }
 
         $core = match ($this->type) {
-            AudioTypeEnum::id3 => AudioCore::fromId3($tags->id3v1(), $tags->id3v2()),
-            AudioTypeEnum::vorbiscomment => AudioCore::fromVorbisComment($tags->vorbiscomment()),
-            AudioTypeEnum::quicktime => AudioCore::fromQuicktime($tags->quicktime()),
-            AudioTypeEnum::matroska => AudioCore::fromMatroska($tags->matroska()),
-            AudioTypeEnum::ape => AudioCore::fromApe($tags->ape()),
-            AudioTypeEnum::asf => AudioCore::fromAsf($tags->asf()),
+            AudioTypeEnum::id3 => AudioCore::fromId3($tags->id3v1, $tags->id3v2),
+            AudioTypeEnum::vorbiscomment => AudioCore::fromVorbisComment($tags->vorbiscomment),
+            AudioTypeEnum::quicktime => AudioCore::fromQuicktime($tags->quicktime),
+            AudioTypeEnum::matroska => AudioCore::fromMatroska($tags->matroska),
+            AudioTypeEnum::ape => AudioCore::fromApe($tags->ape),
+            AudioTypeEnum::asf => AudioCore::fromAsf($tags->asf),
             default => null,
         };
 
@@ -505,25 +511,25 @@ class Audio
             return $this;
         }
 
-        $this->title = $core->getTitle();
-        $this->artist = $core->getArtist();
-        $this->album = $core->getAlbum();
-        $this->genre = $core->getGenre();
-        $this->year = $core->getYear();
-        $this->track_number = $core->getTrackNumber();
-        $this->comment = $core->getComment();
-        $this->album_artist = $core->getAlbumArtist();
-        $this->composer = $core->getComposer();
-        $this->disc_number = $core->getDiscNumber();
-        $this->is_compilation = $core->isCompilation();
-        $this->creation_date = $core->getCreationDate();
-        $this->encoding_by = $core->getEncodingBy();
-        $this->encoding = $core->getEncoding();
-        $this->copyright = $core->getCopyright();
-        $this->description = $core->getDescription();
-        $this->synopsis = $core->getSynopsis();
-        $this->language = $core->getLanguage();
-        $this->lyrics = $core->getLyrics();
+        $this->title = $core->title;
+        $this->artist = $core->artist;
+        $this->album = $core->album;
+        $this->genre = $core->genre;
+        $this->year = $core->year;
+        $this->track_number = $core->track_number;
+        $this->comment = $core->comment;
+        $this->album_artist = $core->album_artist;
+        $this->composer = $core->composer;
+        $this->disc_number = $core->disc_number;
+        $this->is_compilation = $core->is_compilation;
+        $this->creation_date = $core->creation_date;
+        $this->encoding_by = $core->encoding_by;
+        $this->encoding = $core->encoding;
+        $this->copyright = $core->copyright;
+        $this->description = $core->description;
+        $this->synopsis = $core->synopsis;
+        $this->language = $core->language;
+        $this->lyrics = $core->lyrics;
 
         return $this;
     }
