@@ -50,7 +50,7 @@ class Audio
         protected array $raw_tags_all = [],
     ) {}
 
-    public static function get(string $path): self
+    public static function read(string $path): self
     {
         $fileExists = file_exists($path);
         if (! $fileExists) {
@@ -80,6 +80,16 @@ class Audio
         }
 
         return $self;
+    }
+
+    /**
+     * @deprecated Use `read()` method instead.
+     *
+     * Get audio file from path.
+     */
+    public static function get(string $path): self
+    {
+        return self::read($path);
     }
 
     /**

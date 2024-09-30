@@ -5,7 +5,7 @@ use Kiwilan\Audio\Enums\AudioFormatEnum;
 use Kiwilan\Audio\Models\AudioCore;
 
 beforeEach(function () {
-    $audio = Audio::get(MP3_WRITER);
+    $audio = Audio::read(MP3_WRITER);
 
     $audio->update()
         ->title('Introduction')
@@ -22,67 +22,92 @@ beforeEach(function () {
         ->save();
 });
 
-// it('can update tags', function () {
-//     $audio = Audio::get(MP3_WRITER);
-//     testMp3Writer($audio);
+it('can update tags', function () {
+    $audio = Audio::read(MP3_WRITER);
+    testMp3Writer($audio);
 
-//     $audio->update()
-//         ->title('New Title')
-//         ->artist('New Artist')
-//         ->album('New Album')
-//         ->genre('New Genre')
-//         ->year(2022)
-//         ->trackNumber('2/10')
-//         ->albumArtist('New Album Artist')
-//         ->comment('New Comment')
-//         ->composer('New Composer')
-//         ->discNumber('2/2')
-//         ->isNotCompilation()
-//         ->lyrics('New Lyrics')
-//         ->creationDate('2021-01-01')
-//         ->copyright('New Copyright')
-//         ->encodingBy('New Encoding By')
-//         ->encoding('New Encoding')
-//         ->description('New Description')
-//         ->synopsis('New Synopsis')
-//         ->language('en')
-//         ->failOnErrors()
-//         ->save();
+    $audio->update()
+        ->title('New Title')
+        ->artist('New Artist')
+        ->album('New Album')
+        ->genre('New Genre')
+        ->year(2022)
+        ->trackNumber('2/10')
+        ->albumArtist('New Album Artist')
+        ->comment('New Comment')
+        ->composer('New Composer')
+        ->discNumber('2/2')
+        ->isNotCompilation()
+        ->lyrics('New Lyrics')
+        ->creationDate('2021-01-01')
+        ->copyright('New Copyright')
+        ->encodingBy('New Encoding By')
+        ->encoding('New Encoding')
+        ->description('New Description')
+        ->synopsis('New Synopsis')
+        ->language('en')
+        ->copyright('New Copyright')
+        ->save();
 
-//     $audio = Audio::get(MP3_WRITER);
-//     testMp3Writed($audio);
-// });
+    $audio = Audio::read(MP3_WRITER);
+    testMp3Writed($audio);
+    expect($audio->getLanguage())->toBe('en');
+    expect($audio->getCopyright())->toBe('New Copyright');
+});
 
-// it('can update tags manually', function () {
-//     $audio = Audio::get(MP3_WRITER);
-//     testMp3Writer($audio);
+it('can update only one tag', function () {
+    $audio = Audio::read(MP3_WRITER);
+    testMp3Writer($audio);
 
-//     $audio->update()
-//         ->tags([
-//             'title' => 'New Title',
-//             'artist' => 'New Artist',
-//             'album' => 'New Album',
-//             'genre' => 'New Genre',
-//             'year' => '2022',
-//             'track_number' => '2/10',
-//             'band' => 'New Album Artist',
-//             'comment' => 'New Comment',
-//             'composer' => 'New Composer',
-//             'part_of_a_set' => '2/2',
-//             'part_of_a_compilation' => false,
-//             'unsynchronised_lyric' => 'New Lyrics',
-//             'language' => 'en',
-//             'copyright' => 'New Copyright',
-//             'text' => 'New Text',
-//         ])
-//         ->save();
+    $audio->update()
+        ->title('New Title')
+        ->save();
 
-//     $audio = Audio::get(MP3_WRITER);
-//     testMp3Writed($audio);
-// });
+    $audio = Audio::read(MP3_WRITER);
+    expect($audio->getTitle())->toBe('New Title');
+    expect($audio->getArtist())->toBe('Mr Piouf');
+    expect($audio->getAlbum())->toBe('P1PDD Le conclave de Troie');
+    expect($audio->getGenre())->toBe('Roleplaying game');
+    expect($audio->getYear())->toBe(2016);
+    expect($audio->getTrackNumber())->toBe('1');
+    expect($audio->getComment())->toBe('http://www.p1pdd.com');
+    expect($audio->getAlbumArtist())->toBe('P1PDD & Mr Piouf');
+    expect($audio->getComposer())->toBe('P1PDD & Piouf');
+    expect($audio->getDiscNumber())->toBe('1');
+    expect($audio->isCompilation())->toBeTrue();
+});
+
+it('can update tags manually', function () {
+    $audio = Audio::read(MP3_WRITER);
+    testMp3Writer($audio);
+
+    $audio->update()
+        ->tags([
+            'title' => 'New Title',
+            'artist' => 'New Artist',
+            'album' => 'New Album',
+            'genre' => 'New Genre',
+            'year' => '2022',
+            'track_number' => '2/10',
+            'band' => 'New Album Artist',
+            'comment' => 'New Comment',
+            'composer' => 'New Composer',
+            'part_of_a_set' => '2/2',
+            'part_of_a_compilation' => false,
+            'unsynchronised_lyric' => 'New Lyrics',
+            'language' => 'en',
+            'copyright' => 'New Copyright',
+        ])
+        ->save();
+
+    $audio = Audio::read(MP3_WRITER);
+    testMp3Writed($audio);
+    expect($audio->getLanguage())->toBe('en');
+    expect($audio->getCopyright())->toBe('New Copyright');
+});
 
 // it('can update file', function (string $path) {
-//     $audio = Audio::get($path);
+//     $audio = Audio::read($path);
 //     $random = (string) rand(1, 1000);
 //     $tag = $audio->update()
 //         ->title($random)
@@ -107,7 +132,7 @@ beforeEach(function () {
 //     $core = $tag->getCore();
 //     $tag->save();
 
-//     $audio = Audio::get($path);
+//     $audio = Audio::read($path);
 
 //     expect($audio->getTitle())->toBe($random);
 //     expect($audio->getArtist())->toBe('New Artist');
@@ -144,21 +169,21 @@ beforeEach(function () {
 // })->with(AUDIO_WRITER);
 
 // it('can read use file content as cover', function (string $path) {
-//     $audio = Audio::get($path);
+//     $audio = Audio::read($path);
 
 //     $tag = $audio->update()
 //         ->cover(file_get_contents(FOLDER));
 
 //     $tag->save();
 
-//     $audio = Audio::get($path);
+//     $audio = Audio::read($path);
 
 //     $content = file_get_contents(FOLDER);
 //     expect($tag->getCore()->getCover()->data())->toBe(base64_encode($content));
 // })->with([MP3_WRITER]);
 
 // it('can read use tags', function (string $path) {
-//     $audio = Audio::get($path);
+//     $audio = Audio::read($path);
 
 //     $random = (string) rand(1, 1000);
 //     $image = getimagesize(FOLDER);
@@ -181,7 +206,7 @@ beforeEach(function () {
 
 //     $tag->save();
 
-//     $audio = Audio::get($path);
+//     $audio = Audio::read($path);
 //     expect($audio->getTitle())->toBe($random);
 
 //     $content = file_get_contents(FOLDER);
@@ -189,7 +214,7 @@ beforeEach(function () {
 // })->with([MP3_WRITER]);
 
 // it('can update use tags with tag formats', function (string $path) {
-//     $audio = Audio::get($path);
+//     $audio = Audio::read($path);
 
 //     $random = (string) rand(1, 1000);
 //     $tag = $audio->update()
@@ -200,12 +225,12 @@ beforeEach(function () {
 
 //     $tag->save();
 
-//     $audio = Audio::get($path);
+//     $audio = Audio::read($path);
 //     expect($audio->getTitle())->toBe($random);
 // })->with([MP3_WRITER]);
 
 // it('can update with tags and handle native metadata', function (string $path) {
-//     $audio = Audio::get($path);
+//     $audio = Audio::read($path);
 
 //     $tag = $audio->update()
 //         ->isCompilation()
@@ -217,14 +242,14 @@ beforeEach(function () {
 
 //     $tag->save();
 
-//     $audio = Audio::get($path);
+//     $audio = Audio::read($path);
 //     expect($audio->getTitle())->toBe('New Title');
 //     expect($audio->getAlbumArtist())->toBe('New Band');
 //     expect($audio->isCompilation())->toBeTrue();
 // })->with([MP3_WRITER]);
 
 // it('can update with new path', function (string $path) {
-//     $audio = Audio::get($path);
+//     $audio = Audio::read($path);
 //     $newPath = 'tests/output/new.mp3';
 
 //     $tag = $audio->update()
@@ -233,12 +258,12 @@ beforeEach(function () {
 
 //     $tag->save();
 
-//     $audio = Audio::get($newPath);
+//     $audio = Audio::read($newPath);
 //     expect($audio->getTitle())->toBe('New Title');
 // })->with([MP3_WRITER]);
 
 // it('can update with merged tags and core methods', function (string $path) {
-//     $audio = Audio::get($path);
+//     $audio = Audio::read($path);
 
 //     $tag = $audio->update()
 //         ->title('New Title')
@@ -249,13 +274,13 @@ beforeEach(function () {
 
 //     $tag->save();
 
-//     $audio = Audio::get($path);
+//     $audio = Audio::read($path);
 //     expect($audio->getTitle())->toBe('New Title');
 //     expect($audio->getAlbumArtist())->toBe('New Band');
 // })->with([MP3_WRITER]);
 
 // it('can use arrow function safe with unsupported tags', function (string $path) {
-//     $audio = Audio::get($path);
+//     $audio = Audio::read($path);
 
 //     $tag = $audio->update()
 //         ->title('New Title')
@@ -263,12 +288,12 @@ beforeEach(function () {
 
 //     expect(fn () => $tag->save())->not()->toThrow(Exception::class);
 
-//     $audio = Audio::get($path);
+//     $audio = Audio::read($path);
 //     expect($audio->getTitle())->toBe('New Title');
 // })->with([MP3_WRITER]);
 
 // it('can use arrow function safe with unsupported formats', function (string $path) {
-//     $audio = Audio::get($path);
+//     $audio = Audio::read($path);
 
 //     $tag = $audio->update()
 //         ->title('New Title Alac');
@@ -277,7 +302,7 @@ beforeEach(function () {
 // })->with([ALAC_WRITER]);
 
 // it('can get core before save', function (string $path) {
-//     $audio = Audio::get($path);
+//     $audio = Audio::read($path);
 
 //     $tag = $audio->update()
 //         ->title('New Title')
@@ -290,7 +315,7 @@ beforeEach(function () {
 // })->with([MP3_WRITER]);
 
 // it('can handle exceptions', function (string $path) {
-//     $audio = Audio::get($path);
+//     $audio = Audio::read($path);
 
 //     $tag = $audio->update()
 //         ->tags([
@@ -303,7 +328,7 @@ beforeEach(function () {
 // })->with([MP3_WRITER]);
 
 // it('can skip exceptions', function (string $path) {
-//     $audio = Audio::get($path);
+//     $audio = Audio::read($path);
 
 //     $tag = $audio->update()
 //         ->tags([
@@ -314,13 +339,13 @@ beforeEach(function () {
 
 //     $tag->save();
 
-//     $audio = Audio::get($path);
+//     $audio = Audio::read($path);
 //     expect($audio->getTitle())->toBe('New Title');
 //     expect($audio->getAlbumArtist())->toBeNull();
 // })->with([MP3_WRITER]);
 
 // it('can remove old tags', function (string $path) {
-//     $audio = Audio::get($path);
+//     $audio = Audio::read($path);
 
 //     $tag = $audio->update()
 //         ->title('New Title')
@@ -329,13 +354,13 @@ beforeEach(function () {
 
 //     $tag->save();
 
-//     $audio = Audio::get('tests/output/new.mp3');
+//     $audio = Audio::read('tests/output/new.mp3');
 //     expect($audio->getTitle())->toBe('New Title');
 //     expect($audio->getAlbumArtist())->toBeNull();
 // })->with([MP3]);
 
 // it('can use tags with cover', function (string $path) {
-//     $audio = Audio::get($path);
+//     $audio = Audio::read($path);
 
 //     $tag = $audio->update()
 //         ->tags([
@@ -345,7 +370,7 @@ beforeEach(function () {
 
 //     $tag->save();
 
-//     $audio = Audio::get($path);
+//     $audio = Audio::read($path);
 
 //     $content = file_get_contents(FOLDER);
 //     expect($audio->getTitle())->toBe('New Title');
@@ -353,7 +378,7 @@ beforeEach(function () {
 // })->with([MP3_WRITER]);
 
 // it('can change podcast description and language', function () {
-//     $audio = Audio::get(AUDIOBOOK);
+//     $audio = Audio::read(AUDIOBOOK);
 //     $tag = $audio->update()
 //         ->title('New Title')
 //         ->podcastDescription('New Podcast Description')
@@ -362,7 +387,7 @@ beforeEach(function () {
 // });
 
 // it('can not override tags', function (string $path) {
-//     $audio = Audio::get($path);
+//     $audio = Audio::read($path);
 
 //     $tag = $audio->update()
 //         ->getTitle('New Title')
@@ -371,6 +396,6 @@ beforeEach(function () {
 
 //     $tag->save();
 
-//     $audio = Audio::get('tests/output/new.mp3');
+//     $audio = Audio::read('tests/output/new.mp3');
 //     expect($audio->getTitle())->toBe('Introduction');
 // })->with([MP3]);

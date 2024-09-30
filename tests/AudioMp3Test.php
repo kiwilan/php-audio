@@ -8,7 +8,7 @@ use Kiwilan\Audio\Models\AudioCover;
 use Kiwilan\Audio\Models\AudioMetadata;
 
 it('can read mp3 info', function () {
-    $audio = Audio::get(MP3);
+    $audio = Audio::read(MP3);
 
     expect($audio)->toBeInstanceOf(Audio::class);
     expect($audio->getPath())->toBe(MP3);
@@ -79,7 +79,7 @@ it('can read mp3 info', function () {
 });
 
 it('can extract cover mp3', function () {
-    $audio = Audio::get(MP3);
+    $audio = Audio::read(MP3);
     $cover = $audio->getCover();
 
     expect($cover)->toBeInstanceOf(AudioCover::class);
@@ -95,7 +95,7 @@ it('can extract cover mp3', function () {
 });
 
 it('can read file mp3 no meta', function () {
-    $audio = Audio::get(MP3_NO_META);
+    $audio = Audio::read(MP3_NO_META);
 
     expect($audio)->toBeInstanceOf(Audio::class);
     expect($audio->getTitle())->toBeNull();
@@ -113,5 +113,5 @@ it('can read file mp3 no meta', function () {
 });
 
 it("can fail if file didn't exists", function () {
-    expect(fn () => Audio::get('tests/media/unknown.mp3'))->toThrow(Exception::class);
+    expect(fn () => Audio::read('tests/media/unknown.mp3'))->toThrow(Exception::class);
 });

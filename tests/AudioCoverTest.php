@@ -8,7 +8,7 @@ beforeEach(function () {
 });
 
 it('can extract cover', function (string $path) {
-    $audio = Audio::get($path);
+    $audio = Audio::read($path);
     $ext = pathinfo($path, PATHINFO_EXTENSION);
     $cover = $audio->getCover();
 

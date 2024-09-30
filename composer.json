@@ -28,7 +28,8 @@
         "wma",
         "wv",
         "wav",
-        "webm"
+        "webm",
+        "music"
     ],
     "homepage": "https://github.com/kiwilan/php-audio",
     "license": "MIT",

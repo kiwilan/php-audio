@@ -6,14 +6,42 @@ use Kiwilan\Audio\Enums\AudioTypeEnum;
 use Kiwilan\Audio\Models\AudioMetadata;
 
 it('can read audiobook', function () {
-    $audiobook = Audio::get(AUDIOBOOK_RH);
+    $audiobook = Audio::read(AUDIOBOOK_RH);
 
     expect($audiobook->getPath())->toContain('tests/media/audiobook_rh.m4b');
     expect($audiobook->getExtension())->toBe('m4b');
     expect($audiobook->getFormat())->toBe(AudioFormatEnum::m4b);
     expect($audiobook->getType())->toBe(AudioTypeEnum::quicktime);
-
     expect($audiobook->getMetadata())->toBeInstanceOf(AudioMetadata::class);
+    expect($audiobook->isWritable())->toBeTrue();
+    expect($audiobook->isValid())->toBeTrue();
+    expect($audiobook->hasCover())->toBeTrue();
+
+    expect($audiobook->getTitle())->toBe('Assassin’s Apprentice');
+    expect($audiobook->getArtist())->toBe('Robin Hobb');
+    expect($audiobook->getAlbum())->toBe('Assassin’s Apprentice');
+    expect($audiobook->getGenre())->toBe('Animals/Political/Epic/Military');
+    expect($audiobook->getYear())->toBe(2024);
+    expect($audiobook->getTrackNumber())->toBe('1/1');
+    expect($audiobook->getTrackNumberInt())->toBe(1);
+    expect($audiobook->getComment())->toBe('English');
+    expect($audiobook->getAlbumArtist())->toBe('Robin Hobb');
+    expect($audiobook->getComposer())->toBe('Paul Boehmer');
+    expect($audiobook->getDiscNumber())->toBe('1');
+    expect($audiobook->getDiscNumberInt())->toBe(1);
+    expect($audiobook->isCompilation())->toBeTrue();
+    expect($audiobook->getCreationDate())->toBe('2024-09-30T12:00:00Z');
+    expect($audiobook->getCopyright())->toBe('HarperCollins');
+    expect($audiobook->getEncodingBy())->toBe('©2012 Robin Hobb (P)2012 HarperCollins Publishers Limited');
+    expect($audiobook->getEncoding())->toBe('Audiobook Builder 2.2.9 (www.splasm.com), macOS 15.0');
+    expect($audiobook->getDescription())->toBeString();
+    expect($audiobook->getSynopsis())->toBeString();
+    expect($audiobook->getLanguage())->toBe('English');
+    expect($audiobook->getLyrics())->toBe('The Farseer #01');
+});
+
+it('can read audiobook raw', function () {
+    $audiobook = Audio::read(AUDIOBOOK_RH);
 
     $raw = $audiobook->getRaw();
     expect($raw['title'])->toBe('Assassin’s Apprentice');
@@ -67,36 +95,10 @@ it('can read audiobook', function () {
     expect($audiobook->getRawKey('album_artist'))->toBe('Robin Hobb');
     expect($audiobook->getRawKey('series-part'))->toBe('1');
     expect($audiobook->getRawKey('series'))->toBe('The Farseer');
-
-    expect($audiobook->isWritable())->toBeTrue();
-    expect($audiobook->isValid())->toBeTrue();
-    expect($audiobook->hasCover())->toBeTrue();
-
-    expect($audiobook->getTitle())->toBe('Assassin’s Apprentice');
-    expect($audiobook->getArtist())->toBe('Robin Hobb');
-    expect($audiobook->getAlbum())->toBe('Assassin’s Apprentice');
-    expect($audiobook->getGenre())->toBe('Animals/Political/Epic/Military');
-    expect($audiobook->getYear())->toBe(2024);
-    expect($audiobook->getTrackNumber())->toBe('1/1');
-    expect($audiobook->getTrackNumberInt())->toBe(1);
-    expect($audiobook->getComment())->toBe('English');
-    expect($audiobook->getAlbumArtist())->toBe('Robin Hobb');
-    expect($audiobook->getComposer())->toBe('Paul Boehmer');
-    expect($audiobook->getDiscNumber())->toBe('1');
-    expect($audiobook->getDiscNumberInt())->toBe(1);
-    expect($audiobook->isCompilation())->toBeTrue();
-    expect($audiobook->getCreationDate())->toBe('2024-09-30T12:00:00Z');
-    expect($audiobook->getCopyright())->toBe('HarperCollins');
-    expect($audiobook->getEncodingBy())->toBe('©2012 Robin Hobb (P)2012 HarperCollins Publishers Limited');
-    expect($audiobook->getEncoding())->toBe('Audiobook Builder 2.2.9 (www.splasm.com), macOS 15.0');
-    expect($audiobook->getDescription())->toBeString();
-    expect($audiobook->getSynopsis())->toBeString();
-    expect($audiobook->getLanguage())->toBe('English');
-    expect($audiobook->getLyrics())->toBe('The Farseer #01');
 });
 
 it('can read audiobook file m4b', function (string $file) {
-    $audio = Audio::get($file);
+    $audio = Audio::read($file);
 
     expect($audio->getTitle())->toBe('P1PDD Saison 1');
     expect($audio->getArtist())->toBe('Mr Piouf');
@@ -133,7 +135,7 @@ it('can read audiobook file m4b', function (string $file) {
 })->with([AUDIOBOOK]);
 
 it('can read audiobook file mp3', function (string $file) {
-    $audio = Audio::get($file);
+    $audio = Audio::read($file);
 
     expect(count($audio->getRaw()))->toBe(15);
     expect(count($audio->getRaw('id3v2')))->toBe(15);

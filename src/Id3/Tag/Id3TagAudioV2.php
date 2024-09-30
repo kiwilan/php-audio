@@ -17,7 +17,6 @@ class Id3TagAudioV2 extends Id3Tag
         readonly public ?string $track_number = null,
         readonly public ?string $year = null,
         readonly public ?string $copyright = null,
-        readonly public ?string $text = null,
         readonly public ?string $unsynchronised_lyric = null,
         readonly public ?string $language = null,
     ) {}
@@ -27,6 +26,8 @@ class Id3TagAudioV2 extends Id3Tag
         if (! $metadata) {
             return null;
         }
+
+        $copyright = $metadata['copyright_message'] ?? $metadata['copyright'] ?? null;
 
         $self = new self(
             album: self::parseTag($metadata, 'album'),
@@ -40,8 +41,7 @@ class Id3TagAudioV2 extends Id3Tag
             title: self::parseTag($metadata, 'title'),
             track_number: self::parseTag($metadata, 'track_number'),
             year: self::parseTag($metadata, 'year'),
-            copyright: self::parseTag($metadata, 'copyright_message'),
-            text: self::parseTag($metadata, 'text'),
+            copyright: $copyright,
             unsynchronised_lyric: self::parseTag($metadata, 'unsynchronised_lyric'),
             language: self::parseTag($metadata, 'language'),
         );

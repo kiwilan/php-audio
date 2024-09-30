@@ -66,7 +66,6 @@ class AudioCore
             track_number: $core->track_number,
             year: (string) $core->year,
             copyright: $core->copyright,
-            text: $core->synopsis,
             unsynchronised_lyric: $core->lyrics,
             language: $core->language,
         );

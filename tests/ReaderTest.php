@@ -7,7 +7,7 @@ use Kiwilan\Audio\Id3\Reader\Id3AudioTag;
 use Kiwilan\Audio\Id3\Reader\Id3Comments;
 
 it('can read mp3 stream', function () {
-    $audio = Audio::get(MP3);
+    $audio = Audio::read(MP3);
     $streams = $audio->getId3Reader()->getAudio()->streams;
 
     expect($streams)->toBeArray();
@@ -26,7 +26,7 @@ it('can read mp3 stream', function () {
 });
 
 it('can parse ID3 reader', function (string $path) {
-    $audio = Audio::get($path);
+    $audio = Audio::read($path);
 
     $reader = $audio->getId3Reader();
     $raw = $reader->getRaw();

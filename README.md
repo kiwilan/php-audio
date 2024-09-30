@@ -45,7 +45,7 @@ Core metadata:
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 
 $audio->getTitle(); // `?string` to get title
 $audio->getArtist(); // `?string` to get artist
@@ -74,7 +74,7 @@ Raw tags:
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 
 $audio->getTags(); // `array` with all tags
 $title = $audio->getTag('title'); // `?string` to get title same as `$audio->getTitle()`
@@ -90,7 +90,7 @@ Additional metadata:
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 
 $audio->getPath(); // `string` to get path
 $audio->hasCover(); // `bool` to know if has cover
@@ -109,7 +109,7 @@ Raw audio:
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 
 $audio->toArray(); // `array` with all metadata
 ```
@@ -119,7 +119,7 @@ Advanced properties:
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 
 $audio->getReader(); // `?Id3Reader` reader based on `getID3`
 $audio->getWriter(); // `?Id3Writer` writer based on `getid3_writetags`
@@ -139,7 +139,7 @@ You can update audio files metadata with `Audio::class`, but not all formats are
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 $audio->getTitle(); // `Title`
 
 $tag = $audio->update()
@@ -163,7 +163,7 @@ $tag = $audio->update()
   ->cover('path/to/cover.jpg') // you can use file content `file_get_contents('path/to/cover.jpg')`
   ->save();
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 $audio->getTitle(); // `New Title`
 $audio->getCreationDate(); // `null` because `creationDate` is not supported by `MP3`
 ```
@@ -183,7 +183,7 @@ You can set tags manually with `tags` method, but you need to know the format of
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 $audio->getAlbumArtist(); // `Band`
 
 $tag = $audio->update()
@@ -194,7 +194,7 @@ $tag = $audio->update()
   ->tagFormats(['id3v1', 'id3v2.4']) // optional
   ->save();
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 $audio->getAlbumArtist(); // `New Band`
 ```
 
@@ -203,7 +203,7 @@ $audio->getAlbumArtist(); // `New Band`
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 $audio->getAlbumArtist(); // `Band`
 
 $tag = $audio->update()
@@ -211,7 +211,7 @@ $tag = $audio->update()
   ->albumArtist('New Band') // `albumArtist` will set `band` for `id3v2`, exception safe
   ->save();
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 $audio->getAlbumArtist(); // `New Band`
 ```
 
@@ -222,7 +222,7 @@ You can use `preventFailOnError` to prevent exception if you use unsupported for
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 
 $tag = $audio->update()
   ->tags([
@@ -238,7 +238,7 @@ Arrow functions are exception safe for properties but not for unsupported format
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 
 $tag = $audio->update()
   ->encoding('New encoding') // not supported by `id3v2`, BUT will not throw an exception
@@ -253,7 +253,7 @@ Of course you can add cover with `tags` method.
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 $cover = 'path/to/cover.jpg';
 
 $image = getimagesize($cover);
@@ -285,7 +285,7 @@ Merge `tags` with arrow functions.
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get($path);
+$audio = Audio::read($path);
 
 $tag = $audio->update()
     ->title('New Title') // will be merged with `tags` and override `title` key
@@ -296,7 +296,7 @@ $tag = $audio->update()
 
 $tag->save();
 
-$audio = Audio::get($path);
+$audio = Audio::read($path);
 expect($audio->getTitle())->toBe('New Title');
 expect($audio->getAlbumArtist())->toBe('New Band');
 ```
@@ -310,7 +310,7 @@ If you want to extract specific field which can be skipped by `Audio::class`, yo
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 $extras = $audio->getExtras();
 
 $id3v2 = $extras['id3v2'] ?? [];
@@ -321,7 +321,7 @@ $id3v2 = $extras['id3v2'] ?? [];
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 
 $audio->getAudio()->getFilesize(); // `?int` in bytes
 $audio->getAudio()->getExtension(); // `?string` (mp3, m4a, ...)
@@ -343,7 +343,7 @@ $audio->getAudio()->getCompressionRatio(); // `?float`
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 
 $audio->getCover()->getContents(); // `?string` raw file
 $audio->getCover()->getMimeType(); // `?string` (image/jpeg, image/png, ...)
@@ -474,7 +474,7 @@ In `Audio::class`, you have a property `extras` which contains all raw metadata,
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 $extras = $audio->getExtras();
 
 $custom = null;
@@ -494,7 +494,7 @@ You can check `extras` property to know if some metadata are available.
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 
 $extras = $audio->getExtras();
 var_dump($extras);

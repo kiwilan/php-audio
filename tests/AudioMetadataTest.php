@@ -4,7 +4,7 @@ use Kiwilan\Audio\Audio;
 use Kiwilan\Audio\Models\AudioMetadata;
 
 it('can read mp3 info', function () {
-    $audio = Audio::get(MP3);
+    $audio = Audio::read(MP3);
 
     $metadata = $audio->getMetadata();
     expect($metadata->getFileSize())->toBe(272737);
@@ -32,7 +32,7 @@ it('can read mp3 info', function () {
 });
 
 it('can read basic info', function (string $path) {
-    $audio = Audio::get($path);
+    $audio = Audio::read($path);
     $metadata = $audio->getMetadata();
 
     expect($metadata)->toBeInstanceOf(AudioMetadata::class);

@@ -5,7 +5,7 @@ use Kiwilan\Audio\Core\AudioCore;
 use Kiwilan\Audio\Core\AudioCoreCover;
 
 it('can convert formats', function () {
-    $audio = Audio::get(MP3);
+    $audio = Audio::read(MP3);
     $core = new AudioCore(
         title: $audio->getTitle(),
         artist: $audio->getArtist(),
@@ -51,5 +51,9 @@ it('can convert formats', function () {
     $cover = AudioCoreCover::make(FOLDER);
 
     expect($core->toArray())->toBeArray();
-    expect($cover->toArray())->toBeArray();
+
+    expect($cover->data)->toBeString();
+    expect($cover->picture_type_id)->toBeInt();
+    expect($cover->description)->toBeString();
+    expect($cover->mime)->toBeString();
 });

@@ -27,7 +27,7 @@ class Id3Writer
         protected array $warnings = [],
         protected array $errors = [],
         protected bool $remove_old_tags = false,
-        protected bool $fail_on_error = false,
+        protected bool $skip_errors = true,
         protected array $tag_formats = [],
         protected bool $success = false,
     ) {}
@@ -55,50 +55,62 @@ class Id3Writer
         return $this;
     }
 
-    public function title(string $title): self
+    public function title(?string $title): self
     {
         $this->core->title = $title;
 
         return $this;
     }
 
-    public function artist(string $artist): self
+    public function artist(?string $artist): self
     {
         $this->core->artist = $artist;
 
         return $this;
     }
 
-    public function album(string $album): self
+    public function album(?string $album): self
     {
         $this->core->album = $album;
 
         return $this;
     }
 
-    public function albumArtist(string $album_artist): self
+    public function albumArtist(?string $album_artist): self
     {
         $this->core->album_artist = $album_artist;
 
         return $this;
     }
 
-    public function year(string|int $year): self
+    public function year(string|int|null $year): self
     {
+        if (! $year) {
+            $this->core->year = null;
+
+            return $this;
+        }
+
         $this->core->year = intval($year);
 
         return $this;
     }
 
-    public function genre(string $genre): self
+    public function genre(?string $genre): self
     {
         $this->core->genre = $genre;
 
         return $this;
     }
 
-    public function trackNumber(string|int $track_number): self
+    public function trackNumber(string|int|null $track_number): self
     {
+        if (! $track_number) {
+            $this->core->track_number = null;
+
+            return $this;
+        }
+
         if (is_int($track_number)) {
             $track_number = (string) $track_number;
         }
@@ -108,8 +120,14 @@ class Id3Writer
         return $this;
     }
 
-    public function discNumber(string|int $disc_number): self
+    public function discNumber(string|int|null $disc_number): self
     {
+        if (! $disc_number) {
+            $this->core->disc_number = null;
+
+            return $this;
+        }
+
         if (is_int($disc_number)) {
             $disc_number = (string) $disc_number;
         }
@@ -119,21 +137,21 @@ class Id3Writer
         return $this;
     }
 
-    public function composer(string $composer): self
+    public function composer(?string $composer): self
     {
         $this->core->composer = $composer;
 
         return $this;
     }
 
-    public function comment(string $comment): self
+    public function comment(?string $comment): self
     {
         $this->core->comment = $comment;
 
         return $this;
     }
 
-    public function lyrics(string $lyrics): self
+    public function lyrics(?string $lyrics): self
     {
         $this->core->lyrics = $lyrics;
 
@@ -154,49 +172,64 @@ class Id3Writer
         return $this;
     }
 
-    public function creationDate(string $creation_date): self
+    /**
+     * Not supported by `id3`.
+     */
+    public function creationDate(?string $creation_date): self
     {
         $this->core->creation_date = $creation_date;
 
         return $this;
     }
 
-    public function copyright(string $copyright): self
+    public function copyright(?string $copyright): self
     {
         $this->core->copyright = $copyright;
 
         return $this;
     }
 
-    public function encodingBy(string $encoding_by): self
+    /**
+     * Not supported by `id3`.
+     */
+    public function encodingBy(?string $encoding_by): self
     {
         $this->core->encoding_by = $encoding_by;
 
         return $this;
     }
 
-    public function encoding(string $encoding): self
+    /**
+     * Not supported by `id3`.
+     */
+    public function encoding(?string $encoding): self
     {
         $this->core->encoding = $encoding;
 
         return $this;
     }
 
-    public function description(string $description): self
+    /**
+     * Not supported by `id3`.
+     */
+    public function description(?string $description): self
     {
         $this->core->description = $description;
 
         return $this;
     }
 
-    public function synopsis(string $synopsis): self
+    /**
+     * Not supported by `id3`.
+     */
+    public function synopsis(?string $synopsis): self
     {
         $this->core->synopsis = $synopsis;
 
         return $this;
     }
 
-    public function language(string $language): self
+    public function language(?string $language): self
     {
         $this->core->language = $language;
 
@@ -209,10 +242,10 @@ class Id3Writer
      * Example:
      *
      * ```php
-     * $writer->tag('TXXX:CustomTag', 'CustomValue');
+     * $audio->update()->tag('series-part', '1');
      * ```
      */
-    public function tag(string $key, string $value): self
+    public function tag(string $key, string|int|bool|null $value): self
     {
         $this->custom_tags[$key] = $value;
 
@@ -237,11 +270,11 @@ class Id3Writer
     }
 
     /**
-     * Fail on errors, by default it's `false`.
+     * Handle errors when writing tags.
      */
-    public function failOnErrors(): self
+    public function handleErrors(): self
     {
-        $this->fail_on_error = true;
+        $this->skip_errors = false;
 
         return $this;
     }
@@ -261,18 +294,21 @@ class Id3Writer
         $this->errors = $this->writer->errors;
         $this->warnings = $this->writer->warnings;
 
-        $this->handleErrors();
+        $this->parseErrors();
 
         return $this->success;
     }
 
-    private function handleErrors(): void
+    private function parseErrors(): void
     {
         $this->errors = $this->writer->errors;
         $this->warnings = $this->writer->warnings;
 
         $errors = implode(', ', $this->errors);
         $warnings = implode(', ', $this->warnings);
+        $errors = strip_tags($errors);
+        $warnings = strip_tags($warnings);
+
         $supported = match ($this->audio->getFormat()) {
             AudioFormatEnum::flac => true,
             AudioFormatEnum::mp3 => true,
@@ -280,37 +316,35 @@ class Id3Writer
             default => false
         };
 
-        if (! empty($this->errors)) {
-            $msg = 'Save tags failed.';
-
-            $errors = strip_tags($errors);
-            $errors = "Errors: {$errors}.";
-            if (! empty($this->errors)) {
-                $msg .= " {$errors}";
-            }
-
-            $warnings = "Warnings: {$warnings}.";
-            if (! empty($this->warnings)) {
-                $msg .= " {$warnings}";
-            }
-
-            $isSuccess = $this->success ? 'true' : 'false';
-            $success = "Success: {$isSuccess}";
-            $msg .= " {$success}";
-
-            error_log($msg);
-
-            if ($this->fail_on_error) {
-                throw new \Exception($msg);
-            }
+        if (! $supported && ! $this->skip_errors) {
+            throw new \Exception("php-audio: format {$this->audio->getFormat()->value} is not supported.");
         }
 
-        if (! $supported && $this->fail_on_error) {
-            throw new \Exception("Format {$this->audio->getFormat()->value} is not supported.");
+        if (! empty($this->errors)) {
+            error_log("php-audio: {$errors}");
         }
 
         if (! empty($this->warnings)) {
-            error_log($warnings);
+            error_log("php-audio: {$warnings}");
+        }
+
+        if (empty($this->errors) && empty($this->warnings)) {
+            return;
+        }
+
+        $msg = 'php-audio: Save tags failed.';
+        if ($errors) {
+            $msg .= " Errors: {$errors}.";
+        }
+        if ($warnings) {
+            $msg .= " Warnings: {$warnings}.";
+        }
+        $isSuccess = $this->success ? 'true' : 'false';
+        $msg .= " Success: {$isSuccess}.";
+        error_log($msg);
+
+        if (! $this->skip_errors) {
+            throw new \Exception($msg);
         }
     }
 
@@ -392,6 +426,26 @@ class Id3Writer
         return $this;
     }
 
+    private function attachCover(array &$tags): void
+    {
+        $coverFormatsAllowed = [AudioFormatEnum::mp3];
+        // if ($this->core->getCover() && in_array($this->audio->getFormat(), $coverFormatsAllowed)) {
+        //     // $tags = [
+        //     //     ...$tags,
+        //     //     'CTOC' => $old_tags['id3v2']['CTOC'],
+        //     //     'CHAP' => $old_tags['id3v2']['CHAP'],
+        //     //     'chapters' => $old_tags['id3v2']['chapters'],
+        //     // ];
+        //     $tags['attached_picture'][0] = [
+        //         'data' => base64_decode($this->core->getCover()->data()),
+        //         'picturetypeid' => $this->core->getCover()->picturetypeid(),
+        //         'description' => $this->core->getCover()->description(),
+        //         'mime' => $this->core->getCover()->mime(),
+        //     ];
+        //     $this->core->setHasCover(true);
+        // }
+    }
+
     /**
      * @param  array<string, string>  $tags
      * @return array<string, array>
@@ -402,7 +456,7 @@ class Id3Writer
         $items = [];
         if (! empty($tags)) {
             foreach ($tags as $key => $tag) {
-                if ($tag && gettype($tag) === 'string') {
+                if (gettype($tag) === 'string') {
                     $items[$key] = [$tag];
                 }
             }
