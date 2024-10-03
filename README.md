@@ -32,7 +32,7 @@ Audio files can use different formats, this package aims to provide a simple way
 
 ## Installation
 
-You can install the package via composer:
+You can install the package via [composer](https://getcomposer.org/):
 
 ```bash
 composer require kiwilan/php-audio
