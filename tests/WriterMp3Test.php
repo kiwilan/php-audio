@@ -90,3 +90,15 @@ it('can update tags manually', function () {
     expect($audio->getLanguage())->toBe('en');
     expect($audio->getCopyright())->toBe('New Copyright');
 });
+
+it('can update tag', function () {
+    $audio = Audio::read(MP3_WRITER);
+    testMp3Writer($audio);
+
+    $audio->write()
+        ->tag('title', 'New Title')
+        ->save();
+
+    $audio = Audio::read(MP3_WRITER);
+    expect($audio->getTitle())->toBe('New Title');
+});
