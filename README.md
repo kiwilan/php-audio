@@ -164,6 +164,24 @@ $audio->getCreationDate(); // `null` because `creationDate` is not supported by 
 
 Some properties are not supported by all formats, for example `MP3` can't handle some properties like `lyrics` or `stik`, if you try to update these properties, they will be ignored.
 
+#### Update one custom tag
+
+You can update one custom tag with `tag` method.
+
+```php
+use Kiwilan\Audio\Audio;
+
+$audio = Audio::read('path/to/audio.mp3');
+$audio->write()
+  ->tag('custom-a', 'New Custom a Tag')
+  ->tag('custom-b', 'New Custom b Tag')
+  ->save();
+
+$audio = Audio::read('path/to/audio.mp3');
+$audio->getRawKey('custom-a'); // `New Custom a Tag`
+$audio->getRawKey('custom-b'); // `New Custom b Tag`
+```
+
 #### Set tags manually
 
 You can set tags manually with `tags` method, but you need to know the format of the tag, you could use `tagFormats` to set formats of tags (if you don't know the format, it will be automatically detected).
