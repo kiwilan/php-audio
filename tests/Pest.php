@@ -6,6 +6,7 @@ define('MP3_NO_META', __DIR__.'/media/test-no-meta.mp3');
 define('AUDIOBOOK', __DIR__.'/media/audiobook.m4b');
 define('AUDIOBOOK_MP3', __DIR__.'/media/audiobook.mp3');
 define('MD', __DIR__.'/media/test.md');
+define('DEFAULT_FOLDER', __DIR__.'/media/default-folder.jpg');
 define('FOLDER', __DIR__.'/media/folder.jpg');
 
 function addWriterFilesForTests()
@@ -177,4 +178,29 @@ function testMp3Writed(Audio $audio)
     expect($audio->getComposer())->toBe('New Composer');
     expect($audio->getDiscNumber())->toBe('2/2');
     expect($audio->isCompilation())->toBeFalse();
+}
+
+function pathTo(string $filename, string $subDirectory = 'output'): string
+{
+    return __DIR__.'/'.$subDirectory.'/'.$filename;
+}
+
+function resetMp3Writer()
+{
+    $audio = Audio::read(MP3_WRITER);
+
+    $audio->update()
+        ->title('Introduction')
+        ->artist('Mr Piouf')
+        ->album('P1PDD Le conclave de Troie')
+        ->genre('Roleplaying game')
+        ->year(2016)
+        ->trackNumber('1')
+        ->comment('http://www.p1pdd.com')
+        ->albumArtist('P1PDD & Mr Piouf')
+        ->composer('P1PDD & Piouf')
+        ->discNumber('1')
+        ->isCompilation()
+        ->cover(DEFAULT_FOLDER)
+        ->save();
 }

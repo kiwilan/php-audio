@@ -28,6 +28,9 @@ class Id3Writer
         protected array $warnings = [],
         protected array $errors = [],
         protected bool $remove_old_tags = false,
+        protected ?array $cover = null,
+        protected bool $has_new_cover = false,
+        protected bool $delete_cover = false,
         protected bool $skip_errors = true,
         protected array $tag_formats = [],
         protected bool $success = false,
@@ -44,6 +47,11 @@ class Id3Writer
         $self->writer->filename = $audio->getPath();
 
         return $self;
+    }
+
+    public function getCore(): AudioCore
+    {
+        return $this->core;
     }
 
     /**
@@ -254,17 +262,59 @@ class Id3Writer
     }
 
     /**
+     * To update path to save file.
+     */
+    public function path(string $path): self
+    {
+        if (file_exists($path)) {
+            unlink($path);
+        }
+        copy($this->audio->getPath(), $path);
+
+        $this->writer->filename = $path;
+
+        return $this;
+    }
+
+    /**
+     * Advanced usage only to save manually tags.
+     *
+     * @param  string[]  $tag_formats
+     */
+    public function tagFormats(array $tag_formats): self
+    {
+        $this->tag_formats = $tag_formats;
+
+        return $this;
+    }
+
+    /**
+     * Update cover is only supported by `id3` format.
+     *
      * @param  string  $pathOrData  Path to cover image or binary data
      */
     public function cover(string $pathOrData): self
     {
         $this->core->cover = AudioCoreCover::make($pathOrData);
+        $this->has_new_cover = true;
+
+        return $this;
+    }
+
+    /**
+     * Remove cover from tags.
+     */
+    public function removeCover(): self
+    {
+        $this->delete_cover = true;
 
         return $this;
     }
 
     /**
      * Set manually tags, to know which key used for which tag, you have to refer to documentation.
+     *
+     * WARNING: This method is for advanced usage only, if you use it, this will override all other tags.
      *
      * @docs https://github.com/kiwilan/php-audio#convert-properties
      *
@@ -292,6 +342,7 @@ class Id3Writer
 
     public function save(): bool
     {
+        $this->attachCover();
         $this->parseTagFormats();
         if (! $this->is_manual) {
             $this->assignTags();
@@ -324,6 +375,7 @@ class Id3Writer
             AudioFormatEnum::flac => true,
             AudioFormatEnum::mp3 => true,
             AudioFormatEnum::ogg => true,
+            AudioFormatEnum::m4b => true,
             default => false
         };
 
@@ -378,11 +430,20 @@ class Id3Writer
             return $this;
         }
 
+        $oldTags = [];
+        if (! $this->writer->remove_other_tags) {
+            $oldTags = $this->audio->getRaw();
+        }
+
         $this->new_tags = [
-            ...$this->audio->getRaw(), // old tags
+            ...$oldTags, // old tags
             ...$convert->toArray(), // new tags
         ];
         $this->new_tags = $this->convertTags($this->new_tags);
+
+        if ($this->cover && ! $this->delete_cover) {
+            $this->new_tags['attached_picture'][0] = $this->cover;
+        }
 
         return $this;
     }
@@ -437,25 +498,37 @@ class Id3Writer
         return $this;
     }
 
-    // private function attachCover(array &$tags): void
-    // {
-    //     $coverFormatsAllowed = [AudioFormatEnum::mp3];
-    //     if ($this->core->cover && in_array($this->audio->getFormat(), $coverFormatsAllowed)) {
-    //         // $tags = [
-    //         //     ...$tags,
-    //         //     'CTOC' => $old_tags['id3v2']['CTOC'],
-    //         //     'CHAP' => $old_tags['id3v2']['CHAP'],
-    //         //     'chapters' => $old_tags['id3v2']['chapters'],
-    //         // ];
-    //         $tags['attached_picture'][0] = [
-    //             'data' => base64_decode($this->core->cover->data),
-    //             'picturetypeid' => $this->core->cover->picture_type_id,
-    //             'description' => $this->core->cover->description,
-    //             'mime' => $this->core->cover->mime,
-    //         ];
-    //         $this->core->has_cover = true;
-    //     }
-    // }
+    private function attachCover(): void
+    {
+        if ($this->audio->hasCover() && ! $this->has_new_cover && ! $this->delete_cover) {
+            $this->core->cover = new AudioCoreCover(
+                data: $this->audio->getCover()->getContents(base64: true),
+                mime: $this->audio->getCover()->getMimeType(),
+            );
+        }
+
+        $coverFormatsAllowed = [AudioFormatEnum::mp3];
+        if ($this->core->cover && in_array($this->audio->getFormat(), $coverFormatsAllowed)) {
+            // $tags = [
+            //     ...$tags,
+            //     'CTOC' => $old_tags['id3v2']['CTOC'],
+            //     'CHAP' => $old_tags['id3v2']['CHAP'],
+            //     'chapters' => $old_tags['id3v2']['chapters'],
+            // ];
+            $this->cover = [
+                'data' => base64_decode($this->core->cover->data),
+                'picturetypeid' => $this->core->cover->picture_type_id ?? 1,
+                'description' => $this->core->cover->description ?? 'cover',
+                'mime' => $this->core->cover->mime,
+            ];
+            $this->core->has_cover = true;
+        }
+
+        if ($this->delete_cover) {
+            $this->cover = null;
+            $this->core->has_cover = false;
+        }
+    }
 
     /**
      * @param  array<string, string>  $tags

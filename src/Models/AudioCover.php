@@ -66,4 +66,12 @@ class AudioCover
     {
         return $this->height;
     }
+
+    /**
+     * Extract the cover to a file.
+     */
+    public function extractCover(string $path): void
+    {
+        file_put_contents($path, $this->getContents());
+    }
 }
