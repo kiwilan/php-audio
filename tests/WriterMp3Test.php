@@ -31,7 +31,6 @@ it('can update tags', function () {
         ->synopsis('New Synopsis')
         ->language('en')
         ->copyright('New Copyright')
-        ->handleErrors()
         ->save();
 
     $audio = Audio::read(MP3_WRITER);
@@ -97,8 +96,23 @@ it('can update tag', function () {
 
     $audio->write()
         ->tag('title', 'New Title')
+        ->tag('artist', 'New Artist')
+        ->tags([
+            'album' => 'New Album',
+            'part_of_a_compilation' => false,
+        ])
+        ->albumArtist('New Album Artist')
+        ->cover(FOLDER)
         ->save();
 
     $audio = Audio::read(MP3_WRITER);
     expect($audio->getTitle())->toBe('New Title');
+    expect($audio->getArtist())->toBe('New Artist');
+    expect($audio->getAlbum())->toBe('New Album');
+    expect($audio->getAlbumArtist())->toBe('New Album Artist');
+    expect($audio->isCompilation())->toBeFalse();
+    expect($audio->getGenre())->toBe('Roleplaying game');
+
+    $content = base64_encode(file_get_contents(FOLDER));
+    expect($audio->getCover()->getContents(true))->toBe($content);
 });

@@ -92,7 +92,7 @@ it('can update with tags and handle native metadata', function (string $path) {
     $audio = Audio::read($path);
     expect($audio->getTitle())->toBe('New Title');
     expect($audio->getAlbumArtist())->toBe('New Band');
-    expect($audio->isCompilation())->toBeFalse();
+    expect($audio->isCompilation())->toBeTrue();
 })->with([MP3_WRITER]);
 
 it('can use arrow function safe with unsupported tags', function (string $path) {
@@ -128,8 +128,7 @@ it('can handle exceptions', function (string $path) {
         ->tags([
             'title' => 'New Title',
             'albumArtist' => 'New Album Artist',
-        ])
-        ->handleErrors();
+        ]);
 
     expect(fn () => $tag->save())->toThrow(Exception::class);
 })->with([MP3_WRITER]);
@@ -141,13 +140,14 @@ it('can skip exceptions', function (string $path) {
         ->tags([
             'title' => 'New Title',
             'albumArtist' => 'New Album Artist',
-        ]);
+        ])
+        ->skipErrors();
 
     $tag->save();
 
     $audio = Audio::read($path);
     expect($audio->getTitle())->toBe('New Title');
-    expect($audio->getAlbumArtist())->toBeNull();
+    expect($audio->getAlbumArtist())->toBe('P1PDD & Mr Piouf');
 })->with([MP3_WRITER]);
 
 it('can update with new path', function (string $path) {
@@ -183,7 +183,6 @@ it('can use arrow function safe with unsupported formats', function (string $pat
     $audio = Audio::read($path);
 
     $tag = $audio->write()
-        ->handleErrors()
         ->title('New Title Alac');
 
     expect(fn () => $tag->save())->toThrow(Exception::class);

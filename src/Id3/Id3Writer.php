@@ -11,28 +11,31 @@ use Kiwilan\Audio\Enums\AudioTypeEnum;
 
 class Id3Writer
 {
+    protected const ALLOWED_COVER_TYPE = [AudioTypeEnum::id3];
+
     /**
-     * @param  array<string, array>  $new_tags
-     * @param  string[]  $custom_tags
+     * @param  array<string, array>  $tags  Array for `Id3Writer` format.
+     * @param  string[]  $tags_core  Tags from dedicated methods.
+     * @param  string[]  $tags_custom  Tags from `tag()` method.
+     * @param  string[]  $tags_custom_bulk  Tags from `tags()` method.
      * @param  string[]  $warnings
      * @param  string[]  $errors
-     * @param  string[]  $tag_formats
+     * @param  string[]  $formats  Formats to write tags.
      */
     protected function __construct(
         protected Audio $audio,
         protected getid3_writetags $writer,
         protected AudioCore $core,
-        protected bool $is_manual = false,
-        protected array $new_tags = [],
-        protected array $custom_tags = [],
+        protected array $tags = [],
+        protected array $tags_core = [],
+        protected array $tags_current = [],
+        protected array $tags_custom = [],
+        protected array $tags_custom_bulk = [],
         protected array $warnings = [],
         protected array $errors = [],
-        protected bool $remove_old_tags = false,
-        protected ?array $cover = null,
-        protected bool $has_new_cover = false,
-        protected bool $delete_cover = false,
-        protected bool $skip_errors = true,
-        protected array $tag_formats = [],
+        protected bool $cover_deleted = false,
+        protected bool $skip_errors = false,
+        protected array $formats = [],
         protected bool $success = false,
     ) {}
 
@@ -81,13 +84,6 @@ class Id3Writer
     public function album(?string $album): self
     {
         $this->core->album = $album;
-
-        return $this;
-    }
-
-    public function albumArtist(?string $album_artist): self
-    {
-        $this->core->album_artist = $album_artist;
 
         return $this;
     }
@@ -246,23 +242,17 @@ class Id3Writer
     }
 
     /**
-     * Add custom tags without dedicated method.
-     *
-     * Example:
-     *
-     * ```php
-     * $audio->write()->tag('series-part', '1');
-     * ```
+     * Set new album artist.
      */
-    public function tag(string $key, string|int|bool|null $value): self
+    public function albumArtist(?string $album_artist): self
     {
-        $this->custom_tags[$key] = $value;
+        $this->core->album_artist = $album_artist;
 
         return $this;
     }
 
     /**
-     * To update path to save file.
+     * To create a copy of the audio file with new tags.
      */
     public function path(string $path): self
     {
@@ -277,13 +267,23 @@ class Id3Writer
     }
 
     /**
-     * Advanced usage only to save manually tags.
+     * Advanced usage only to set tags formats.
      *
      * @param  string[]  $tag_formats
      */
     public function tagFormats(array $tag_formats): self
     {
-        $this->tag_formats = $tag_formats;
+        $this->formats = $tag_formats;
+
+        return $this;
+    }
+
+    /**
+     * Remove cover from tags.
+     */
+    public function removeCover(): self
+    {
+        $this->cover_deleted = true;
 
         return $this;
     }
@@ -296,76 +296,99 @@ class Id3Writer
     public function cover(string $pathOrData): self
     {
         $this->core->cover = AudioCoreCover::make($pathOrData);
-        $this->has_new_cover = true;
+        $this->core->has_cover = true;
 
         return $this;
     }
 
     /**
-     * Remove cover from tags.
-     */
-    public function removeCover(): self
-    {
-        $this->delete_cover = true;
-
-        return $this;
-    }
-
-    /**
-     * Set manually tags, to know which key used for which tag, you have to refer to documentation.
+     * Add custom tags without dedicated method (can be use multiple times).
      *
-     * WARNING: This method is for advanced usage only, if you use it, this will override all other tags.
+     * To know which key use for each format, see documentation.
+     * For example, album artist for `id3` encoded files, is `band` key.
      *
      * @docs https://github.com/kiwilan/php-audio#convert-properties
      *
-     * For example, album artist for `id3` encoded files, is `band` key.
+     * Example:
      *
-     * @param  array<string, string>  $tags
+     * ```php
+     * $audio->write()
+     *  ->tag('series-part', '1')
+     *  ->tag('series', 'The Lord of the Rings');
+     * ```
      */
-    public function tags(array $tags): self
+    public function tag(string $key, string|int|bool|null $value): self
     {
-        $this->new_tags = $this->convertTags($tags);
-        $this->is_manual = true;
+        $this->tags_custom[$key] = $value;
 
         return $this;
     }
 
     /**
-     * Handle errors when writing tags.
+     * Alternative to `tag()` method, with a full array of tags.
+     *
+     * To know which key use for each format, see documentation.
+     * For example, album artist for `id3` encoded files, is `band` key.
+     *
+     * @docs https://github.com/kiwilan/php-audio#convert-properties
+     *
+     * @param  array<string, string|int|bool|null>  $tags
+     *
+     * Example:
+     *
+     * ```php
+     * $audio->write()
+     *  ->tags([
+     *      'series-part' => '1',
+     *      'series' => 'The Lord of the Rings',
+     *  ]);
+     * ```
      */
-    public function handleErrors(): self
+    public function tags(array $tags): self
     {
-        $this->skip_errors = false;
+        $this->tags_custom_bulk = $tags;
 
         return $this;
     }
 
+    /**
+     * Skip errors when writing tags.
+     */
+    public function skipErrors(): self
+    {
+        $this->skip_errors = true;
+
+        return $this;
+    }
+
+    /**
+     * Write new tags on file.
+     */
     public function save(): bool
     {
-        $this->attachCover();
-        $this->parseTagFormats();
-        if (! $this->is_manual) {
-            $this->assignTags();
-        }
+        $this->assignFormats();
+        $this->assignTagsCurrent();
+        $this->assignCoverCurrent();
+        $this->assignTagsCore();
+        $this->assignTagsCustom();
 
-        $this->writer->tagformats = $this->tag_formats;
-        $this->writer->tag_data = $this->new_tags;
+        $this->convertToWriter();
+        $this->convertCoverToWriter();
+
+        $this->writer->tagformats = $this->formats;
+        $this->writer->tag_data = $this->tags;
 
         $this->success = $this->writer->WriteTags();
-
         $this->errors = $this->writer->errors;
         $this->warnings = $this->writer->warnings;
 
-        $this->parseErrors();
+        $this->handleErrors();
 
         return $this->success;
     }
 
-    private function parseErrors(): void
+    private function handleErrors(): void
     {
-        $this->errors = $this->writer->errors;
-        $this->warnings = $this->writer->warnings;
-
         $errors = implode(', ', $this->errors);
         $warnings = implode(', ', $this->warnings);
         $errors = strip_tags($errors);
@@ -412,11 +435,146 @@ class Id3Writer
     }
 
     /**
-     * Assign tags from core to tag formats.
+     * Parse all tags to convert it to writer format.
      */
-    private function assignTags(): self
+    private function convertToWriter(): self
     {
-        $convert = match ($this->audio->getType()) {
+        $tags = [];
+
+        // set current tags
+        foreach ($this->tags_current as $key => $value) {
+            $tags[$key] = $value;
+        }
+
+        // set custom tags
+        foreach ($this->tags_custom as $key => $value) {
+            $tags[$key] = $value;
+        }
+
+        // set custom bulk tags
+        foreach ($this->tags_custom_bulk as $key => $value) {
+            $tags[$key] = $value;
+        }
+
+        // set core tags
+        foreach ($this->tags_core as $key => $value) {
+            $tags[$key] = $value;
+        }
+
+        $this->tags = $this->formatTags($tags);
+
+        $forbiddenKeys = ['totaltracks'];
+        foreach ($forbiddenKeys as $key) {
+            if (isset($this->tags[$key])) {
+                unset($this->tags[$key]);
+            }
+        }
+
+        return $this;
+    }
+
+    private function assignTagsCustom(): self
+    {
+        if (empty($this->tags_custom) || empty($this->tags_custom_bulk)) {
+            return $this;
+        }
+
+        foreach ($this->tags_custom as $key => $value) {
+            $this->tags_current[$key] = $value;
+        }
+
+        foreach ($this->tags_custom_bulk as $key => $value) {
+            $this->tags_current[$key] = $value;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Assign current cover.
+     */
+    private function assignCoverCurrent(): self
+    {
+        // cover deleted
+        if ($this->cover_deleted) {
+            $this->core->cover = null;
+
+            return $this;
+        }
+
+        // skip if no current cover
+        if (! $this->audio->hasCover()) {
+            return $this;
+        }
+
+        // skip if new cover already assigned
+        if ($this->core->cover !== null) {
+            return $this;
+        }
+
+        // get current cover
+        $this->core->cover = new AudioCoreCover(
+            data: $this->audio->getCover()->getContents(base64: true),
+            mime: $this->audio->getCover()->getMimeType(),
+        );
+
+        return $this;
+    }
+
+    /**
+     * Add cover to writer.
+     */
+    private function convertCoverToWriter(): self
+    {
+        if (! in_array($this->audio->getType(), self::ALLOWED_COVER_TYPE)) {
+            return $this;
+        }
+
+        // skip if cover not exists
+        if (! $this->core->cover) {
+            return $this;
+        }
+
+        if (! $this->core->cover->data) {
+            return $this;
+        }
+
+        // 'CTOC' => $old_tags['id3v2']['CTOC'],
+        // 'CHAP' => $old_tags['id3v2']['CHAP'],
+        // 'chapters' => $old_tags['id3v2']['chapters'],
+        $this->tags['attached_picture'] = [
+            [
+                'data' => base64_decode($this->core->cover->data),
+                'picturetypeid' => $this->core->cover->picture_type_id ?? 1,
+                'description' => $this->core->cover->description ?? 'cover',
+                'mime' => $this->core->cover->mime,
+            ],
+        ];
+
+        return $this;
+    }
+
+    /**
+     * Assign current tags.
+     */
+    private function assignTagsCurrent(): self
+    {
+        $currentTags = [];
+        if (! $this->writer->remove_other_tags) {
+            $currentTags = $this->audio->getRaw();
+        }
+
+        $this->tags_current = $currentTags;
+
+        return $this;
+    }
+
+    /**
+     * Assign new tags from core to array.
+     */
+    private function assignTagsCore(): self
+    {
+        $tagFormat = match ($this->audio->getType()) {
             AudioTypeEnum::id3 => AudioCore::toId3v2($this->core),
             AudioTypeEnum::vorbiscomment => AudioCore::toVorbisComment($this->core),
             AudioTypeEnum::quicktime => AudioCore::toQuicktime($this->core),
@@ -426,30 +584,17 @@ class Id3Writer
             default => null,
         };
 
-        if (! $convert) {
+        if (! $tagFormat) {
             return $this;
         }
 
-        $oldTags = [];
-        if (! $this->writer->remove_other_tags) {
-            $oldTags = $this->audio->getRaw();
-        }
-
-        $this->new_tags = [
-            ...$oldTags, // old tags
-            ...$convert->toArray(), // new tags
-        ];
-        $this->new_tags = $this->convertTags($this->new_tags);
-
-        if ($this->cover && ! $this->delete_cover) {
-            $this->new_tags['attached_picture'][0] = $this->cover;
-        }
+        $this->tags_core = $tagFormat->toArray();
 
         return $this;
     }
 
     /**
-     * Assign tag formats to know how to write tags.
+     * Assign formats to know how to write tags.
      *
      * - ID3v1 (v1 & v1.1)
      * - ID3v2 (v2.3, v2.4)
@@ -459,84 +604,30 @@ class Id3Writer
      *
      * Options: `id3v1`, `id3v2.2`, `id2v2.3`, `id3v2.4`, `ape`, `vorbiscomment`, `metaflac`, `real`
      */
-    private function parseTagFormats(): self
+    private function assignFormats(): self
     {
-        if (! empty($this->tagFormats)) {
+        if (! empty($this->formats)) {
             return $this;
         }
 
-        $this->tag_formats = match ($this->audio->getFormat()) {
-            AudioFormatEnum::aac => [],
-            AudioFormatEnum::aif => [],
-            AudioFormatEnum::aifc => [],
-            AudioFormatEnum::aiff => [],
-            AudioFormatEnum::dsf => [],
+        $this->formats = match ($this->audio->getFormat()) {
             AudioFormatEnum::flac => ['metaflac'],
-            AudioFormatEnum::m4a => [],
-            AudioFormatEnum::m4b => [],
-            AudioFormatEnum::m4v => [],
-            AudioFormatEnum::mpc => [],
-            AudioFormatEnum::mka => [],
-            AudioFormatEnum::mkv => [],
-            AudioFormatEnum::ape => [],
             AudioFormatEnum::mp3 => ['id3v1', 'id3v2.4'],
-            AudioFormatEnum::mp4 => [],
             AudioFormatEnum::ogg => ['vorbiscomment'],
-            AudioFormatEnum::opus => [],
-            AudioFormatEnum::ofr => [],
-            AudioFormatEnum::ofs => [],
-            AudioFormatEnum::spx => [],
-            AudioFormatEnum::tak => [],
-            AudioFormatEnum::tta => [],
-            AudioFormatEnum::wav => [],
-            AudioFormatEnum::webm => [],
-            AudioFormatEnum::wma => [],
-            AudioFormatEnum::wv => [],
             default => [],
         };
 
         return $this;
     }
 
-    private function attachCover(): void
-    {
-        if ($this->audio->hasCover() && ! $this->has_new_cover && ! $this->delete_cover) {
-            $this->core->cover = new AudioCoreCover(
-                data: $this->audio->getCover()->getContents(base64: true),
-                mime: $this->audio->getCover()->getMimeType(),
-            );
-        }
-
-        $coverFormatsAllowed = [AudioFormatEnum::mp3];
-        if ($this->core->cover && in_array($this->audio->getFormat(), $coverFormatsAllowed)) {
-            // $tags = [
-            //     ...$tags,
-            //     'CTOC' => $old_tags['id3v2']['CTOC'],
-            //     'CHAP' => $old_tags['id3v2']['CHAP'],
-            //     'chapters' => $old_tags['id3v2']['chapters'],
-            // ];
-            $this->cover = [
-                'data' => base64_decode($this->core->cover->data),
-                'picturetypeid' => $this->core->cover->picture_type_id ?? 1,
-                'description' => $this->core->cover->description ?? 'cover',
-                'mime' => $this->core->cover->mime,
-            ];
-            $this->core->has_cover = true;
-        }
-
-        if ($this->delete_cover) {
-            $this->cover = null;
-            $this->core->has_cover = false;
-        }
-    }
-
     /**
+     * Format tags to writer format.
+     *
      * @param  array<string, string>  $tags
      * @return array<string, array>
      */
-    private function convertTags(array $tags): array
+    private function formatTags(array $tags): array
     {
-        $attached = $tags['attached_picture'] ?? null;
         $items = [];
         if (! empty($tags)) {
             foreach ($tags as $key => $tag) {
@@ -544,10 +635,6 @@ class Id3Writer
                     $items[$key] = [$tag];
                 }
             }
-        }
-
-        if ($attached) {
-            $items['attached_picture'] = $attached;
         }
 
         return $items;

@@ -269,25 +269,14 @@ use Kiwilan\Audio\Audio;
 $audio = Audio::read('path/to/audio.mp3');
 $cover = 'path/to/cover.jpg';
 
-$image = getimagesize($cover);
 $coverData = file_get_contents($cover);
-$coverPicturetypeid = $image[2];
-$coverDescription = 'cover';
-$coverMime = $image['mime'];
 
 $tag = $audio->write()
   ->tags([
     'title' => 'New Title',
     'band' => 'New Band',
-    'attached_picture' => [
-      [
-        'data' => $coverData,
-        'picturetypeid' => $coverPicturetypeid,
-        'description' => $coverDescription,
-        'mime' => $coverMime,
-      ],
-    ],
   ])
+  ->cover($coverData)
   ->save();
 ```
 

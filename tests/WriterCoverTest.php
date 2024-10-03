@@ -37,23 +37,12 @@ it('can read use tags', function (string $path) {
     $audio = Audio::read($path);
 
     $random = (string) rand(1, 1000);
-    $image = getimagesize(FOLDER);
     $coverData = file_get_contents(FOLDER);
-    $coverPicturetypeid = $image[2];
-    $coverDescription = 'cover';
-    $coverMime = $image['mime'];
     $tag = $audio->write()
         ->tags([
             'title' => $random,
-            'attached_picture' => [
-                [
-                    'data' => $coverData,
-                    'picturetypeid' => $coverPicturetypeid,
-                    'description' => $coverDescription,
-                    'mime' => $coverMime,
-                ],
-            ],
-        ]);
+        ])
+        ->cover($coverData);
 
     $tag->save();
 
@@ -95,7 +84,6 @@ it('can update cover with path', function () {
 
     $audio->write()
         ->cover(FOLDER)
-        ->handleErrors()
         ->save();
 
     $audio = Audio::read(MP3_WRITER);
@@ -112,7 +100,6 @@ it('can remove cover', function () {
 
     $audio->write()
         ->removeCover()
-        ->handleErrors()
         ->save();
 
     $audio = Audio::read(MP3_WRITER);
