@@ -293,6 +293,8 @@ class AudioMetadata
             'data_format' => $this->data_format,
             'encoding' => $this->encoding,
             'mime_type' => $this->mime_type,
+            'quicktime' => $this->quicktime?->toArray(),
+            'warning' => $this->warning,
             'duration_seconds' => $this->duration_seconds,
             'bitrate' => $this->bitrate,
             'bitrate_mode' => $this->bitrate_mode,

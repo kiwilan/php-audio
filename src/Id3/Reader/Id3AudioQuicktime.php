@@ -171,4 +171,35 @@ class Id3AudioQuicktime
     {
         return $this->mdat;
     }
+
+    public function getChapter(int $index): ?Id3AudioQuicktimeChapter
+    {
+        return $this->chapters[$index] ?? null;
+    }
+
+    public function toArray(): array
+    {
+        $chapters = [];
+        foreach ($this->chapters as $chapter) {
+            $chapters[] = $chapter->toArray();
+        }
+
+        return [
+            'hinting' => $this->hinting,
+            'controller' => $this->controller,
+            'ftyp' => $this->ftyp?->toArray(),
+            'timestamps_unix' => $this->timestamps_unix,
+            'time_scale' => $this->time_scale,
+            'display_scale' => $this->display_scale,
+            'video' => $this->video,
+            'audio' => $this->audio,
+            'stts_framecount' => $this->stts_framecount,
+            'comments' => $this->comments,
+            'chapters' => $chapters,
+            'free' => $this->free?->toArray(),
+            'wide' => $this->wide?->toArray(),
+            'mdat' => $this->mdat?->toArray(),
+            'encoding' => $this->encoding,
+        ];
+    }
 }

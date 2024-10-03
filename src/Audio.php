@@ -13,7 +13,7 @@ use Kiwilan\Audio\Models\AudioMetadata;
 class Audio
 {
     /**
-     * @param  array<string, string[]>  $raw_tags_all
+     * @param  array<string, string[]>  $raw_all
      */
     protected function __construct(
         protected string $path,
@@ -47,7 +47,7 @@ class Audio
         protected ?string $language = null,
         protected ?string $lyrics = null,
 
-        protected array $raw_tags_all = [],
+        protected array $raw_all = [],
     ) {}
 
     public static function read(string $path): self
@@ -411,7 +411,7 @@ class Audio
      */
     public function getRawAll(): array
     {
-        return $this->raw_tags_all;
+        return $this->raw_all;
     }
 
     /**
@@ -425,16 +425,16 @@ class Audio
     public function getRaw(?string $format = null): ?array
     {
         if ($format) {
-            return $this->raw_tags_all[$format] ?? null;
+            return $this->raw_all[$format] ?? null;
         }
 
         $tags = match ($this->type) {
-            AudioTypeEnum::id3 => $this->raw_tags_all['id3v2'] ?? [],
-            AudioTypeEnum::vorbiscomment => $this->raw_tags_all['vorbiscomment'] ?? [],
-            AudioTypeEnum::quicktime => $this->raw_tags_all['quicktime'] ?? [],
-            AudioTypeEnum::matroska => $this->raw_tags_all['matroska'] ?? [],
-            AudioTypeEnum::ape => $this->raw_tags_all['ape'] ?? [],
-            AudioTypeEnum::asf => $this->raw_tags_all['asf'] ?? [],
+            AudioTypeEnum::id3 => $this->raw_all['id3v2'] ?? [],
+            AudioTypeEnum::vorbiscomment => $this->raw_all['vorbiscomment'] ?? [],
+            AudioTypeEnum::quicktime => $this->raw_all['quicktime'] ?? [],
+            AudioTypeEnum::matroska => $this->raw_all['matroska'] ?? [],
+            AudioTypeEnum::ape => $this->raw_all['ape'] ?? [],
+            AudioTypeEnum::asf => $this->raw_all['asf'] ?? [],
             default => [],
         };
 
@@ -485,7 +485,7 @@ class Audio
             'synopsis' => $this->synopsis,
             'language' => $this->language,
             'lyrics' => $this->lyrics,
-            'raw_tags_all' => $this->raw_tags_all,
+            'raw_all' => $this->raw_all,
         ];
     }
 
@@ -522,7 +522,7 @@ class Audio
 
         $raw_tags = $id3_reader->getRaw()['tags'] ?? [];
         foreach ($raw_tags as $name => $raw_tag) {
-            $this->raw_tags_all[$name] = Id3Reader::cleanTags($raw_tag);
+            $this->raw_all[$name] = Id3Reader::cleanTags($raw_tag);
         }
 
         $core = match ($this->type) {

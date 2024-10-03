@@ -35,4 +35,12 @@ class Id3AudioQuicktimeChapter
     {
         return $this->title;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'timestamp' => $this->timestamp,
+            'title' => $this->title,
+        ];
+    }
 }

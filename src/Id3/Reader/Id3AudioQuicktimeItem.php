@@ -75,4 +75,17 @@ class Id3AudioQuicktimeItem
     {
         return $this->fourcc;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'hierarchy' => $this->hierarchy,
+            'name' => $this->name,
+            'size' => $this->size,
+            'offset' => $this->offset,
+            'signature' => $this->signature,
+            'unknown_1' => $this->unknown_1,
+            'fourcc' => $this->fourcc,
+        ];
+    }
 }

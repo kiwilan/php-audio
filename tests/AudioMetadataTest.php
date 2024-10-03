@@ -139,4 +139,6 @@ it('can read quicktime', function () {
     expect($quicktime->getWide())->toBeInstanceOf(Id3AudioQuicktimeItem::class);
     expect($quicktime->getMdat())->toBeInstanceOf(Id3AudioQuicktimeItem::class);
     expect($quicktime->getEncoding())->toBeString();
+
+    expect($quicktime->toArray())->toBeArray();
 });
