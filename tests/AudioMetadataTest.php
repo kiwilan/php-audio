@@ -85,3 +85,10 @@ it('can read basic info', function (string $path) {
         expect($metadata->getEncoderOptions())->toBeString();
     }
 })->with([...AUDIO]);
+
+it('can read as array', function (string $path) {
+    $audio = Audio::read($path);
+    $metadata = $audio->getMetadata();
+
+    expect($metadata->toArray())->toBeArray();
+})->with([...AUDIO]);

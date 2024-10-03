@@ -145,9 +145,19 @@ class Audio
         return Id3Reader::make($this->path);
     }
 
-    public function update(): Id3Writer
+    public function write(): Id3Writer
     {
         return Id3Writer::make($this);
+    }
+
+    /**
+     * @deprecated Use `write()` method instead.
+     *
+     * Update audio file.
+     */
+    public function update(): Id3Writer
+    {
+        return $this->write();
     }
 
     /**
@@ -444,14 +454,39 @@ class Audio
         return $tags[$key] ?? null;
     }
 
-    /**
-     * Get raw tags as array with main format, same as `getRaw()`.
-     *
-     * @return string[]
-     */
-    public function getExtras(): array
+    public function toArray(): array
     {
-        return $this->getRaw();
+        return [
+            'path' => $this->path,
+            'extension' => $this->extension,
+            'format' => $this->format,
+            'type' => $this->type,
+            'metadata' => $this->metadata?->toArray(),
+            'cover' => $this->cover?->toArray(),
+            'duration' => $this->duration,
+            'is_writable' => $this->is_writable,
+            'is_valid' => $this->is_valid,
+            'has_cover' => $this->has_cover,
+            'title' => $this->title,
+            'artist' => $this->artist,
+            'album' => $this->album,
+            'genre' => $this->genre,
+            'year' => $this->year,
+            'track_number' => $this->track_number,
+            'comment' => $this->comment,
+            'album_artist' => $this->album_artist,
+            'composer' => $this->composer,
+            'disc_number' => $this->disc_number,
+            'is_compilation' => $this->is_compilation,
+            'creation_date' => $this->creation_date,
+            'encoding_by' => $this->encoding_by,
+            'encoding' => $this->encoding,
+            'description' => $this->description,
+            'synopsis' => $this->synopsis,
+            'language' => $this->language,
+            'lyrics' => $this->lyrics,
+            'raw_tags_all' => $this->raw_tags_all,
+        ];
     }
 
     private function parseTags(?\Kiwilan\Audio\Id3\Id3Reader $id3_reader): self

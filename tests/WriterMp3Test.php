@@ -10,7 +10,7 @@ it('can update tags', function () {
     $audio = Audio::read(MP3_WRITER);
     testMp3Writer($audio);
 
-    $audio->update()
+    $audio->write()
         ->title('New Title')
         ->artist('New Artist')
         ->album('New Album')
@@ -44,7 +44,7 @@ it('can update only one tag', function () {
     $audio = Audio::read(MP3_WRITER);
     testMp3Writer($audio);
 
-    $audio->update()
+    $audio->write()
         ->title('New Title')
         ->save();
 
@@ -66,7 +66,7 @@ it('can update tags manually', function () {
     $audio = Audio::read(MP3_WRITER);
     testMp3Writer($audio);
 
-    $audio->update()
+    $audio->write()
         ->tags([
             'title' => 'New Title',
             'artist' => 'New Artist',

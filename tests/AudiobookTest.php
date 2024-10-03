@@ -123,7 +123,6 @@ it('can read audiobook file m4b', function (string $file) {
     expect($audio->getLyrics())->toBe('Lyrics');
     expect($audio->getDuration())->toBe(11.00);
     expect($audio->getDurationHuman())->toBe('00:00:11');
-    expect($audio->getExtras())->toBeArray();
 
     expect($audio->getRaw())->toBeArray();
     expect($audio->getRawKey('title'))->toBe('P1PDD Saison 1');

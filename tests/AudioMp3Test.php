@@ -54,7 +54,6 @@ it('can read mp3 info', function () {
     expect($audio->getRaw())->toHaveCount(11);
     expect($audio->getRaw('id3v2'))->toHaveCount(11);
     expect($audio->getRawKey('title'))->toBe('Introduction');
-    expect($audio->getExtras())->toBeArray();
 
     $cover = $audio->getCover();
     expect($cover)->toBeInstanceOf(AudioCover::class);

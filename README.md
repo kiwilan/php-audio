@@ -21,7 +21,7 @@ Audio files can use different formats, this package aims to provide a simple way
 
 ## Requirements
 
--   PHP >= 8.1
+-   PHP `8.1` minimum
 -   Optional for update
     -   `FLAC`: `flac` (with `apt`, `brew` or `scoop`)
     -   `OGG`: `vorbis-tools` (with `apt` or `brew`) / `extras/icecast` (with `scoop`)
@@ -58,15 +58,15 @@ $audio->getAlbumArtist(); // `?string` to get album artist
 $audio->getComposer(); // `?string` to get composer
 $audio->getDiscNumber(); // `?string` to get disc number
 $audio->isCompilation(); // `bool` to know if is compilation
-$audio->getCreationDate(); // `?string` to get creation date (audiobook)
-$audio->getCopyright(); // `?string` to get copyright (audiobook)
+$audio->getCreationDate(); // `?string` to get creation date
+$audio->getCopyright(); // `?string` to get copyright
 $audio->getEncoding(); // `?string` to get encoding
-$audio->getDescription(); // `?string` to get description (audiobook)
-$audio->getPodcastDescription(); // `?string` to get podcast description (audiobook)
+$audio->getDescription(); // `?string` to get description
+$audio->getSynopsis(); // `?string` to get synopsis
 $audio->getLanguage(); // `?string` to get language
-$audio->getLyrics(); // `?string` (audiobook)
-$audio->getStik(); // `?string` (audiobook)
+$audio->getLyrics(); // `?string`
 $audio->getDuration(); // `?float` to get duration in seconds
+$audio->getDurationHuman(); // `?string` to get duration in human readable format
 ```
 
 Raw tags:
@@ -76,13 +76,12 @@ use Kiwilan\Audio\Audio;
 
 $audio = Audio::read('path/to/audio.mp3');
 
-$audio->getTags(); // `array` with all tags
-$title = $audio->getTag('title'); // `?string` to get title same as `$audio->getTitle()`
+$raw_all = $audio->getRawAll(); // `array` with all tags
+$raw = $audio->getRaw(); // `array` with main tag
+$title = $audio->getRawKey('title'); // `?string` to get title same as `$audio->getTitle()`
 
-$formats = $audio->getAudioFormats(); // `array` with all audio formats
-
-$format = $audio->getTags('id3v2'); // `?array` with all tags with format `id3v2`
-$title = $audio->getTag('title', 'id3v2'); // `?string` to get title with format `id3v2`
+$format = $audio->getRaw('id3v2'); // `?array` with all tags with format `id3v2`
+$title = $audio->getRawKey('title', 'id3v2'); // `?string` to get title with format `id3v2`
 ```
 
 Additional metadata:
@@ -93,18 +92,15 @@ use Kiwilan\Audio\Audio;
 $audio = Audio::read('path/to/audio.mp3');
 
 $audio->getPath(); // `string` to get path
+$audio->getExtension(); // `string` to get extension
 $audio->hasCover(); // `bool` to know if has cover
 $audio->isValid(); // `bool` to know if file is valid audio file
+$audio->isWritable(); // `bool` to know if file is writable
 $audio->getFormat(); // `AudioFormatEnum` to get format (mp3, m4a, ...)
 $audio->getType(); // `?AudioTypeEnum` ID3 type (id3, riff, asf, quicktime, matroska, ape, vorbiscomment)
-$audio->getExtras(); // `array` with raw metadata (could contains some metadata not parsed)
 ```
 
-Raw audio:
-
-> [!NOTE]
->
-> Cover is removed from `toArray()` method, you can use `getCover()` method to get cover metadata.
+You can use `toArray()` method to get raw info:
 
 ```php
 use Kiwilan\Audio\Audio;
@@ -121,10 +117,8 @@ use Kiwilan\Audio\Audio;
 
 $audio = Audio::read('path/to/audio.mp3');
 
-$audio->getReader(); // `?Id3Reader` reader based on `getID3`
-$audio->getWriter(); // `?Id3Writer` writer based on `getid3_writetags`
-$audio->getStat(); // `AudioStat` (from `stat` function)
-$audio->getAudio(); // `?AudioMetadata` with audio metadata
+$audio->getId3Reader(); // `?Id3Reader` reader based on `getID3`
+$audio->getMetadata(); // `?AudioMetadata` with audio metadata
 $audio->getCover(); // `?AudioCover` with cover metadata
 ```
 
@@ -142,7 +136,7 @@ use Kiwilan\Audio\Audio;
 $audio = Audio::read('path/to/audio.mp3');
 $audio->getTitle(); // `Title`
 
-$tag = $audio->update()
+$tag = $audio->write()
   ->title('New Title')
   ->artist('New Artist')
   ->album('New Album')
@@ -154,12 +148,12 @@ $tag = $audio->update()
   ->composer('New Composer')
   ->creationDate('2021-01-01')
   ->description('New Description')
+  ->synopsis('New Synopsis')
   ->discNumber('2/2')
   ->encodingBy('New Encoding By')
   ->encoding('New Encoding')
   ->isCompilation()
   ->lyrics('New Lyrics')
-  ->stik('New Stik')
   ->cover('path/to/cover.jpg') // you can use file content `file_get_contents('path/to/cover.jpg')`
   ->save();
 
@@ -178,6 +172,7 @@ You can set tags manually with `tags` method, but you need to know the format of
 >
 > If you use `tags` method, you have to use key used by metadata container. For example, if you want to set album artist in `id3v2`, you have to use `band` key. If you want to know which key to use check `src/Models/AudioCore.php` file.
 >
+> You can't use other methods with `tags()` method.
 > If your key is not supported, `save` method will throw an exception, unless you use `preventFailOnErrors`.
 
 ```php
@@ -186,7 +181,7 @@ use Kiwilan\Audio\Audio;
 $audio = Audio::read('path/to/audio.mp3');
 $audio->getAlbumArtist(); // `Band`
 
-$tag = $audio->update()
+$tag = $audio->write()
   ->tags([
     'title' => 'New Title',
     'band' => 'New Band', // `band` is used by `id3v2` to set album artist, method is `albumArtist` but `albumArtist` key will throw an exception with `id3v2`
@@ -206,7 +201,7 @@ use Kiwilan\Audio\Audio;
 $audio = Audio::read('path/to/audio.mp3');
 $audio->getAlbumArtist(); // `Band`
 
-$tag = $audio->update()
+$tag = $audio->write()
   ->title('New Title')
   ->albumArtist('New Band') // `albumArtist` will set `band` for `id3v2`, exception safe
   ->save();
@@ -224,7 +219,7 @@ use Kiwilan\Audio\Audio;
 
 $audio = Audio::read('path/to/audio.mp3');
 
-$tag = $audio->update()
+$tag = $audio->write()
   ->tags([
     'title' => 'New Title',
     'title2' => 'New title', // not supported by `id3v2`, will throw an exception
@@ -240,7 +235,7 @@ use Kiwilan\Audio\Audio;
 
 $audio = Audio::read('path/to/audio.mp3');
 
-$tag = $audio->update()
+$tag = $audio->write()
   ->encoding('New encoding') // not supported by `id3v2`, BUT will not throw an exception
   ->preventFailOnError() // if you have some errors with unsupported format for example, you can prevent exception
   ->save();
@@ -262,7 +257,7 @@ $coverPicturetypeid = $image[2];
 $coverDescription = 'cover';
 $coverMime = $image['mime'];
 
-$tag = $audio->update()
+$tag = $audio->write()
   ->tags([
     'title' => 'New Title',
     'band' => 'New Band',
@@ -276,29 +271,6 @@ $tag = $audio->update()
     ],
   ])
   ->save();
-```
-
-#### Merge tags
-
-Merge `tags` with arrow functions.
-
-```php
-use Kiwilan\Audio\Audio;
-
-$audio = Audio::read($path);
-
-$tag = $audio->update()
-    ->title('New Title') // will be merged with `tags` and override `title` key
-    ->tags([
-        'title' => 'New Title tag',
-        'band' => 'New Band',
-    ]);
-
-$tag->save();
-
-$audio = Audio::read($path);
-expect($audio->getTitle())->toBe('New Title');
-expect($audio->getAlbumArtist())->toBe('New Band');
 ```
 
 ### Extras
@@ -322,20 +294,36 @@ $id3v2 = $extras['id3v2'] ?? [];
 use Kiwilan\Audio\Audio;
 
 $audio = Audio::read('path/to/audio.mp3');
+$metadata = $audio->getMetadata();
 
-$audio->getAudio()->getFilesize(); // `?int` in bytes
-$audio->getAudio()->getExtension(); // `?string` (mp3, m4a, ...)
-$audio->getAudio()->getEncoding(); // `?string` (UTF-8...)
-$audio->getAudio()->getMimeType(); // `?string` (audio/mpeg, audio/mp4, ...)
-$audio->getAudio()->getDurationSeconds(); // `?float` in seconds
-$audio->getAudio()->getDurationReadable(); // `?string` (00:00:00)
-$audio->getAudio()->getBitrate(); // `?int` in kbps
-$audio->getAudio()->getBitrateMode(); // `?string` (cbr, vbr, ...)
-$audio->getAudio()->getSampleRate(); // `?int` in Hz
-$audio->getAudio()->getChannels(); // `?int` (1, 2, ...)
-$audio->getAudio()->getChannelMode(); // `?string` (mono, stereo, ...)
-$audio->getAudio()->getLossless(); // `bool` to know if is lossless
-$audio->getAudio()->getCompressionRatio(); // `?float`
+$metadata->getFileSize(); // `?int` in bytes
+$metadata->getSizeHuman(); // `?string` (1.2 MB, 1.2 GB, ...)
+$metadata->getExtension(); // `?string` (mp3, m4a, ...)
+$metadata->getEncoding(); // `?string` (UTF-8...)
+$metadata->getMimeType(); // `?string` (audio/mpeg, audio/mp4, ...)
+$metadata->getDurationSeconds(); // `?float` in seconds
+$metadata->getDurationReadable(); // `?string` (00:00:00)
+$metadata->getBitrate(); // `?int` in kbps
+$metadata->getBitrateMode(); // `?string` (cbr, vbr, ...)
+$metadata->getSampleRate(); // `?int` in Hz
+$metadata->getChannels(); // `?int` (1, 2, ...)
+$metadata->getChannelMode(); // `?string` (mono, stereo, ...)
+$metadata->isLossless(); // `bool` to know if is lossless
+$metadata->getCompressionRatio(); // `?float`
+$metadata->getFilesize(); // `?int` in bytes
+$metadata->getSizeHuman(); // `?string` (1.2 MB, 1.2 GB, ...)
+$metadata->getDataFormat(); // `?string` (mp3, m4a, ...)
+$metadata->getCodec(); // `?string` (mp3, aac, ...)
+$metadata->getEncoderOptions(); // `?string`
+$metadata->getVersion(); // `?string`
+$metadata->getAvDataOffset(); // `?int` in bytes
+$metadata->getAvDataEnd(); // `?int` in bytes
+$metadata->getFilePath(); // `?string`
+$metadata->getFilename(); // `?string`
+$metadata->getLastAccessAt(); // `?DateTime`
+$metadata->getCreatedAt(); // `?DateTime`
+$metadata->getModifiedAt(); // `?DateTime`
+$metadata->toArray();
 ```
 
 ### AudioCover
@@ -344,11 +332,12 @@ $audio->getAudio()->getCompressionRatio(); // `?float`
 use Kiwilan\Audio\Audio;
 
 $audio = Audio::read('path/to/audio.mp3');
+$cover = $audio->getCover();
 
-$audio->getCover()->getContents(); // `?string` raw file
-$audio->getCover()->getMimeType(); // `?string` (image/jpeg, image/png, ...)
-$audio->getCover()->getWidth(); // `?int` in pixels
-$audio->getCover()->getHeight(); // `?int` in pixels
+$cover->getContents(); // `?string` raw file
+$cover->getMimeType(); // `?string` (image/jpeg, image/png, ...)
+$cover->getWidth(); // `?int` in pixels
+$cover->getHeight(); // `?int` in pixels
 ```
 
 ## Supported formats
@@ -475,10 +464,10 @@ In `Audio::class`, you have a property `extras` which contains all raw metadata,
 use Kiwilan\Audio\Audio;
 
 $audio = Audio::read('path/to/audio.mp3');
-$extras = $audio->getExtras();
+$raw_all = $audio->getRawAll());
 
 $custom = null;
-$id3v2 = $extras['id3v2'] ?? [];
+$id3v2 = $raw_all['id3v2'] ?? [];
 
 if ($id3v2) {
   $custom = $id3v2['custom'] ?? null;
@@ -496,7 +485,7 @@ use Kiwilan\Audio\Audio;
 
 $audio = Audio::read('path/to/audio.mp3');
 
-$extras = $audio->getExtras();
+$extras = $audio->getRawAll();
 var_dump($extras);
 ```
 

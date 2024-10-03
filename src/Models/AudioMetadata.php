@@ -262,4 +262,32 @@ class AudioMetadata
     {
         return $this->modified_at;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'file_size' => $this->file_size,
+            'data_format' => $this->data_format,
+            'encoding' => $this->encoding,
+            'mime_type' => $this->mime_type,
+            'duration_seconds' => $this->duration_seconds,
+            'bitrate' => $this->bitrate,
+            'bitrate_mode' => $this->bitrate_mode,
+            'sample_rate' => $this->sample_rate,
+            'channels' => $this->channels,
+            'channel_mode' => $this->channel_mode,
+            'is_lossless' => $this->is_lossless,
+            'compression_ratio' => $this->compression_ratio,
+            'codec' => $this->codec,
+            'encoder_options' => $this->encoder_options,
+            'version' => $this->version,
+            'av_data_offset' => $this->av_data_offset,
+            'av_data_end' => $this->av_data_end,
+            'file_path' => $this->file_path,
+            'filename' => $this->filename,
+            'last_access_at' => $this->last_access_at?->format('Y-m-d H:i:s'),
+            'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
+            'modified_at' => $this->modified_at?->format('Y-m-d H:i:s'),
+        ];
+    }
 }

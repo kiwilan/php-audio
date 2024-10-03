@@ -74,4 +74,14 @@ class AudioCover
     {
         file_put_contents($path, $this->getContents());
     }
+
+    public function toArray(): array
+    {
+        return [
+            'contents' => $this->contents,
+            'mime_type' => $this->mime_type,
+            'width' => $this->width,
+            'height' => $this->height,
+        ];
+    }
 }

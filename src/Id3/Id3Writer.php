@@ -251,7 +251,7 @@ class Id3Writer
      * Example:
      *
      * ```php
-     * $audio->update()->tag('series-part', '1');
+     * $audio->write()->tag('series-part', '1');
      * ```
      */
     public function tag(string $key, string|int|bool|null $value): self

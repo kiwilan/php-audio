@@ -189,7 +189,7 @@ function resetMp3Writer()
 {
     $audio = Audio::read(MP3_WRITER);
 
-    $audio->update()
+    $audio->write()
         ->title('Introduction')
         ->artist('Mr Piouf')
         ->album('P1PDD Le conclave de Troie')

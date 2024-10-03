@@ -80,7 +80,6 @@ it('can read file id3v1', function (string $path) {
     expect($audio->getFormat())->toBe($format);
     expect($audio->getDuration())->toBeFloat();
     expect($audio->getDurationHuman())->toBe('00:00:11');
-    expect($audio->getExtras())->toBeArray();
 
     expect($audio)->toBeInstanceOf(Audio::class);
 })->with([...AUDIO_ID3_V1]);
@@ -90,3 +89,9 @@ it('can read wrong audio file', function () {
 
     expect($audio->isValid())->toBeFalse();
 });
+
+it('can read as array', function (string $path) {
+    $audio = Audio::read($path);
+
+    expect($audio->toArray())->toBeArray();
+})->with([...AUDIO]);

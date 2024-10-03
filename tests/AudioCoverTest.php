@@ -32,3 +32,14 @@ it('can extract cover', function (string $path) {
         expect($cover)->toBeNull();
     }
 })->with([...AUDIO]);
+
+it('can read as array', function (string $path) {
+    $audio = Audio::read($path);
+    $cover = $audio->getCover();
+
+    if ($cover) {
+        expect($cover->toArray())->toBeArray();
+    } else {
+        expect($cover)->toBeNull();
+    }
+})->with([...AUDIO]);

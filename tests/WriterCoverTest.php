@@ -8,7 +8,7 @@ beforeEach(function () {
 
 it('can update cover', function (string $path) {
     $audio = Audio::read($path);
-    $audio->update()
+    $audio->write()
         ->cover(FOLDER)
         ->save();
 
@@ -22,7 +22,7 @@ it('can update cover', function (string $path) {
 it('can read use file content as cover', function (string $path) {
     $audio = Audio::read($path);
 
-    $tag = $audio->update()
+    $tag = $audio->write()
         ->cover(file_get_contents(FOLDER));
 
     $tag->save();
@@ -42,7 +42,7 @@ it('can read use tags', function (string $path) {
     $coverPicturetypeid = $image[2];
     $coverDescription = 'cover';
     $coverMime = $image['mime'];
-    $tag = $audio->update()
+    $tag = $audio->write()
         ->tags([
             'title' => $random,
             'attached_picture' => [
@@ -67,7 +67,7 @@ it('can read use tags', function (string $path) {
 it('can use tags with cover', function (string $path) {
     $audio = Audio::read($path);
 
-    $tag = $audio->update()
+    $tag = $audio->write()
         ->tags([
             'title' => 'New Title',
         ])
@@ -93,7 +93,7 @@ it('can update cover with path', function () {
     $audio->getCover()->extractCover($path);
     expect(file_exists($path))->toBeTrue();
 
-    $audio->update()
+    $audio->write()
         ->cover(FOLDER)
         ->handleErrors()
         ->save();
@@ -110,7 +110,7 @@ it('can update cover with path', function () {
 it('can remove cover', function () {
     $audio = Audio::read(MP3_WRITER);
 
-    $audio->update()
+    $audio->write()
         ->removeCover()
         ->handleErrors()
         ->save();

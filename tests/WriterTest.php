@@ -11,7 +11,7 @@ beforeEach(function () {
 it('can update file', function (string $path) {
     $audio = Audio::read($path);
     $random = (string) rand(1, 1000);
-    $audio->update()
+    $audio->write()
         ->title($random)
         ->artist('New Artist')
         ->album('New Album')
@@ -64,7 +64,7 @@ it('can update use tags with tag formats', function (string $path) {
     $audio = Audio::read($path);
 
     $random = (string) rand(1, 1000);
-    $tag = $audio->update()
+    $tag = $audio->write()
         ->tags([
             'title' => $random,
         ])
@@ -79,7 +79,7 @@ it('can update use tags with tag formats', function (string $path) {
 it('can update with tags and handle native metadata', function (string $path) {
     $audio = Audio::read($path);
 
-    $tag = $audio->update()
+    $tag = $audio->write()
         ->isCompilation()
         ->tags([
             'title' => 'New Title',
@@ -98,7 +98,7 @@ it('can update with tags and handle native metadata', function (string $path) {
 it('can use arrow function safe with unsupported tags', function (string $path) {
     $audio = Audio::read($path);
 
-    $tag = $audio->update()
+    $tag = $audio->write()
         ->title('New Title')
         ->encoding('New encoding');
 
@@ -111,7 +111,7 @@ it('can use arrow function safe with unsupported tags', function (string $path) 
 it('can get core before save', function (string $path) {
     $audio = Audio::read($path);
 
-    $writer = $audio->update()
+    $writer = $audio->write()
         ->title('New Title')
         ->tags([
             'title' => 'New Title tag',
@@ -124,7 +124,7 @@ it('can get core before save', function (string $path) {
 it('can handle exceptions', function (string $path) {
     $audio = Audio::read($path);
 
-    $tag = $audio->update()
+    $tag = $audio->write()
         ->tags([
             'title' => 'New Title',
             'albumArtist' => 'New Album Artist',
@@ -137,7 +137,7 @@ it('can handle exceptions', function (string $path) {
 it('can skip exceptions', function (string $path) {
     $audio = Audio::read($path);
 
-    $tag = $audio->update()
+    $tag = $audio->write()
         ->tags([
             'title' => 'New Title',
             'albumArtist' => 'New Album Artist',
@@ -154,7 +154,7 @@ it('can update with new path', function (string $path) {
     $audio = Audio::read($path);
     $newPath = 'tests/output/new.mp3';
 
-    $tag = $audio->update()
+    $tag = $audio->write()
         ->title('New Title')
         ->path($newPath);
 
@@ -167,7 +167,7 @@ it('can update with new path', function (string $path) {
 it('can update with merged tags and core methods', function (string $path) {
     $audio = Audio::read($path);
 
-    $tag = $audio->update()
+    $tag = $audio->write()
         ->tags([
             'title' => 'New Title tag',
             'band' => 'New Band',
@@ -182,7 +182,7 @@ it('can update with merged tags and core methods', function (string $path) {
 it('can use arrow function safe with unsupported formats', function (string $path) {
     $audio = Audio::read($path);
 
-    $tag = $audio->update()
+    $tag = $audio->write()
         ->handleErrors()
         ->title('New Title Alac');
 
@@ -193,7 +193,7 @@ it('can remove old tags', function (string $path) {
     $audio = Audio::read($path);
     $newPath = 'tests/output/new.mp3';
 
-    $tag = $audio->update()
+    $tag = $audio->write()
         ->title('New Title')
         ->removeOtherTags()
         ->path($newPath);
