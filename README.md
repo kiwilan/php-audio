@@ -164,34 +164,15 @@ $audio->getCreationDate(); // `null` because `creationDate` is not supported by 
 
 Some properties are not supported by all formats, for example `MP3` can't handle some properties like `lyrics` or `stik`, if you try to update these properties, they will be ignored.
 
-#### Update one custom tag
-
-You can update one custom tag with `tag` method.
-
-```php
-use Kiwilan\Audio\Audio;
-
-$audio = Audio::read('path/to/audio.mp3');
-$audio->write()
-  ->tag('custom-a', 'New Custom a Tag')
-  ->tag('custom-b', 'New Custom b Tag')
-  ->save();
-
-$audio = Audio::read('path/to/audio.mp3');
-$audio->getRawKey('custom-a'); // `New Custom a Tag`
-$audio->getRawKey('custom-b'); // `New Custom b Tag`
-```
-
 #### Set tags manually
 
-You can set tags manually with `tags` method, but you need to know the format of the tag, you could use `tagFormats` to set formats of tags (if you don't know the format, it will be automatically detected).
+You can set tags manually with `tag()` or `tags()` methods, but you need to know the format of the tag, you could use `tagFormats` to set formats of tags (if you don't know the format, it will be automatically detected).
 
 > [!WARNING]
 >
-> If you use `tags` method, you have to use key used by metadata container. For example, if you want to set album artist in `id3v2`, you have to use `band` key. If you want to know which key to use check `src/Models/AudioCore.php` file.
+> If you use `tags` method, you have to use key used by metadata container. For example, if you want to set album artist in `id3v2`, you have to use `band` key. If you want to know which key to use check [`src/Core/AudioCore.php`](https://github.com/kiwilan/php-audio/blob/main/src/Core/AudioCore.php) file.
 >
-> You can't use other methods with `tags()` method.
-> If your key is not supported, `save` method will throw an exception, unless you use `preventFailOnErrors`.
+> If your key is not supported, `save` method will throw an exception, unless you use `skipErrors`.
 
 ```php
 use Kiwilan\Audio\Audio;
@@ -200,12 +181,14 @@ $audio = Audio::read('path/to/audio.mp3');
 $audio->getAlbumArtist(); // `Band`
 
 $tag = $audio->write()
-  ->tags([
-    'title' => 'New Title',
-    'band' => 'New Band', // `band` is used by `id3v2` to set album artist, method is `albumArtist` but `albumArtist` key will throw an exception with `id3v2`
-  ])
-  ->tagFormats(['id3v1', 'id3v2.4']) // optional
-  ->save();
+    ->tag('composer', 'New Composer')
+    ->tag('genre', 'New Genre') // can be chained
+    ->tags([
+        'title' => 'New Title',
+        'band' => 'New Band', // `band` is used by `id3v2` to set album artist, method is `albumArtist` but `albumArtist` key will throw an exception with `id3v2`
+    ])
+    ->tagFormats(['id3v1', 'id3v2.4']) // optional
+    ->save();
 
 $audio = Audio::read('path/to/audio.mp3');
 $audio->getAlbumArtist(); // `New Band`
@@ -228,9 +211,9 @@ $audio = Audio::read('path/to/audio.mp3');
 $audio->getAlbumArtist(); // `New Band`
 ```
 
-#### Prevent fail on errors
+#### Skip errors
 
-You can use `preventFailOnError` to prevent exception if you use unsupported format.
+You can use `skipErrors` to prevent exception if you use unsupported format.
 
 ```php
 use Kiwilan\Audio\Audio;
@@ -242,45 +225,15 @@ $tag = $audio->write()
     'title' => 'New Title',
     'title2' => 'New title', // not supported by `id3v2`, will throw an exception
   ])
-  ->preventFailOnError() // will prevent exception
+  ->skipErrors() // will prevent exception
   ->save();
 ```
 
-Arrow functions are exception safe for properties but not for unsupported formats.
+> [!NOTE]
+>
+> Arrow functions are exception safe for properties but not for unsupported formats.
 
-```php
-use Kiwilan\Audio\Audio;
-
-$audio = Audio::read('path/to/audio.mp3');
-
-$tag = $audio->write()
-  ->encoding('New encoding') // not supported by `id3v2`, BUT will not throw an exception
-  ->preventFailOnError() // if you have some errors with unsupported format for example, you can prevent exception
-  ->save();
-```
-
-#### Tags and cover
-
-Of course you can add cover with `tags` method.
-
-```php
-use Kiwilan\Audio\Audio;
-
-$audio = Audio::read('path/to/audio.mp3');
-$cover = 'path/to/cover.jpg';
-
-$coverData = file_get_contents($cover);
-
-$tag = $audio->write()
-  ->tags([
-    'title' => 'New Title',
-    'band' => 'New Band',
-  ])
-  ->cover($coverData)
-  ->save();
-```
-
-### Extras
+### Raw tags
 
 Audio files format metadata with different methods, `JamesHeinrich/getID3` offer to check these metadatas by different methods. In `extras` property of `Audio::class`, you will find raw metadata from `JamesHeinrich/getID3` package, like `id3v2`, `id3v1`, `riff`, `asf`, `quicktime`, `matroska`, `ape`, `vorbiscomment`...
 
@@ -290,9 +243,8 @@ If you want to extract specific field which can be skipped by `Audio::class`, yo
 use Kiwilan\Audio\Audio;
 
 $audio = Audio::read('path/to/audio.mp3');
-$extras = $audio->getExtras();
-
-$id3v2 = $extras['id3v2'] ?? [];
+$raw_all = $audio->getRawAll(); // all formats
+$raw = $audio->getRaw(); // main format
 ```
 
 ### AudioMetadata
@@ -320,6 +272,8 @@ $metadata->getCompressionRatio(); // `?float`
 $metadata->getFilesize(); // `?int` in bytes
 $metadata->getSizeHuman(); // `?string` (1.2 MB, 1.2 GB, ...)
 $metadata->getDataFormat(); // `?string` (mp3, m4a, ...)
+$metadata->getWarning(); // `?array`
+$metadata->getQuicktime(); // `?Id3AudioQuicktime
 $metadata->getCodec(); // `?string` (mp3, aac, ...)
 $metadata->getEncoderOptions(); // `?string`
 $metadata->getVersion(); // `?string`
@@ -331,6 +285,33 @@ $metadata->getLastAccessAt(); // `?DateTime`
 $metadata->getCreatedAt(); // `?DateTime`
 $metadata->getModifiedAt(); // `?DateTime`
 $metadata->toArray();
+```
+
+### Quicktime
+
+For `quicktime` type, like for M4B audiobook, you can use `Id3TagQuicktime` to get more informations.
+
+```php
+use Kiwilan\Audio\Audio;
+
+$audio = Audio::read('path/to/audio.m4b');
+$quicktime = $audio->getMetadata()->getQuicktime();
+
+$quicktime->getHinting();
+$quicktime->getController();
+$quicktime->getFtyp();
+$quicktime->getTimestampsUnix();
+$quicktime->getTimeScale();
+$quicktime->getDisplayScale();
+$quicktime->getVideo();
+$quicktime->getAudio();
+$quicktime->getSttsFramecount();
+$quicktime->getComments();
+$quicktime->getFree();
+$quicktime->getWide();
+$quicktime->getMdat();
+$quicktime->getEncoding();
+$quicktime->getChapters(); // ?Id3AudioQuicktimeChapter[]
 ```
 
 ### AudioCover

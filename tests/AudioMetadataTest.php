@@ -1,6 +1,9 @@
 <?php
 
 use Kiwilan\Audio\Audio;
+use Kiwilan\Audio\Id3\Reader\Id3AudioQuicktime;
+use Kiwilan\Audio\Id3\Reader\Id3AudioQuicktimeChapter;
+use Kiwilan\Audio\Id3\Reader\Id3AudioQuicktimeItem;
 use Kiwilan\Audio\Models\AudioMetadata;
 
 it('can read mp3 info', function () {
@@ -92,3 +95,48 @@ it('can read as array', function (string $path) {
 
     expect($metadata->toArray())->toBeArray();
 })->with([...AUDIO]);
+
+it('can read warning', function () {
+    $audio = Audio::read(AUDIOBOOK_RH_NOCOVER);
+    $metadata = $audio->getMetadata();
+
+    expect($metadata->getWarning())->toBeArray();
+});
+
+it('can read quicktime', function () {
+    $audio = Audio::read(AUDIOBOOK_RH_NOCOVER);
+    $quicktime = $audio->getMetadata()->getQuicktime();
+
+    expect($quicktime)->toBeInstanceOf(Id3AudioQuicktime::class);
+    expect($quicktime->getHinting())->toBeBool();
+    expect($quicktime->getController())->toBeString();
+
+    expect($quicktime->getFtyp())->toBeInstanceOf(Id3AudioQuicktimeItem::class);
+    expect($quicktime->getFtyp()->getFourcc())->toBeString();
+    expect($quicktime->getFtyp()->getHierarchy())->toBeString();
+    expect($quicktime->getFtyp()->getName())->toBeString();
+    expect($quicktime->getFtyp()->getOffset())->toBeInt();
+    expect($quicktime->getFtyp()->getSignature())->toBeString();
+    expect($quicktime->getFtyp()->getSize())->toBeInt();
+    expect($quicktime->getFtyp()->getUnknown1())->toBeInt();
+
+    expect($quicktime->getTimestampsUnix())->toBeArray();
+    expect($quicktime->getTimeScale())->toBeInt();
+    expect($quicktime->getDisplayScale())->toBeInt();
+    expect($quicktime->getVideo())->toBeArray();
+    expect($quicktime->getAudio())->toBeArray();
+    expect($quicktime->getSttsFramecount())->toBeArray();
+
+    expect($quicktime->getSttsFramecount())->toBeArray();
+    expect($quicktime->getSttsFramecount())->each(fn (Pest\Expectation $i) => expect($i->value)->toBeInt());
+
+    expect($quicktime->getComments())->toBeArray();
+
+    expect($quicktime->getChapters())->toBeArray();
+    expect($quicktime->getChapters())->each(fn (Pest\Expectation $i) => expect($i->value)->toBeInstanceOf(Id3AudioQuicktimeChapter::class));
+
+    expect($quicktime->getFree())->toBeInstanceOf(Id3AudioQuicktimeItem::class);
+    expect($quicktime->getWide())->toBeInstanceOf(Id3AudioQuicktimeItem::class);
+    expect($quicktime->getMdat())->toBeInstanceOf(Id3AudioQuicktimeItem::class);
+    expect($quicktime->getEncoding())->toBeString();
+});

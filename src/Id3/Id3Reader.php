@@ -4,6 +4,7 @@ namespace Kiwilan\Audio\Id3;
 
 use getID3;
 use Kiwilan\Audio\Id3\Reader\Id3Audio;
+use Kiwilan\Audio\Id3\Reader\Id3AudioQuicktime;
 use Kiwilan\Audio\Id3\Reader\Id3AudioTag;
 use Kiwilan\Audio\Id3\Reader\Id3Comments;
 use Kiwilan\Audio\Id3\Reader\Id3Video;
@@ -24,7 +25,9 @@ class Id3Reader
         protected ?Id3Audio $audio = null,
         protected ?Id3Video $video = null,
         protected ?Id3AudioTag $tags = null,
+        protected ?array $warning = null,
         protected ?Id3Comments $comments = null,
+        protected ?Id3AudioQuicktime $quicktime = null,
         protected ?string $encoding = null,
         protected ?string $mime_type = null,
         protected ?array $mpeg = null,
@@ -46,6 +49,8 @@ class Id3Reader
         $video = Id3Video::make($metadata['video'] ?? null);
         $tags = Id3AudioTag::make($metadata['tags'] ?? null);
         $comments = Id3Comments::make($metadata['comments'] ?? null);
+        $quicktime = Id3AudioQuicktime::make($self->raw['quicktime'] ?? null);
+        $warning = $metadata['warning'] ?? null;
 
         $bitrate = $metadata['bitrate'] ?? null;
         if ($bitrate) {
@@ -63,7 +68,9 @@ class Id3Reader
         $self->audio = $audio;
         $self->video = $video;
         $self->tags = $tags;
+        $self->quicktime = $quicktime;
         $self->comments = $comments;
+        $self->warning = $warning;
         $self->encoding = $metadata['encoding'] ?? null;
         $self->mime_type = $metadata['mime_type'] ?? null;
         $self->mpeg = $metadata['mpeg'] ?? null;
@@ -132,6 +139,21 @@ class Id3Reader
     public function getComments(): ?Id3Comments
     {
         return $this->comments;
+    }
+
+    public function getVideo(): ?Id3Video
+    {
+        return $this->video;
+    }
+
+    public function getQuicktime(): ?Id3AudioQuicktime
+    {
+        return $this->quicktime;
+    }
+
+    public function getWarning(): ?array
+    {
+        return $this->warning;
     }
 
     public function getEncoding(): ?string

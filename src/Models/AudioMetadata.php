@@ -5,14 +5,17 @@ namespace Kiwilan\Audio\Models;
 use DateTime;
 use Kiwilan\Audio\Audio;
 use Kiwilan\Audio\Id3\Id3Reader;
+use Kiwilan\Audio\Id3\Reader\Id3AudioQuicktime;
 
 class AudioMetadata
 {
     protected function __construct(
         protected ?int $file_size = null,
         protected ?string $data_format = null,
+        protected ?array $warning = [],
         protected ?string $encoding = null,
         protected ?string $mime_type = null,
+        protected ?Id3AudioQuicktime $quicktime = null,
         protected ?float $duration_seconds = null,
         protected ?int $bitrate = null,
         protected ?string $bitrate_mode = null,
@@ -42,8 +45,10 @@ class AudioMetadata
         return new self(
             file_size: $id3_reader->getFileSize(),
             data_format: $audio?->data_format,
+            warning: $id3_reader->getWarning(),
             encoding: $id3_reader->getEncoding(),
             mime_type: $id3_reader->getMimeType(),
+            quicktime: $id3_reader->getQuicktime(),
             duration_seconds: $id3_reader->getPlaytimeSeconds(),
             bitrate: intval($id3_reader->getBitrate()),
             bitrate_mode: $audio?->bitrate_mode,
@@ -94,6 +99,16 @@ class AudioMetadata
     }
 
     /**
+     * Get warning of the audio file
+     *
+     * @return string[]
+     */
+    public function getWarning(): array
+    {
+        return $this->warning;
+    }
+
+    /**
      * Get encoding of the audio file, like `UTF-8`, `ISO-8859-1`, `etc`
      */
     public function getEncoding(): ?string
@@ -107,6 +122,14 @@ class AudioMetadata
     public function getMimeType(): ?string
     {
         return $this->mime_type;
+    }
+
+    /**
+     * Get quicktime data of the audio file, if available
+     */
+    public function getQuicktime(): ?Id3AudioQuicktime
+    {
+        return $this->quicktime;
     }
 
     /**

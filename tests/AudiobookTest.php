@@ -3,6 +3,7 @@
 use Kiwilan\Audio\Audio;
 use Kiwilan\Audio\Enums\AudioFormatEnum;
 use Kiwilan\Audio\Enums\AudioTypeEnum;
+use Kiwilan\Audio\Id3\Reader\Id3AudioQuicktimeChapter;
 use Kiwilan\Audio\Models\AudioMetadata;
 
 it('can read audiobook', function () {
@@ -139,3 +140,15 @@ it('can read audiobook file mp3', function (string $file) {
     expect(count($audio->getRaw()))->toBe(15);
     expect(count($audio->getRaw('id3v2')))->toBe(15);
 })->with([AUDIOBOOK_MP3]);
+
+it('can read chapters', function () {
+    $audio = Audio::read(AUDIOBOOK_RH_NOCOVER);
+    $quicktime = $audio->getMetadata()->getQuicktime();
+
+    expect($quicktime->getChapters())->toBeArray();
+    expect($quicktime->getChapters())->each(fn (Pest\Expectation $chapter) => expect($chapter->value)->toBeInstanceOf(Id3AudioQuicktimeChapter::class));
+
+    $first = $quicktime->getChapters()[0];
+    expect($first->getTimestamp())->toBe(0);
+    expect($first->getTitle())->toBe('Chapter 01');
+});
