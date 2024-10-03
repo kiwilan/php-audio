@@ -2,6 +2,10 @@
 
 All notable changes to `php-audio` will be documented in this file.
 
+## v4.0.01 - 2024-10-03
+
+Add `toArray()` to `quicktime` for `AudioMetadata`
+
 ## v4.0.0 - 2024-10-03
 
 **BREAKING CHANGES**
