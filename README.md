@@ -511,10 +511,9 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 
 ## Credits
 
--   [Ewilan Rivière](https://github.com/ewilan-riviere): package author
--   [JamesHeinrich/getID3](https://github.com/JamesHeinrich/getID3): parser used to read audio files
--   [spatie/package-skeleton-php](https://github.com/spatie/package-skeleton-php): package skeleton used to create this package
--   Tests files from [p1pdd.com](https://p1pdd.com/) (episode 00)
+-   [`ewilan-riviere`](https://github.com/ewilan-riviere): package author
+-   [`JamesHeinrich/getID3`](https://github.com/JamesHeinrich/getID3): parser used to read audio files
+-   [`spatie/package-skeleton-php`](https://github.com/spatie/package-skeleton-php): package skeleton used to create this package
 
 ## License
 
