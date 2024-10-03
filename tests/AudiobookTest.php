@@ -148,7 +148,7 @@ it('can read chapters', function () {
     expect($quicktime->getChapters())->toBeArray();
     expect($quicktime->getChapters())->each(fn (Pest\Expectation $chapter) => expect($chapter->value)->toBeInstanceOf(Id3AudioQuicktimeChapter::class));
 
-    $first = $quicktime->getChapters()[0];
+    $first = $quicktime->getChapter(0);
     expect($first->getTimestamp())->toBe(0);
     expect($first->getTitle())->toBe('Chapter 01');
 });
