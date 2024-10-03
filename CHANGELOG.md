@@ -2,6 +2,64 @@
 
 All notable changes to `php-audio` will be documented in this file.
 
+## v4.0.0 - 2024-10-03
+
+**BREAKING CHANGES**
+
+- internal architecture has been totally redesigned
+- `get()` static method is now `read()` (old method is still available)
+- `update()` method is now `write()` (old method is still available)
+- `getAudio()` is now `getMetadata()`
+- `getStat()` has been removed, you can find `getLastAccessAt()`, `getCreatedAt()`, `getModifiedAt()` into `getMetadata()`
+- `getWriter()` has been removed, only used when `write()` method is called
+- `getReader()` is now `getId3Reader()`
+- `getPodcastDescription()` is now `getSynopsis()`
+- `getStik()` has been removed (you can find it in `getRaw()` method or with `getRawKey('stik')`)
+- cover contents is now base64 encoded into `AudioCover` object
+- `toArray()` has been revised to return a more structured array
+- `getDuration()` is now `float`
+- add `getDurationHuman()` to get human readable duration
+- add `getTrackNumberInt()` to get track number as integer
+- add `getDiscNumberInt()`
+- `getTags()` is now `getRawAll()` as multidimensional array
+- new method `getRaw()` will return main format as array
+- new method `getRawKey('ANY_KEY')` will return specific key from main format
+- `getAudioFormats()` has been removed
+- `getExtras()` has been removed (duplicate of `getRawAll()`, `getRaw()` or `toArray()`)
+- `writer()` can now use `tag('ANY_KEY', 'ANY_VALUE')` to update directly any tag without use `tags()`
+- `writer()` method `tags()` has been modified, it's not native method of `getID3` anymore, just an array of tags
+- add `getQuicktime()` to `AudioMetadata` to get quicktime tags, with chapters for audiobooks
+
+*AudioCover*
+
+- now contents are stored as base64 encoded string
+- new `getContents()` method to get contents, default is raw string (binary) and you can get base64 encoded string with `true` parameter
+- new `getMimeType()` method to get mime type of the cover
+- new `getWidth()` method to get width of the cover
+- new `getHeight()` method to get height of the cover
+- new `toArray()` method to get cover as array
+
+*AudioMetadata*
+
+- `getFilesize()` is now `getFileSize()`
+- add `getSizeHuman()` to get human readable size with decimal precision
+- add `getDataFormat()` to get data format like `mp3`
+- remove `getDurationReadable()` because it's now into `Audio::class`
+- `getLossless()` is now `isLossless()`
+- add `getCodec()` to get codec of the file, like `LAME`
+- add `getEncoderOptions()` to get encoder options of the file, like `CBR`
+- add `getVersion()` to get version of `JamesHeinrich/getID3`
+- add `getAvDataOffset()` to get offset of audio/video data
+- add `getAvDataEnd()` to get end of audio/video data
+- add `getFilePath()` to get file path, like `/path/to`
+- add `getFilename()` to get filename, like `file.mp3`
+- add `getLastAccessAt()`, `getCreatedAt()`, `getModifiedAt()` from `stat()` function
+- add `toArray()` method to get metadata as array
+
+**Fix**
+
+- now `write()` won't erase other tags #34
+
 ## v3.0.08 - 2024-07-28
 
 Add `getDurationHumanReadable()` method to get the duration in human readable format: `HH:MM:SS`.
