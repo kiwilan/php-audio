@@ -1,16 +1,34 @@
 <?php
 
 use Kiwilan\Audio\Audio;
-use Kiwilan\Audio\Models\Id3Audio;
-use Kiwilan\Audio\Models\Id3AudioTag;
-use Kiwilan\Audio\Models\Id3Comments;
-use Kiwilan\Audio\Models\Id3Reader;
-use Kiwilan\Audio\Models\Id3TagsHtml;
+use Kiwilan\Audio\Id3\Id3Reader;
+use Kiwilan\Audio\Id3\Reader\Id3Audio;
+use Kiwilan\Audio\Id3\Reader\Id3AudioTag;
+use Kiwilan\Audio\Id3\Reader\Id3Comments;
+
+it('can read mp3 stream', function () {
+    $audio = Audio::read(MP3);
+    $streams = $audio->getId3Reader()->getAudio()->streams;
+
+    expect($streams)->toBeArray();
+    expect($streams)->toHaveCount(1);
+    expect($streams[0]->data_format)->toBe('mp3');
+    expect($streams[0]->channels)->toBe(2);
+    expect($streams[0]->sample_rate)->toBe(44100);
+    expect($streams[0]->bitrate)->toBe(128000.0);
+    expect($streams[0]->channel_mode)->toBe('joint stereo');
+    expect($streams[0]->bitrate_mode)->toBe('cbr');
+    expect($streams[0]->codec)->toBe('LAME');
+    expect($streams[0]->encoder)->toBe('LAME3.100');
+    expect($streams[0]->lossless)->toBeFalse();
+    expect($streams[0]->encoder_options)->toBe('CBR128');
+    expect($streams[0]->compression_ratio)->toBe(0.09070294784580499);
+});
 
 it('can parse ID3 reader', function (string $path) {
-    $audio = Audio::get($path);
+    $audio = Audio::read($path);
 
-    $reader = $audio->getReader();
+    $reader = $audio->getId3Reader();
     $raw = $reader->getRaw();
 
     expect($reader->getInstance())->toBeInstanceOf(getID3::class);
@@ -41,26 +59,10 @@ it('can parse ID3 reader', function (string $path) {
         expect($reader->getPlaytimeSeconds())->toBeFloat();
     }
 
-    if ($reader->getTagsHtml()) {
-        expect($reader->getTagsHtml())->toBeInstanceOf(Id3TagsHtml::class);
-    }
     if ($reader->getBitrate()) {
         expect($reader->getBitrate())->toBeFloat();
     }
     if ($reader->getPlaytimeString()) {
         expect($reader->getPlaytimeString())->toBeString();
     }
-})->with([...AUDIO]);
-
-it('can parse with ID3 methods', function (string $path) {
-    $audio = Audio::get($path);
-    $type = $audio->getType()->value;
-    $tags = $audio->getReader()->getTags();
-
-    if ($type === 'id3') {
-        $type = 'id3v2';
-    }
-
-    $metadata = $tags->{$type}();
-    expect($metadata->toArray())->toBeArray();
 })->with([...AUDIO]);

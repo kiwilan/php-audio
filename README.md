@@ -21,7 +21,7 @@ Audio files can use different formats, this package aims to provide a simple way
 
 ## Requirements
 
--   PHP >= 8.1
+-   PHP `8.1` minimum
 -   Optional for update
     -   `FLAC`: `flac` (with `apt`, `brew` or `scoop`)
     -   `OGG`: `vorbis-tools` (with `apt` or `brew`) / `extras/icecast` (with `scoop`)
@@ -32,7 +32,7 @@ Audio files can use different formats, this package aims to provide a simple way
 
 ## Installation
 
-You can install the package via composer:
+You can install the package via [composer](https://getcomposer.org/):
 
 ```bash
 composer require kiwilan/php-audio
@@ -45,7 +45,7 @@ Core metadata:
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 
 $audio->getTitle(); // `?string` to get title
 $audio->getArtist(); // `?string` to get artist
@@ -58,15 +58,15 @@ $audio->getAlbumArtist(); // `?string` to get album artist
 $audio->getComposer(); // `?string` to get composer
 $audio->getDiscNumber(); // `?string` to get disc number
 $audio->isCompilation(); // `bool` to know if is compilation
-$audio->getCreationDate(); // `?string` to get creation date (audiobook)
-$audio->getCopyright(); // `?string` to get copyright (audiobook)
+$audio->getCreationDate(); // `?string` to get creation date
+$audio->getCopyright(); // `?string` to get copyright
 $audio->getEncoding(); // `?string` to get encoding
-$audio->getDescription(); // `?string` to get description (audiobook)
-$audio->getPodcastDescription(); // `?string` to get podcast description (audiobook)
+$audio->getDescription(); // `?string` to get description
+$audio->getSynopsis(); // `?string` to get synopsis
 $audio->getLanguage(); // `?string` to get language
-$audio->getLyrics(); // `?string` (audiobook)
-$audio->getStik(); // `?string` (audiobook)
+$audio->getLyrics(); // `?string`
 $audio->getDuration(); // `?float` to get duration in seconds
+$audio->getDurationHuman(); // `?string` to get duration in human readable format
 ```
 
 Raw tags:
@@ -74,15 +74,14 @@ Raw tags:
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 
-$audio->getTags(); // `array` with all tags
-$title = $audio->getTag('title'); // `?string` to get title same as `$audio->getTitle()`
+$raw_all = $audio->getRawAll(); // `array` with all tags
+$raw = $audio->getRaw(); // `array` with main tag
+$title = $audio->getRawKey('title'); // `?string` to get title same as `$audio->getTitle()`
 
-$formats = $audio->getAudioFormats(); // `array` with all audio formats
-
-$format = $audio->getTags('id3v2'); // `?array` with all tags with format `id3v2`
-$title = $audio->getTag('title', 'id3v2'); // `?string` to get title with format `id3v2`
+$format = $audio->getRaw('id3v2'); // `?array` with all tags with format `id3v2`
+$title = $audio->getRawKey('title', 'id3v2'); // `?string` to get title with format `id3v2`
 ```
 
 Additional metadata:
@@ -90,26 +89,23 @@ Additional metadata:
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 
 $audio->getPath(); // `string` to get path
+$audio->getExtension(); // `string` to get extension
 $audio->hasCover(); // `bool` to know if has cover
 $audio->isValid(); // `bool` to know if file is valid audio file
+$audio->isWritable(); // `bool` to know if file is writable
 $audio->getFormat(); // `AudioFormatEnum` to get format (mp3, m4a, ...)
 $audio->getType(); // `?AudioTypeEnum` ID3 type (id3, riff, asf, quicktime, matroska, ape, vorbiscomment)
-$audio->getExtras(); // `array` with raw metadata (could contains some metadata not parsed)
 ```
 
-Raw audio:
-
-> [!NOTE]
->
-> Cover is removed from `toArray()` method, you can use `getCover()` method to get cover metadata.
+You can use `toArray()` method to get raw info:
 
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 
 $audio->toArray(); // `array` with all metadata
 ```
@@ -119,12 +115,10 @@ Advanced properties:
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 
-$audio->getReader(); // `?Id3Reader` reader based on `getID3`
-$audio->getWriter(); // `?Id3Writer` writer based on `getid3_writetags`
-$audio->getStat(); // `AudioStat` (from `stat` function)
-$audio->getAudio(); // `?AudioMetadata` with audio metadata
+$audio->getId3Reader(); // `?Id3Reader` reader based on `getID3`
+$audio->getMetadata(); // `?AudioMetadata` with audio metadata
 $audio->getCover(); // `?AudioCover` with cover metadata
 ```
 
@@ -139,10 +133,10 @@ You can update audio files metadata with `Audio::class`, but not all formats are
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 $audio->getTitle(); // `Title`
 
-$tag = $audio->update()
+$tag = $audio->write()
   ->title('New Title')
   ->artist('New Artist')
   ->album('New Album')
@@ -154,16 +148,16 @@ $tag = $audio->update()
   ->composer('New Composer')
   ->creationDate('2021-01-01')
   ->description('New Description')
+  ->synopsis('New Synopsis')
   ->discNumber('2/2')
   ->encodingBy('New Encoding By')
   ->encoding('New Encoding')
   ->isCompilation()
   ->lyrics('New Lyrics')
-  ->stik('New Stik')
   ->cover('path/to/cover.jpg') // you can use file content `file_get_contents('path/to/cover.jpg')`
   ->save();
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 $audio->getTitle(); // `New Title`
 $audio->getCreationDate(); // `null` because `creationDate` is not supported by `MP3`
 ```
@@ -172,29 +166,31 @@ Some properties are not supported by all formats, for example `MP3` can't handle
 
 #### Set tags manually
 
-You can set tags manually with `tags` method, but you need to know the format of the tag, you could use `tagFormats` to set formats of tags (if you don't know the format, it will be automatically detected).
+You can set tags manually with `tag()` or `tags()` methods, but you need to know the format of the tag, you could use `tagFormats` to set formats of tags (if you don't know the format, it will be automatically detected).
 
 > [!WARNING]
 >
-> If you use `tags` method, you have to use key used by metadata container. For example, if you want to set album artist in `id3v2`, you have to use `band` key. If you want to know which key to use check `src/Models/AudioCore.php` file.
+> If you use `tags` method, you have to use key used by metadata container. For example, if you want to set album artist in `id3v2`, you have to use `band` key. If you want to know which key to use check [`src/Core/AudioCore.php`](https://github.com/kiwilan/php-audio/blob/main/src/Core/AudioCore.php) file.
 >
-> If your key is not supported, `save` method will throw an exception, unless you use `preventFailOnErrors`.
+> If your key is not supported, `save` method will throw an exception, unless you use `skipErrors`.
 
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 $audio->getAlbumArtist(); // `Band`
 
-$tag = $audio->update()
-  ->tags([
-    'title' => 'New Title',
-    'band' => 'New Band', // `band` is used by `id3v2` to set album artist, method is `albumArtist` but `albumArtist` key will throw an exception with `id3v2`
-  ])
-  ->tagFormats(['id3v1', 'id3v2.4']) // optional
-  ->save();
+$tag = $audio->write()
+    ->tag('composer', 'New Composer')
+    ->tag('genre', 'New Genre') // can be chained
+    ->tags([
+        'title' => 'New Title',
+        'band' => 'New Band', // `band` is used by `id3v2` to set album artist, method is `albumArtist` but `albumArtist` key will throw an exception with `id3v2`
+    ])
+    ->tagFormats(['id3v1', 'id3v2.4']) // optional
+    ->save();
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 $audio->getAlbumArtist(); // `New Band`
 ```
 
@@ -203,105 +199,41 @@ $audio->getAlbumArtist(); // `New Band`
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 $audio->getAlbumArtist(); // `Band`
 
-$tag = $audio->update()
+$tag = $audio->write()
   ->title('New Title')
   ->albumArtist('New Band') // `albumArtist` will set `band` for `id3v2`, exception safe
   ->save();
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 $audio->getAlbumArtist(); // `New Band`
 ```
 
-#### Prevent fail on errors
+#### Skip errors
 
-You can use `preventFailOnError` to prevent exception if you use unsupported format.
+You can use `skipErrors` to prevent exception if you use unsupported format.
 
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 
-$tag = $audio->update()
+$tag = $audio->write()
   ->tags([
     'title' => 'New Title',
     'title2' => 'New title', // not supported by `id3v2`, will throw an exception
   ])
-  ->preventFailOnError() // will prevent exception
+  ->skipErrors() // will prevent exception
   ->save();
 ```
 
-Arrow functions are exception safe for properties but not for unsupported formats.
+> [!NOTE]
+>
+> Arrow functions are exception safe for properties but not for unsupported formats.
 
-```php
-use Kiwilan\Audio\Audio;
-
-$audio = Audio::get('path/to/audio.mp3');
-
-$tag = $audio->update()
-  ->encoding('New encoding') // not supported by `id3v2`, BUT will not throw an exception
-  ->preventFailOnError() // if you have some errors with unsupported format for example, you can prevent exception
-  ->save();
-```
-
-#### Tags and cover
-
-Of course you can add cover with `tags` method.
-
-```php
-use Kiwilan\Audio\Audio;
-
-$audio = Audio::get('path/to/audio.mp3');
-$cover = 'path/to/cover.jpg';
-
-$image = getimagesize($cover);
-$coverData = file_get_contents($cover);
-$coverPicturetypeid = $image[2];
-$coverDescription = 'cover';
-$coverMime = $image['mime'];
-
-$tag = $audio->update()
-  ->tags([
-    'title' => 'New Title',
-    'band' => 'New Band',
-    'attached_picture' => [
-      [
-        'data' => $coverData,
-        'picturetypeid' => $coverPicturetypeid,
-        'description' => $coverDescription,
-        'mime' => $coverMime,
-      ],
-    ],
-  ])
-  ->save();
-```
-
-#### Merge tags
-
-Merge `tags` with arrow functions.
-
-```php
-use Kiwilan\Audio\Audio;
-
-$audio = Audio::get($path);
-
-$tag = $audio->update()
-    ->title('New Title') // will be merged with `tags` and override `title` key
-    ->tags([
-        'title' => 'New Title tag',
-        'band' => 'New Band',
-    ]);
-
-$tag->save();
-
-$audio = Audio::get($path);
-expect($audio->getTitle())->toBe('New Title');
-expect($audio->getAlbumArtist())->toBe('New Band');
-```
-
-### Extras
+### Raw tags
 
 Audio files format metadata with different methods, `JamesHeinrich/getID3` offer to check these metadatas by different methods. In `extras` property of `Audio::class`, you will find raw metadata from `JamesHeinrich/getID3` package, like `id3v2`, `id3v1`, `riff`, `asf`, `quicktime`, `matroska`, `ape`, `vorbiscomment`...
 
@@ -310,10 +242,9 @@ If you want to extract specific field which can be skipped by `Audio::class`, yo
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
-$extras = $audio->getExtras();
-
-$id3v2 = $extras['id3v2'] ?? [];
+$audio = Audio::read('path/to/audio.mp3');
+$raw_all = $audio->getRawAll(); // all formats
+$raw = $audio->getRaw(); // main format
 ```
 
 ### AudioMetadata
@@ -321,21 +252,66 @@ $id3v2 = $extras['id3v2'] ?? [];
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
+$metadata = $audio->getMetadata();
 
-$audio->getAudio()->getFilesize(); // `?int` in bytes
-$audio->getAudio()->getExtension(); // `?string` (mp3, m4a, ...)
-$audio->getAudio()->getEncoding(); // `?string` (UTF-8...)
-$audio->getAudio()->getMimeType(); // `?string` (audio/mpeg, audio/mp4, ...)
-$audio->getAudio()->getDurationSeconds(); // `?float` in seconds
-$audio->getAudio()->getDurationReadable(); // `?string` (00:00:00)
-$audio->getAudio()->getBitrate(); // `?int` in kbps
-$audio->getAudio()->getBitrateMode(); // `?string` (cbr, vbr, ...)
-$audio->getAudio()->getSampleRate(); // `?int` in Hz
-$audio->getAudio()->getChannels(); // `?int` (1, 2, ...)
-$audio->getAudio()->getChannelMode(); // `?string` (mono, stereo, ...)
-$audio->getAudio()->getLossless(); // `bool` to know if is lossless
-$audio->getAudio()->getCompressionRatio(); // `?float`
+$metadata->getFileSize(); // `?int` in bytes
+$metadata->getSizeHuman(); // `?string` (1.2 MB, 1.2 GB, ...)
+$metadata->getExtension(); // `?string` (mp3, m4a, ...)
+$metadata->getEncoding(); // `?string` (UTF-8...)
+$metadata->getMimeType(); // `?string` (audio/mpeg, audio/mp4, ...)
+$metadata->getDurationSeconds(); // `?float` in seconds
+$metadata->getDurationReadable(); // `?string` (00:00:00)
+$metadata->getBitrate(); // `?int` in kbps
+$metadata->getBitrateMode(); // `?string` (cbr, vbr, ...)
+$metadata->getSampleRate(); // `?int` in Hz
+$metadata->getChannels(); // `?int` (1, 2, ...)
+$metadata->getChannelMode(); // `?string` (mono, stereo, ...)
+$metadata->isLossless(); // `bool` to know if is lossless
+$metadata->getCompressionRatio(); // `?float`
+$metadata->getFilesize(); // `?int` in bytes
+$metadata->getSizeHuman(); // `?string` (1.2 MB, 1.2 GB, ...)
+$metadata->getDataFormat(); // `?string` (mp3, m4a, ...)
+$metadata->getWarning(); // `?array`
+$metadata->getQuicktime(); // `?Id3AudioQuicktime
+$metadata->getCodec(); // `?string` (mp3, aac, ...)
+$metadata->getEncoderOptions(); // `?string`
+$metadata->getVersion(); // `?string`
+$metadata->getAvDataOffset(); // `?int` in bytes
+$metadata->getAvDataEnd(); // `?int` in bytes
+$metadata->getFilePath(); // `?string`
+$metadata->getFilename(); // `?string`
+$metadata->getLastAccessAt(); // `?DateTime`
+$metadata->getCreatedAt(); // `?DateTime`
+$metadata->getModifiedAt(); // `?DateTime`
+$metadata->toArray();
+```
+
+### Quicktime
+
+For `quicktime` type, like for M4B audiobook, you can use `Id3TagQuicktime` to get more informations.
+
+```php
+use Kiwilan\Audio\Audio;
+
+$audio = Audio::read('path/to/audio.m4b');
+$quicktime = $audio->getMetadata()->getQuicktime();
+
+$quicktime->getHinting();
+$quicktime->getController();
+$quicktime->getFtyp();
+$quicktime->getTimestampsUnix();
+$quicktime->getTimeScale();
+$quicktime->getDisplayScale();
+$quicktime->getVideo();
+$quicktime->getAudio();
+$quicktime->getSttsFramecount();
+$quicktime->getComments();
+$quicktime->getFree();
+$quicktime->getWide();
+$quicktime->getMdat();
+$quicktime->getEncoding();
+$quicktime->getChapters(); // ?Id3AudioQuicktimeChapter[]
 ```
 
 ### AudioCover
@@ -343,12 +319,13 @@ $audio->getAudio()->getCompressionRatio(); // `?float`
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
+$cover = $audio->getCover();
 
-$audio->getCover()->getContents(); // `?string` raw file
-$audio->getCover()->getMimeType(); // `?string` (image/jpeg, image/png, ...)
-$audio->getCover()->getWidth(); // `?int` in pixels
-$audio->getCover()->getHeight(); // `?int` in pixels
+$cover->getContents(); // `?string` raw file
+$cover->getMimeType(); // `?string` (image/jpeg, image/png, ...)
+$cover->getWidth(); // `?int` in pixels
+$cover->getHeight(); // `?int` in pixels
 ```
 
 ## Supported formats
@@ -413,41 +390,43 @@ You want to add a format? [See FAQ](#faq)
 
 `Audio::class` convert some properties to be more readable.
 
-|    ID3 type     |        Original         |     New property     |
-| :-------------: | :---------------------: | :------------------: |
-|     `id3v2`     |         `band`          |    `albumArtist`     |
-|     `id3v2`     |     `track_number`      |    `trackNumber`     |
-|     `id3v2`     |     `part_of_a_set`     |     `discNumber`     |
-|     `id3v2`     | `part_of_a_compilation` |   `isCompilation`    |
-|   `quicktime`   |     `track_number`      |    `trackNumber`     |
-|   `quicktime`   |      `disc_number`      |     `discNumber`     |
-|   `quicktime`   |      `compilation`      |   `isCompilation`    |
-|   `quicktime`   |     `creation_date`     |    `creationDate`    |
-|   `quicktime`   |     `album_artist`      |    `albumArtist`     |
-|   `quicktime`   |      `encoded_by`       |     `encodingBy`     |
-|   `quicktime`   |     `encoding_tool`     |      `encoding`      |
-|   `quicktime`   |   `description_long`    | `podcastDescription` |
-|      `asf`      |      `albumartist`      |    `albumArtist`     |
-|      `asf`      |       `partofset`       |     `discNumber`     |
-|      `asf`      |     `track_number`      |    `trackNumber`     |
-|      `asf`      |   `encodingsettings`    |      `encoding`      |
-| `vorbiscomment` |        `encoder`        |      `encoding`      |
-| `vorbiscomment` |      `albumartist`      |    `albumArtist`     |
-| `vorbiscomment` |      `discnumber`       |     `discNumber`     |
-| `vorbiscomment` |      `compilation`      |   `isCompilation`    |
-| `vorbiscomment` |      `tracknumber`      |    `trackNumber`     |
-|   `matroska`    |     `album_artist`      |    `albumArtist`     |
-|   `matroska`    |         `disc`          |     `discNumber`     |
-|   `matroska`    |      `part_number`      |    `trackNumber`     |
-|   `matroska`    |         `date`          |        `year`        |
-|   `matroska`    |      `compilation`      |   `isCompilation`    |
-|   `matroska`    |        `encoder`        |      `encoding`      |
-|      `ape`      |     `album_artist`      |    `albumArtist`     |
-|      `ape`      |         `disc`          |     `discNumber`     |
-|      `ape`      |      `compilation`      |   `isCompilation`    |
-|      `ape`      |         `track`         |    `trackNumber`     |
-|      `ape`      |         `date`          |        `year`        |
-|      `ape`      |        `encoder`        |      `encoding`      |
+-   `ape` format: [`Id3TagApe`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagApe.php)
+-   `asf` format: [`Id3TagAsf`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagAsf.php)
+-   `id3v1` format: [`Id3TagAudioV1`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagAudioV1.php)
+-   `id3v2` format: [`Id3TagAudioV2`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagAudioV2.php)
+-   `matroska` format: [`Id3TagMatroska`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagMatroska.php)
+-   `quicktime` format: [`Id3TagQuicktime`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagQuicktime.php)
+-   `vorbiscomment` format: [`Id3TagVorbisComment`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagVorbisComment.php)
+-   `riff` format: [`Id3TagRiff`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagRiff.php)
+-   `unknown` format: [`Id3TagVorbisComment`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagVorbisComment.php)
+
+|    ID3 type     |        Original         |   New property   |
+| :-------------: | :---------------------: | :--------------: |
+|     `id3v2`     |         `band`          |  `album_artist`  |
+|     `id3v2`     |     `part_of_a_set`     |  `disc_number`   |
+|     `id3v2`     | `part_of_a_compilation` | `is_compilation` |
+|   `quicktime`   |      `compilation`      | `is_compilation` |
+|   `quicktime`   |      `encoded_by`       |  `encoding_by`   |
+|   `quicktime`   |     `encoding_tool`     |    `encoding`    |
+|   `quicktime`   |   `description_long`    |    `synopsis`    |
+|      `asf`      |      `albumartist`      |  `album_artist`  |
+|      `asf`      |       `partofset`       |  `disc_number`   |
+|      `asf`      |   `encodingsettings`    |    `encoding`    |
+| `vorbiscomment` |        `encoder`        |    `encoding`    |
+| `vorbiscomment` |      `albumartist`      |  `album_artist`  |
+| `vorbiscomment` |      `discnumber`       |  `disc_number`   |
+| `vorbiscomment` |      `compilation`      | `is_compilation` |
+| `vorbiscomment` |      `tracknumber`      |  `track_number`  |
+|   `matroska`    |         `disc`          |  `disc_number`   |
+|   `matroska`    |      `part_number`      |  `track_number`  |
+|   `matroska`    |         `date`          |      `year`      |
+|   `matroska`    |      `compilation`      | `is_compilation` |
+|   `matroska`    |        `encoder`        |    `encoding`    |
+|      `ape`      |         `disc`          |  `disc_number`   |
+|      `ape`      |      `compilation`      | `is_compilation` |
+|      `ape`      |         `track`         |  `track_number`  |
+|      `ape`      |         `date`          |      `year`      |
+|      `ape`      |        `encoder`        |    `encoding`    |
 
 ## Testing
 
@@ -472,11 +451,11 @@ In `Audio::class`, you have a property `extras` which contains all raw metadata,
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
-$extras = $audio->getExtras();
+$audio = Audio::read('path/to/audio.mp3');
+$raw_all = $audio->getRawAll());
 
 $custom = null;
-$id3v2 = $extras['id3v2'] ?? [];
+$id3v2 = $raw_all['id3v2'] ?? [];
 
 if ($id3v2) {
   $custom = $id3v2['custom'] ?? null;
@@ -492,9 +471,9 @@ You can check `extras` property to know if some metadata are available.
 ```php
 use Kiwilan\Audio\Audio;
 
-$audio = Audio::get('path/to/audio.mp3');
+$audio = Audio::read('path/to/audio.mp3');
 
-$extras = $audio->getExtras();
+$extras = $audio->getRawAll();
 var_dump($extras);
 ```
 
@@ -520,10 +499,9 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 
 ## Credits
 
--   [Ewilan Rivière](https://github.com/ewilan-riviere): package author
--   [JamesHeinrich/getID3](https://github.com/JamesHeinrich/getID3): parser used to read audio files
--   [spatie/package-skeleton-php](https://github.com/spatie/package-skeleton-php): package skeleton used to create this package
--   Tests files from [p1pdd.com](https://p1pdd.com/) (episode 00)
+-   [`ewilan-riviere`](https://github.com/ewilan-riviere): package author
+-   [`JamesHeinrich/getID3`](https://github.com/JamesHeinrich/getID3): parser used to read audio files
+-   [`spatie/package-skeleton-php`](https://github.com/spatie/package-skeleton-php): package skeleton used to create this package
 
 ## License
 

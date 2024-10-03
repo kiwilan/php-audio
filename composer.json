@@ -1,7 +1,7 @@
 {
     "name": "kiwilan/php-audio",
     "description": "PHP package to parse and update audio files metadata, with `JamesHeinrich/getID3`.",
-    "version": "3.0.08",
+    "version": "4.0.0",
     "keywords": [
         "audio",
         "php",
@@ -28,7 +28,8 @@
         "wma",
         "wv",
         "wav",
-        "webm"
+        "webm",
+        "music"
     ],
     "homepage": "https://github.com/kiwilan/php-audio",
     "license": "MIT",
@@ -41,10 +42,11 @@
     ],
     "require": {
         "php": "^8.1",
-        "james-heinrich/getid3": "^1.9"
+        "james-heinrich/getid3": "^v1.9.22"
     },
     "require-dev": {
-        "pestphp/pest": "^1.20",
+        "pestphp/pest": "^2.0",
+        "phpstan/phpstan": "^1.12",
         "laravel/pint": "^1.2",
         "spatie/ray": "^1.28"
     },
