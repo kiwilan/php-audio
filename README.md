@@ -235,9 +235,9 @@ $tag = $audio->write()
 
 ### Raw tags
 
-Audio files format metadata with different methods, `JamesHeinrich/getID3` offer to check these metadatas by different methods. In `extras` property of `Audio::class`, you will find raw metadata from `JamesHeinrich/getID3` package, like `id3v2`, `id3v1`, `riff`, `asf`, `quicktime`, `matroska`, `ape`, `vorbiscomment`...
+Audio files format metadata with different methods, `JamesHeinrich/getID3` offer to check these metadatas by different methods. In `raw_all` property of `Audio::class`, you will find raw metadata from `JamesHeinrich/getID3` package, like `id3v2`, `id3v1`, `riff`, `asf`, `quicktime`, `matroska`, `ape`, `vorbiscomment`...
 
-If you want to extract specific field which can be skipped by `Audio::class`, you can use `extras` property.
+If you want to extract specific field which can be skipped by `Audio::class`, you can use `raw_all` property.
 
 ```php
 use Kiwilan\Audio\Audio;
@@ -446,7 +446,7 @@ composer test
 
 ### I have a specific metadata field in my audio files, what can I do?
 
-In `Audio::class`, you have a property `extras` which contains all raw metadata, if `JamesHeinrich/getID3` support this field, you will find it in this property.
+In `Audio::class`, you have a property `raw_all` which contains all raw metadata, if `JamesHeinrich/getID3` support this field, you will find it in this property.
 
 ```php
 use Kiwilan\Audio\Audio;
@@ -473,8 +473,8 @@ use Kiwilan\Audio\Audio;
 
 $audio = Audio::read('path/to/audio.mp3');
 
-$extras = $audio->getRawAll();
-var_dump($extras);
+$raw_all = $audio->getRawAll();
+var_dump($raw_all);
 ```
 
 If you find metadata which are not parsed by `Audio::class`, you can create [an issue](https://github.com/kiwilan/php-audio/issues/new/choose), otherwise `JamesHeinrich/getID3` doesn't support this metadata.z
