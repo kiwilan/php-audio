@@ -8,15 +8,15 @@ use Kiwilan\Audio\Id3\Tag;
 class Id3AudioTag
 {
     protected function __construct(
-        readonly public ?Tag\Id3TagAudioV1 $id3v1 = null,
-        readonly public ?Tag\Id3TagAudioV2 $id3v2 = null,
-        readonly public ?Tag\Id3TagQuicktime $quicktime = null,
-        readonly public ?Tag\Id3TagAsf $asf = null,
-        readonly public ?Tag\Id3TagVorbisComment $vorbiscomment = null,
-        readonly public ?Tag\Id3TagRiff $riff = null,
-        readonly public ?Tag\Id3TagMatroska $matroska = null,
-        readonly public ?Tag\Id3TagApe $ape = null,
-        readonly public bool $is_empty = false,
+        public readonly ?Tag\Id3TagAudioV1 $id3v1 = null,
+        public readonly ?Tag\Id3TagAudioV2 $id3v2 = null,
+        public readonly ?Tag\Id3TagQuicktime $quicktime = null,
+        public readonly ?Tag\Id3TagAsf $asf = null,
+        public readonly ?Tag\Id3TagVorbisComment $vorbiscomment = null,
+        public readonly ?Tag\Id3TagRiff $riff = null,
+        public readonly ?Tag\Id3TagMatroska $matroska = null,
+        public readonly ?Tag\Id3TagApe $ape = null,
+        public readonly bool $is_empty = false,
     ) {}
 
     public static function make(?array $metadata): ?self

@@ -5,21 +5,21 @@ namespace Kiwilan\Audio\Id3\Tag;
 class Id3TagMatroska extends Id3Tag
 {
     public function __construct(
-        readonly public ?string $title = null,
-        readonly public ?string $muxingapp = null,
-        readonly public ?string $writingapp = null,
-        readonly public ?string $album = null,
-        readonly public ?string $artist = null,
-        readonly public ?string $album_artist = null,
-        readonly public ?string $comment = null,
-        readonly public ?string $composer = null,
-        readonly public ?string $disc = null,
-        readonly public ?string $genre = null,
-        readonly public ?string $compilation = null,
-        readonly public ?string $part_number = null,
-        readonly public ?string $date = null,
-        readonly public ?string $encoder = null,
-        readonly public ?string $duration = null,
+        public readonly ?string $title = null,
+        public readonly ?string $muxingapp = null,
+        public readonly ?string $writingapp = null,
+        public readonly ?string $album = null,
+        public readonly ?string $artist = null,
+        public readonly ?string $album_artist = null,
+        public readonly ?string $comment = null,
+        public readonly ?string $composer = null,
+        public readonly ?string $disc = null,
+        public readonly ?string $genre = null,
+        public readonly ?string $compilation = null,
+        public readonly ?string $part_number = null,
+        public readonly ?string $date = null,
+        public readonly ?string $encoder = null,
+        public readonly ?string $duration = null,
     ) {}
 
     public static function make(?array $metadata): ?self

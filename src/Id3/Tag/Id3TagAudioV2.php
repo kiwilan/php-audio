@@ -5,20 +5,20 @@ namespace Kiwilan\Audio\Id3\Tag;
 class Id3TagAudioV2 extends Id3Tag
 {
     public function __construct(
-        readonly public ?string $album = null,
-        readonly public ?string $artist = null,
-        readonly public ?string $band = null,
-        readonly public ?string $comment = null,
-        readonly public ?string $composer = null,
-        readonly public ?string $part_of_a_set = null,
-        readonly public ?string $genre = null,
-        readonly public ?string $part_of_a_compilation = null,
-        readonly public ?string $title = null,
-        readonly public ?string $track_number = null,
-        readonly public ?string $year = null,
-        readonly public ?string $copyright = null,
-        readonly public ?string $unsynchronised_lyric = null,
-        readonly public ?string $language = null,
+        public readonly ?string $album = null,
+        public readonly ?string $artist = null,
+        public readonly ?string $band = null,
+        public readonly ?string $comment = null,
+        public readonly ?string $composer = null,
+        public readonly ?string $part_of_a_set = null,
+        public readonly ?string $genre = null,
+        public readonly ?string $part_of_a_compilation = null,
+        public readonly ?string $title = null,
+        public readonly ?string $track_number = null,
+        public readonly ?string $year = null,
+        public readonly ?string $copyright = null,
+        public readonly ?string $unsynchronised_lyric = null,
+        public readonly ?string $language = null,
     ) {}
 
     public static function make(?array $metadata): ?self
