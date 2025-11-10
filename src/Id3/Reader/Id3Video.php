@@ -5,11 +5,11 @@ namespace Kiwilan\Audio\Id3\Reader;
 class Id3Video
 {
     protected function __construct(
-        readonly public ?string $data_format = null,
-        readonly public ?int $rotate = null,
-        readonly public ?float $resolution_x = null,
-        readonly public ?float $resolution_y = null,
-        readonly public ?float $frame_rate = null,
+        public readonly ?string $data_format = null,
+        public readonly ?int $rotate = null,
+        public readonly ?float $resolution_x = null,
+        public readonly ?float $resolution_y = null,
+        public readonly ?float $frame_rate = null,
     ) {}
 
     public static function make(?array $metadata): ?self
