@@ -5,19 +5,19 @@ namespace Kiwilan\Audio\Id3\Tag;
 class Id3TagVorbisComment extends Id3Tag
 {
     public function __construct(
-        readonly public ?string $description = null,
-        readonly public ?string $encoder = null,
-        readonly public ?string $title = null,
-        readonly public ?string $artist = null,
-        readonly public ?string $album = null,
-        readonly public ?string $genre = null,
-        readonly public ?string $comment = null,
-        readonly public ?string $albumartist = null,
-        readonly public ?string $composer = null,
-        readonly public ?string $discnumber = null,
-        readonly public ?string $compilation = null,
-        readonly public ?string $date = null,
-        readonly public ?string $tracknumber = null,
+        public readonly ?string $description = null,
+        public readonly ?string $encoder = null,
+        public readonly ?string $title = null,
+        public readonly ?string $artist = null,
+        public readonly ?string $album = null,
+        public readonly ?string $genre = null,
+        public readonly ?string $comment = null,
+        public readonly ?string $albumartist = null,
+        public readonly ?string $composer = null,
+        public readonly ?string $discnumber = null,
+        public readonly ?string $compilation = null,
+        public readonly ?string $date = null,
+        public readonly ?string $tracknumber = null,
     ) {}
 
     public static function make(?array $metadata): ?self

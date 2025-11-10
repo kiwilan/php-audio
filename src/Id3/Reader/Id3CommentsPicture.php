@@ -5,13 +5,13 @@ namespace Kiwilan\Audio\Id3\Reader;
 class Id3CommentsPicture
 {
     protected function __construct(
-        readonly public ?string $data = null,
-        readonly public ?string $image_mime = null,
-        readonly public ?int $image_width = null,
-        readonly public ?int $image_height = null,
-        readonly public ?string $picture_type = null,
-        readonly public ?string $description = null,
-        readonly public ?int $data_length = null,
+        public readonly ?string $data = null,
+        public readonly ?string $image_mime = null,
+        public readonly ?int $image_width = null,
+        public readonly ?int $image_height = null,
+        public readonly ?string $picture_type = null,
+        public readonly ?string $description = null,
+        public readonly ?int $data_length = null,
     ) {}
 
     public static function make(?array $metadata): ?self

@@ -8,18 +8,18 @@ class Id3Audio
      * @param  Id3Stream[]  $streams
      */
     protected function __construct(
-        readonly public ?string $data_format = null,
-        readonly public ?int $channels = null,
-        readonly public ?int $sample_rate = null,
-        readonly public ?float $bitrate = null,
-        readonly public ?string $channel_mode = null,
-        readonly public ?string $bitrate_mode = null,
-        readonly public ?string $codec = null,
-        readonly public ?string $encoder = null,
-        readonly public bool $lossless = false,
-        readonly public ?string $encoder_options = null,
-        readonly public ?float $compression_ratio = null,
-        readonly public array $streams = [],
+        public readonly ?string $data_format = null,
+        public readonly ?int $channels = null,
+        public readonly ?int $sample_rate = null,
+        public readonly ?float $bitrate = null,
+        public readonly ?string $channel_mode = null,
+        public readonly ?string $bitrate_mode = null,
+        public readonly ?string $codec = null,
+        public readonly ?string $encoder = null,
+        public readonly bool $lossless = false,
+        public readonly ?string $encoder_options = null,
+        public readonly ?float $compression_ratio = null,
+        public readonly array $streams = [],
     ) {}
 
     public static function make(?array $metadata): ?self

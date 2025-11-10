@@ -5,8 +5,8 @@ namespace Kiwilan\Audio\Id3\Reader;
 class Id3Comments
 {
     protected function __construct(
-        readonly public ?string $language = null,
-        readonly public ?Id3CommentsPicture $picture = null,
+        public readonly ?string $language = null,
+        public readonly ?Id3CommentsPicture $picture = null,
     ) {}
 
     public static function make(?array $metadata): ?self
