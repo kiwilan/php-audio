@@ -2,6 +2,10 @@
 
 All notable changes to `php-audio` will be documented in this file.
 
+## v4.0.02 - 2025-11-10
+
+Fix `james-heinrich/getid3` to `v1.9.22`
+
 ## v4.0.01 - 2024-10-03
 
 Add `toArray()` to `quicktime` for `AudioMetadata`
