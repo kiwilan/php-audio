@@ -42,7 +42,8 @@
     ],
     "require": {
         "php": "^8.1",
-        "james-heinrich/getid3": "v1.9.22"
+        "james-heinrich/getid3": "v1.9.22",
+        "symfony/process": "^7.4"
     },
     "require-dev": {
         "pestphp/pest": "^2.0",
