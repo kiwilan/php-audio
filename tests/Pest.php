@@ -110,6 +110,26 @@ define('AUDIO', [
     WV,
 ]);
 
+define('AUDIO_EXIFTOOL', [
+    ALAC,
+    AIF,
+    AIFC,
+    AIFF,
+    FLAC,
+    M4A,
+    M4B,
+    M4V,
+    MKA,
+    MKV,
+    MP3,
+    OGG,
+    OPUS,
+    SPX,
+    WAV,
+    WEBM,
+    WMA,
+]);
+
 define('AUDIO_ID3_V1', [
     MP3_ID3_V1_1,
     MP3_ID3_V1_2,
