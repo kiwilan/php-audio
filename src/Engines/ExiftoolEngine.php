@@ -2,35 +2,42 @@
 
 namespace Kiwilan\Audio\Engines;
 
+use Kiwilan\Audio\Core\AudioException;
 use Kiwilan\Audio\Utils\AudioProcess;
 
-class ExiftoolEngine
+class ExiftoolEngine extends AudioEngine
 {
-    public static function read(string $path)
+    public static function handle(string $path)
     {
         $self = new self;
 
-        if (! AudioProcess::isCommandAvailable('exiftool -v')) {
-            throw new \Exception('`kiwilan/php-audio` with `exiftool` or `exiftool` not available.');
-        }
+        // if (! AudioProcess::isCommandAvailable('exiftool -v')) {
+        //     throw new AudioException('`exiftool` binary not available.');
+        // }
 
-        if (! file_exists($path)) {
-            throw new \Exception("`kiwilan/php-audio` with `exiftool`: file at {$path} doesn't exists.");
-        }
+        // $output = AudioProcess::execute([
+        //     'exiftool', '-json',
+        //     $path,
+        // ]);
+        // $data = json_decode($output, true);
 
-        $output = AudioProcess::execute([
-            'exiftool', '-json',
-            $path,
-        ]);
-        $data = json_decode($output, true);
-
-        return $data;
+        return $self;
     }
 
-    public function getCover(string $path)
+    public function tags(): ?array
     {
-        $cover = shell_exec('exiftool -b -Picture '.escapeshellarg($path));
-
-        file_put_contents('cover.jpg', $cover);
+        throw new \Exception('Not implemented');
     }
+
+    public function mapping(): array
+    {
+        throw new \Exception('Not implemented');
+    }
+
+    // public function getCover(string $path)
+    // {
+    //     $cover = shell_exec('exiftool -b -Picture '.escapeshellarg($path));
+
+    //     file_put_contents('cover.jpg', $cover);
+    // }
 }

@@ -4,53 +4,8 @@ namespace Kiwilan\Audio\Core;
 
 use Kiwilan\Audio\Id3\Tag;
 
-class AudioCore
+class Id3Core
 {
-    public function __construct(
-        public ?string $title = null,
-        public ?string $artist = null,
-        public ?string $album = null,
-        public ?string $genre = null,
-        public ?int $year = null,
-        public ?string $track_number = null,
-        public ?string $comment = null,
-        public ?string $album_artist = null,
-        public ?string $composer = null,
-        public ?string $disc_number = null,
-        public ?bool $is_compilation = null,
-        public ?string $creation_date = null,
-        public ?string $copyright = null,
-        public ?string $encoding_by = null,
-        public ?string $encoding = null,
-        public ?string $description = null,
-        public ?string $synopsis = null,
-        public ?string $language = null,
-        public ?string $lyrics = null,
-        public bool $has_cover = false,
-        public ?AudioCoreCover $cover = null,
-    ) {}
-
-    public function toArray(): array
-    {
-        // parse all properties
-        $properties = get_object_vars($this);
-
-        // filter out null values
-        $properties = array_filter($properties, fn ($value) => $value !== null);
-        $properties = array_filter($properties, fn ($value) => $value !== '');
-
-        return $properties;
-    }
-
-    private function parseCompilation(AudioCore $core): ?string
-    {
-        if ($core->is_compilation === null) {
-            return null;
-        }
-
-        return $core->is_compilation ? '1' : '0';
-    }
-
     public static function toId3v2(AudioCore $core): Tag\Id3TagAudioV2
     {
         return new Tag\Id3TagAudioV2(

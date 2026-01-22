@@ -2,11 +2,12 @@
 
 namespace Kiwilan\Audio\Engines;
 
+use Kiwilan\Audio\Core\AudioCore;
 use Kiwilan\Audio\Utils\AudioProcess;
 
-class FfmpegEngine extends AudioEngine
+class Id3Engine extends AudioEngine
 {
-    public static function handle(string $path)
+    public static function read(string $path)
     {
         $self = new self;
 
@@ -23,51 +24,54 @@ class FfmpegEngine extends AudioEngine
         }
 
         $self->output = $self->toAssociativeArray($self->process->getOutput());
+        $self->json = json_encode($self->output, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
         return $self;
     }
 
-    public function tags(): ?array
+    public function toArray(): array
     {
-        $format = $this->output['format'] ?? null;
-        $tags = $format['tags'] ?? null;
-
-        return $tags;
+        throw new \Exception('Not implemented');
     }
 
-    public function mapping(): array
+    public function toAudioCore(): ?AudioCore
     {
-        return [
-            'album' => 'album',
-            'album_artist' => 'album_artist',
-            'artist' => 'artist',
-            'comment' => 'comment',
-            'composer' => 'composer',
-            'copyright' => 'copyright',
-            'description' => 'DESCRIPTION',
-            'disc' => 'disc',
-            'compilation' => 'compilation',
-            'encoder' => 'encoder',
-            'encoded_by' => 'encoded_by',
-            'genre' => 'genre',
-            'language' => 'language',
-            'lyrics' => 'LYRICS',
-            'synopsis' => 'TDES',
-            'title' => 'title',
-            'track' => 'track',
-            'date' => [
-                'TDRC',
-                'TYER',
-                'TDAT',
-                'date',
-            ],
-            'subtitle' => 'TIT3',
-            'publisher' => 'publisher',
-            'asin' => 'ASIN',
-            'isbn' => 'ISBN',
-            'series' => 'SERIES',
-            'series_part' => 'SERIES-PART',
-        ];
+        $tags = $this->output['format']['tags'] ?? null;
+        if (! $tags) {
+            return null;
+        }
+
+        return new AudioCore(
+            album: $tags['album'] ?? null,
+            album_artist: $tags['album_artist'] ?? null,
+            artist: $tags['artist'] ?? null,
+            comment: $tags['comment'] ?? null,
+            composer: $tags['composer'] ?? null,
+            copyright: null,
+            cover: null,
+            creation_date: null,
+            description: null,
+            disc_number: array_key_exists('disc', $tags)
+                ? strval($tags['disc'])
+                : null,
+            has_cover: false,
+            is_compilation: array_key_exists('compilation', $tags)
+                ? boolval($tags['compilation'])
+                : false,
+            encoding: null,
+            encoding_by: null,
+            genre: $tags['genre'] ?? null,
+            language: null,
+            lyrics: null,
+            synopsis: null,
+            title: $tags['title'] ?? null,
+            track_number: array_key_exists('track_number', $tags)
+                ? strval($tags['track_number'])
+                : null,
+            year: array_key_exists('year', $tags)
+                ? intval($tags['year'])
+                : null,
+        );
     }
 
     // public function getMetadata($filePath)

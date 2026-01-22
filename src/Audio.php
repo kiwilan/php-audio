@@ -2,103 +2,151 @@
 
 namespace Kiwilan\Audio;
 
+use Kiwilan\Audio\Engines\AudioEngine;
+use Kiwilan\Audio\Engines\ExiftoolEngine;
+use Kiwilan\Audio\Engines\FfmpegEngine;
+use Kiwilan\Audio\Engines\Id3Engine;
 use Kiwilan\Audio\Enums\AudioEngineEnum;
-use Kiwilan\Audio\Enums\AudioFormatEnum;
+use Kiwilan\Audio\Exceptions\AudioException;
+use Kiwilan\Audio\Models\AudioContainer;
+use Kiwilan\Audio\Models\AudioProperties;
+use Kiwilan\Audio\Models\AudioTags;
 
 class Audio
 {
+    protected ?AudioEngine $engine = null;
+
+    protected ?AudioTags $tags = null;
+
+    protected ?AudioProperties $properties = null;
+
     protected function __construct(
-        protected string $path,
-        protected string $extension,
-        protected int $size,
-        protected AudioFormatEnum $format,
-        protected AudioEngineEnum $engine,
+        protected AudioContainer $container,
+        protected AudioEngineEnum $engine_type,
     ) {}
 
-    public static function read(string $path, AudioEngineEnum $engine = AudioEngineEnum::getid3): self
+    public static function read(string $path, AudioEngineEnum $engine_type = AudioEngineEnum::getid3): self
     {
         $fileExists = file_exists($path);
         if (! $fileExists) {
-            throw new \Exception("File not found: {$path}");
+            throw new AudioException("File not found at {$path}");
         }
 
-        $extension = pathinfo($path, PATHINFO_EXTENSION);
-        $extension = strtolower($extension);
-        $format = AudioFormatEnum::tryFrom($extension);
-
+        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
         $self = new self(
-            path: $path,
-            extension: $extension,
-            size: filesize($path),
-            format: $format ? $format : AudioFormatEnum::unknown,
-            engine: $engine,
+            container: AudioContainer::handle($path),
+            engine_type: $engine_type,
         );
-        $self->handleEngine();
+
+        $self->engine = $self->handleEngine();
+        $self->handleTags();
+        $self->handleProperties();
 
         return $self;
     }
 
     /**
-     * Get audio file path, like `/path/to/audio.mp3`.
+     * Get `AudioContainer` with filesystem informations.
      */
-    public function getPath(): string
+    public function getContainer(): AudioContainer
     {
-        return $this->path;
+        return $this->container;
     }
 
     /**
-     * Get audio file extension, like `mp3`.
+     * Get audio format if recognized, like `AudioEngineEnum::ffmpeg`.
      */
-    public function getExtension(): string
+    public function getEngineType(): AudioEngineEnum
     {
-        return $this->extension;
+        return $this->engine_type;
     }
 
     /**
-     * Get audio file size, like `3482910`.
+     * Get audio format if recognized, like `FfmpegEngine`.
      */
-    public function getSize(bool $human = true, int $decimals = 2): int
+    public function getEngine(): AudioEngine
     {
-        return $this->size;
+        return $this->engine;
     }
 
     /**
-     * Get audio file size human-readable, like `3.32 MB`.
+     * Get `AudioTags` with audio tags informations.
      */
-    public function getSizeHuman(int $decimals = 2): string
+    public function getTags(): AudioTags
     {
-        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        $factor = floor((strlen((string) $this->size) - 1) / 3);
-
-        return sprintf("%.{$decimals}f %s", $this->size / (1024 ** $factor), $units[$factor]);
+        return $this->tags;
     }
 
     /**
-     * Get audio format if recognized, like `AudioFormatEnum::mp3`.
+     * Get `AudioProperties` with audio properties informations.
      */
-    public function getFormat(): AudioFormatEnum
+    public function getProperties(): AudioProperties
     {
-        return $this->format;
+        return $this->properties;
     }
 
-    private function handleEngine()
+    public function handleEngine(): AudioEngine
     {
-        switch ($this->engine) {
+        switch ($this->engine_type) {
             case AudioEngineEnum::getid3:
-                //
+                $engine = Id3Engine::handle($this->container->getPath());
                 break;
 
             case AudioEngineEnum::ffmpeg:
-                //
+                $engine = FfmpegEngine::handle($this->container->getPath());
                 break;
 
             case AudioEngineEnum::exiftool:
-                //
+                $engine = ExiftoolEngine::handle($this->container->getPath());
                 break;
 
             default:
-                //
+                $engine = Id3Engine::handle($this->container->getPath());
                 break;
         }
+
+        return $engine;
+    }
+
+    private function handleTags()
+    {
+        $this->tags = new AudioTags;
+
+        $tags = $this->engine->tags();
+        $this->tags->__set('raw', $tags);
+
+        /**
+         * `core_tag` like `subtitle`
+         * `engine_tag` like `TIT3`
+         *
+         * Can be an array:
+         * `core_tag` like `date`
+         * `engine_tag` like `['TDRC','TYER','TDAT','date']`
+         */
+        foreach ($this->engine->mapping() as $core_tag => $engine_tag) {
+            if (is_array($engine_tag)) {
+                /**
+                 * `sub_engine_tag` like `TYER`
+                 */
+                foreach ($engine_tag as $sub_engine_tag) {
+                    $sub_value = $tags[$sub_engine_tag] ?? null;
+                    if (! empty($sub_value)) {
+                        $this->tags->__set($core_tag, $sub_value);
+                    }
+                }
+            } else {
+                $this->tags->__set($core_tag, $tags[$engine_tag] ?? null);
+            }
+        }
+    }
+
+    private function handleProperties()
+    {
+        if (empty($this->engine->getOutput())) {
+            return;
+        }
+
+        $this->properties = new AudioProperties;
+        $this->properties = $this->properties->handle($this->engine->getOutput());
     }
 }

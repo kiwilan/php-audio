@@ -2,11 +2,12 @@
 
 namespace Kiwilan\Audio\Engines;
 
+use Kiwilan\Audio\Core\AudioCore;
 use Kiwilan\Audio\Utils\AudioProcess;
 
 class FfmpegEngine extends AudioEngine
 {
-    public static function handle(string $path)
+    public static function read(string $path)
     {
         $self = new self;
 
@@ -18,56 +19,72 @@ class FfmpegEngine extends AudioEngine
             '-show_streams',
             $path,
         ]);
+        ray($self->process);
         if (! $self->process->isSuccessful()) {
             return $self;
         }
 
         $self->output = $self->toAssociativeArray($self->process->getOutput());
+        $self->json = json_encode($self->output, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
         return $self;
     }
 
-    public function tags(): ?array
+    private function extractKey(mixed $data, string $key): mixed
     {
-        $format = $this->output['format'] ?? null;
-        $tags = $format['tags'] ?? null;
+        if (array_key_exists($key, $data)) {
+            return $data[$key];
+        }
 
-        return $tags;
+        return null;
     }
 
-    public function mapping(): array
+    public function toArray(): array
     {
-        return [
-            'album' => 'album',
-            'album_artist' => 'album_artist',
-            'artist' => 'artist',
-            'comment' => 'comment',
-            'composer' => 'composer',
-            'copyright' => 'copyright',
-            'description' => 'DESCRIPTION',
-            'disc' => 'disc',
-            'compilation' => 'compilation',
-            'encoder' => 'encoder',
-            'encoded_by' => 'encoded_by',
-            'genre' => 'genre',
-            'language' => 'language',
-            'lyrics' => 'LYRICS',
-            'synopsis' => 'TDES',
-            'title' => 'title',
-            'track' => 'track',
-            'date' => [
-                'TDRC',
-                'TYER',
-                'TDAT',
-                'date',
-            ],
-            'subtitle' => 'TIT3',
-            'publisher' => 'publisher',
-            'asin' => 'ASIN',
-            'isbn' => 'ISBN',
-            'series' => 'SERIES',
-            'series_part' => 'SERIES-PART',
-        ];
+        throw new \Exception('Not implemented');
+    }
+
+    public function toAudioCore(): ?AudioCore
+    {
+        $format = $this->extractKey($this->output, 'format');
+        if (! $format) {
+            return null;
+        }
+
+        $tags = $this->extractKey($format, 'tags');
+        if (! $tags) {
+            return null;
+        }
+
+        return new AudioCore(
+            album: $this->extractKey($tags, 'album'),
+            album_artist: $this->extractKey($tags, 'album_artist'),
+            artist: $this->extractKey($tags, 'artist'),
+            comment: $this->extractKey($tags, 'comment'),
+            composer: $this->extractKey($tags, 'composer'),
+            copyright: $this->extractKey($tags, 'copyright'),
+            cover: null,
+            creation_date: null,
+            description: $this->extractKey($tags, 'DESCRIPTION'),
+            disc_number: $this->extractKey($tags, 'disc'),
+            has_cover: false,
+            is_compilation: $this->extractKey($tags, 'compilation'),
+            encoding: $this->extractKey($tags, 'encoder'),
+            encoding_by: $this->extractKey($tags, 'encoded_by'),
+            genre: $this->extractKey($tags, 'genre'),
+            language: $this->extractKey($tags, 'language'),
+            lyrics: $this->extractKey($tags, 'LYRICS'),
+            synopsis: $this->extractKey($tags, 'TDES'),
+            title: $this->extractKey($tags, 'title'),
+            track_number: $this->extractKey($tags, 'track'),
+            year: $this->extractKey($tags, 'date'),
+            subtitle: $this->extractKey($tags, 'TIT3'),
+            publisher: $this->extractKey($tags, 'publisher'),
+            asin: $this->extractKey($tags, 'ASIN'),
+            isbn: $this->extractKey($tags, 'ISBN'),
+            series: $this->extractKey($tags, 'SERIES'),
+            series_part: $this->extractKey($tags, 'SERIES-PART'),
+        );
     }
 
     // public function getMetadata($filePath)

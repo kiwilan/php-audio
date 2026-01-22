@@ -10,7 +10,7 @@ use Kiwilan\Audio\Id3\Id3Writer;
 use Kiwilan\Audio\Models\AudioCover;
 use Kiwilan\Audio\Models\AudioMetadata;
 
-class Audio
+class AudioOld
 {
     /**
      * @param  array<string, string[]>  $raw_all

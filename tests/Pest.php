@@ -9,26 +9,26 @@ define('MD', __DIR__.'/media/test.md');
 define('DEFAULT_FOLDER', __DIR__.'/media/default-folder.jpg');
 define('FOLDER', __DIR__.'/media/folder.jpg');
 
-function addWriterFilesForTests()
-{
-    $files = glob('./tests/media/*');
-    foreach ($files as $file) {
-        if (is_file($file) && str_contains($file, 'writer')) {
-            unlink($file);
-        }
-    }
+// function addWriterFilesForTests()
+// {
+//     $files = glob('./tests/media/*');
+//     foreach ($files as $file) {
+//         if (is_file($file) && str_contains($file, 'writer')) {
+//             unlink($file);
+//         }
+//     }
 
-    $files = glob('./tests/media/*');
-    foreach ($files as $file) {
-        $basename = pathinfo($file, PATHINFO_BASENAME);
-        if (is_file($file) && str_contains($basename, 'test')) {
-            $writer = str_replace('test', 'test-writer', $basename);
-            $writer = str_replace($basename, $writer, $file);
-            copy($file, $writer);
-        }
-    }
-}
-addWriterFilesForTests();
+//     $files = glob('./tests/media/*');
+//     foreach ($files as $file) {
+//         $basename = pathinfo($file, PATHINFO_BASENAME);
+//         if (is_file($file) && str_contains($basename, 'test')) {
+//             $writer = str_replace('test', 'test-writer', $basename);
+//             $writer = str_replace($basename, $writer, $file);
+//             copy($file, $writer);
+//         }
+//     }
+// }
+// addWriterFilesForTests();
 if (PHP_OS_FAMILY === 'Windows') {
     sleep(1);
 }
@@ -79,6 +79,8 @@ define('WEBM', __DIR__.'/media/test.webm');
 define('WMA', __DIR__.'/media/test.wma');
 define('WV', __DIR__.'/media/test.wv');
 
+define('MP3_THE_WALL', __DIR__.'/media/test-the-wall.mp3');
+
 define('AUDIOBOOK_RH', __DIR__.'/media/audiobook_rh.m4b');
 define('AUDIOBOOK_RH_NOCOVER', __DIR__.'/media/audiobook_rh-nocover.m4b');
 
@@ -99,7 +101,6 @@ define('AUDIO', [
     MKA,
     MKV,
     MP3,
-    // MP4,
     OGG,
     OPUS,
     SPX,
@@ -158,69 +159,69 @@ define('AUDIO_WRITER', [
     // WV_WRITER,
 ]);
 
-function clearOutput()
-{
-    $files = glob('./tests/output/*');
-    foreach ($files as $file) {
-        if (is_file($file)) {
-            if ($file === './tests/output/.gitignore') {
-                continue;
-            }
-            unlink($file);
-        }
-    }
-}
+// function clearOutput()
+// {
+//     $files = glob('./tests/output/*');
+//     foreach ($files as $file) {
+//         if (is_file($file)) {
+//             if ($file === './tests/output/.gitignore') {
+//                 continue;
+//             }
+//             unlink($file);
+//         }
+//     }
+// }
 
-function testMp3Writer(Audio $audio)
-{
-    expect($audio->getTitle())->toBe('Introduction');
-    expect($audio->getArtist())->toBe('Mr Piouf');
-    expect($audio->getAlbum())->toBe('P1PDD Le conclave de Troie');
-    expect($audio->getGenre())->toBe('Roleplaying game');
-    expect($audio->getYear())->toBe(2016);
-    expect($audio->getTrackNumber())->toBe('1');
-    expect($audio->getComment())->toBe('http://www.p1pdd.com');
-    expect($audio->getAlbumArtist())->toBe('P1PDD & Mr Piouf');
-    expect($audio->getComposer())->toBe('P1PDD & Piouf');
-    expect($audio->getDiscNumber())->toBe('1');
-    expect($audio->isCompilation())->toBeTrue();
-}
+// function testMp3Writer(Audio $audio)
+// {
+//     expect($audio->getTitle())->toBe('Introduction');
+//     expect($audio->getArtist())->toBe('Mr Piouf');
+//     expect($audio->getAlbum())->toBe('P1PDD Le conclave de Troie');
+//     expect($audio->getGenre())->toBe('Roleplaying game');
+//     expect($audio->getYear())->toBe(2016);
+//     expect($audio->getTrackNumber())->toBe('1');
+//     expect($audio->getComment())->toBe('http://www.p1pdd.com');
+//     expect($audio->getAlbumArtist())->toBe('P1PDD & Mr Piouf');
+//     expect($audio->getComposer())->toBe('P1PDD & Piouf');
+//     expect($audio->getDiscNumber())->toBe('1');
+//     expect($audio->isCompilation())->toBeTrue();
+// }
 
-function testMp3Writed(Audio $audio)
-{
-    expect($audio->getTitle())->toBe('New Title');
-    expect($audio->getArtist())->toBe('New Artist');
-    expect($audio->getAlbum())->toBe('New Album');
-    expect($audio->getGenre())->toBe('New Genre');
-    expect($audio->getYear())->toBe(2022);
-    expect($audio->getAlbumArtist())->toBe('New Album Artist');
-    expect($audio->getComment())->toBe('New Comment');
-    expect($audio->getComposer())->toBe('New Composer');
-    expect($audio->getDiscNumber())->toBe('2/2');
-    expect($audio->isCompilation())->toBeFalse();
-}
+// function testMp3Writed(Audio $audio)
+// {
+//     expect($audio->getTitle())->toBe('New Title');
+//     expect($audio->getArtist())->toBe('New Artist');
+//     expect($audio->getAlbum())->toBe('New Album');
+//     expect($audio->getGenre())->toBe('New Genre');
+//     expect($audio->getYear())->toBe(2022);
+//     expect($audio->getAlbumArtist())->toBe('New Album Artist');
+//     expect($audio->getComment())->toBe('New Comment');
+//     expect($audio->getComposer())->toBe('New Composer');
+//     expect($audio->getDiscNumber())->toBe('2/2');
+//     expect($audio->isCompilation())->toBeFalse();
+// }
 
-function pathTo(string $filename, string $subDirectory = 'output'): string
-{
-    return __DIR__.'/'.$subDirectory.'/'.$filename;
-}
+// function pathTo(string $filename, string $subDirectory = 'output'): string
+// {
+//     return __DIR__.'/'.$subDirectory.'/'.$filename;
+// }
 
-function resetMp3Writer()
-{
-    $audio = Audio::read(MP3_WRITER);
+// function resetMp3Writer()
+// {
+//     $audio = Audio::read(MP3_WRITER);
 
-    $audio->write()
-        ->title('Introduction')
-        ->artist('Mr Piouf')
-        ->album('P1PDD Le conclave de Troie')
-        ->genre('Roleplaying game')
-        ->year(2016)
-        ->trackNumber('1')
-        ->comment('http://www.p1pdd.com')
-        ->albumArtist('P1PDD & Mr Piouf')
-        ->composer('P1PDD & Piouf')
-        ->discNumber('1')
-        ->isCompilation()
-        ->cover(DEFAULT_FOLDER)
-        ->save();
-}
+//     $audio->write()
+//         ->title('Introduction')
+//         ->artist('Mr Piouf')
+//         ->album('P1PDD Le conclave de Troie')
+//         ->genre('Roleplaying game')
+//         ->year(2016)
+//         ->trackNumber('1')
+//         ->comment('http://www.p1pdd.com')
+//         ->albumArtist('P1PDD & Mr Piouf')
+//         ->composer('P1PDD & Piouf')
+//         ->discNumber('1')
+//         ->isCompilation()
+//         ->cover(DEFAULT_FOLDER)
+//         ->save();
+// }
