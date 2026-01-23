@@ -129,15 +129,56 @@ class Audio
                  * `sub_engine_tag` like `TYER`
                  */
                 foreach ($engine_tag as $sub_engine_tag) {
-                    $sub_value = $tags[$sub_engine_tag] ?? null;
-                    if (! empty($sub_value)) {
+                    $sub_value = $this->handleMappingKey($tags, $sub_engine_tag);
+                    if ($sub_value) {
                         $this->tags->__set($core_tag, $sub_value);
                     }
                 }
             } else {
-                $this->tags->__set($core_tag, $tags[$engine_tag] ?? null);
+                $value = $this->handleMappingKey($tags, $engine_tag);
+                $this->tags->__set($core_tag, $value);
             }
         }
+    }
+
+    private function handleMappingKey(?array $tags, string $engine_tag)
+    {
+        if (! $tags) {
+            return null;
+        }
+
+        $value = $tags[$engine_tag] ?? null;
+        if (! $value) {
+            $value = $tags[strtoupper($engine_tag)] ?? null;
+        }
+
+        return $value;
+
+        // $keys = [
+        //     $engine_tag,
+        //     strtoupper($engine_tag),
+        //     strtolower($engine_tag),
+        //     $core_tag,
+        //     strtoupper($core_tag),
+        // ];
+        // $keys = array_unique($keys);
+        // $value = null;
+
+        // foreach ($keys as $key) {
+        //     $v = $tags[$key] ?? null;
+        //     if ($v) {
+        //         $value = $v;
+        //     }
+        // }
+
+        // if ($value === null) {
+        //     $value = $tags[strtolower($engine_tag)] ?? null;
+        // }
+        // if ($value === null) {
+        //     $value = $tags[$core_tag] ?? null;
+        // }
+
+        // return $value;
     }
 
     private function handleProperties()

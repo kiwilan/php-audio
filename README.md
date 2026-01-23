@@ -21,14 +21,14 @@ Audio files can use different formats, this package aims to provide a simple way
 
 ## Requirements
 
--   PHP `8.1` minimum
--   Optional for update
-    -   `FLAC`: `flac` (with `apt`, `brew` or `scoop`)
-    -   `OGG`: `vorbis-tools` (with `apt` or `brew`) / `extras/icecast` (with `scoop`)
+- PHP `8.1` minimum
+- Optional for update
+    - `FLAC`: `flac` (with `apt`, `brew` or `scoop`)
+    - `OGG`: `vorbis-tools` (with `apt` or `brew`) / `extras/icecast` (with `scoop`)
 
 ### Roadmap
 
--   Add support for more formats with [external packages](https://askubuntu.com/questions/226773/how-to-read-mp3-tags-in-shell)
+- Add support for more formats with [external packages](https://askubuntu.com/questions/226773/how-to-read-mp3-tags-in-shell)
 
 ## Installation
 
@@ -332,7 +332,7 @@ $cover->getHeight(); // `?int` in pixels
 
 ### Readable formats
 
--   `id3v2` will be selected before `id3v1` or `riff` if both are available.
+- `id3v2` will be selected before `id3v1` or `riff` if both are available.
 
 | Format | Supported |                About                 |    ID3 type     |         Notes         |
 | :----: | :-------: | :----------------------------------: | :-------------: | :-------------------: |
@@ -370,11 +370,11 @@ You want to add a format? [See FAQ](#faq)
 
 `JamesHeinrich/getID3` can update some formats, but not all.
 
-> -   ID3v1 (v1 & v1.1)
-> -   ID3v2 (v2.3, v2.4)
-> -   APE (v2)
-> -   Ogg Vorbis comments (need `vorbis-tools`)
-> -   FLAC comments (need `flac`)
+> - ID3v1 (v1 & v1.1)
+> - ID3v2 (v2.3, v2.4)
+> - APE (v2)
+> - Ogg Vorbis comments (need `vorbis-tools`)
+> - FLAC comments (need `flac`)
 
 | Format |         Notes         |    Requires    |
 | :----: | :-------------------: | :------------: |
@@ -382,23 +382,23 @@ You want to add a format? [See FAQ](#faq)
 |  MP3   |                       |                |
 |  OGG   | _Cover not supported_ | `vorbis-tools` |
 
--   `flac`: with `apt`, `brew` or `scoop`
--   `vorbis-tools`: with `apt`, `brew` or `scoop`
-    -   With `scoop`, `vorbis-tools` is not available, you can use `extras/icecast` instead.
+- `flac`: with `apt`, `brew` or `scoop`
+- `vorbis-tools`: with `apt`, `brew` or `scoop`
+    - With `scoop`, `vorbis-tools` is not available, you can use `extras/icecast` instead.
 
 ### Convert properties
 
 `Audio::class` convert some properties to be more readable.
 
--   `ape` format: [`Id3TagApe`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagApe.php)
--   `asf` format: [`Id3TagAsf`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagAsf.php)
--   `id3v1` format: [`Id3TagAudioV1`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagAudioV1.php)
--   `id3v2` format: [`Id3TagAudioV2`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagAudioV2.php)
--   `matroska` format: [`Id3TagMatroska`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagMatroska.php)
--   `quicktime` format: [`Id3TagQuicktime`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagQuicktime.php)
--   `vorbiscomment` format: [`Id3TagVorbisComment`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagVorbisComment.php)
--   `riff` format: [`Id3TagRiff`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagRiff.php)
--   `unknown` format: [`Id3TagVorbisComment`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagVorbisComment.php)
+- `ape` format: [`Id3TagApe`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagApe.php)
+- `asf` format: [`Id3TagAsf`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagAsf.php)
+- `id3v1` format: [`Id3TagAudioV1`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagAudioV1.php)
+- `id3v2` format: [`Id3TagAudioV2`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagAudioV2.php)
+- `matroska` format: [`Id3TagMatroska`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagMatroska.php)
+- `quicktime` format: [`Id3TagQuicktime`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagQuicktime.php)
+- `vorbiscomment` format: [`Id3TagVorbisComment`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagVorbisComment.php)
+- `riff` format: [`Id3TagRiff`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagRiff.php)
+- `unknown` format: [`Id3TagVorbisComment`](https://github.com/kiwilan/php-audio/blob/main/src/Id3/Tag/Id3TagVorbisComment.php)
 
 |    ID3 type     |        Original         |   New property   |
 | :-------------: | :---------------------: | :--------------: |
@@ -436,11 +436,11 @@ composer test
 
 ## Tools
 
--   [ffmpeg](https://ffmpeg.org/): free and open-source software project consisting of a suite of libraries and programs for handling video, audio, and other multimedia files and streams.
--   [MP3TAG](https://www.mp3tag.de/en/): powerful and easy-to-use tool to edit metadata of audio files (free on Windows).
--   [Audiobook Builder](https://www.splasm.com/audiobookbuilder/): makes it easy to turn audio CDs and files into audiobooks (only macOS and paid).
--   [Tag Editor](https://github.com/Martchus/tageditor): A tag editor with Qt GUI and command-line interface supporting MP4/M4A/AAC (iTunes), ID3, Vorbis, Opus, FLAC and Matroska.
--   [Tag Editor](https://amvidia.com/tag-editor): a spreadsheet application for editing audio metadata in a simple, fast, and flexible way.
+- [ffmpeg](https://ffmpeg.org/): free and open-source software project consisting of a suite of libraries and programs for handling video, audio, and other multimedia files and streams.
+- [MP3TAG](https://www.mp3tag.de/en/): powerful and easy-to-use tool to edit metadata of audio files (free on Windows).
+- [Audiobook Builder](https://www.splasm.com/audiobookbuilder/): makes it easy to turn audio CDs and files into audiobooks (only macOS and paid).
+- [Tag Editor](https://github.com/Martchus/tageditor): A tag editor with Qt GUI and command-line interface supporting MP4/M4A/AAC (iTunes), ID3, Vorbis, Opus, FLAC and Matroska.
+- [Tag Editor](https://amvidia.com/tag-editor): a spreadsheet application for editing audio metadata in a simple, fast, and flexible way.
 
 ## FAQ
 
@@ -499,9 +499,9 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 
 ## Credits
 
--   [`ewilan-riviere`](https://github.com/ewilan-riviere): package author
--   [`JamesHeinrich/getID3`](https://github.com/JamesHeinrich/getID3): parser used to read audio files
--   [`spatie/package-skeleton-php`](https://github.com/spatie/package-skeleton-php): package skeleton used to create this package
+- [`ewilan-riviere`](https://github.com/ewilan-riviere): package author
+- [`JamesHeinrich/getID3`](https://github.com/JamesHeinrich/getID3): parser used to read audio files
+- [`spatie/package-skeleton-php`](https://github.com/spatie/package-skeleton-php): package skeleton used to create this package
 
 ## License
 

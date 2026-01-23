@@ -32,6 +32,12 @@ class FfmpegEngine extends AudioEngine
         $format = $this->output['format'] ?? null;
         $tags = $format['tags'] ?? null;
 
+        if (! $tags) {
+            // If tags are in `streams[0][tags]`
+            $stream_audio = $this->output['streams'][0] ?? null;
+            $tags = $stream_audio['tags'] ?? null;
+        }
+
         return $tags;
     }
 
@@ -44,15 +50,29 @@ class FfmpegEngine extends AudioEngine
             'comment' => 'comment',
             'composer' => 'composer',
             'copyright' => 'copyright',
-            'description' => 'DESCRIPTION',
+            'description' => [
+                'description',
+                'PODCASTDESC',
+                'comment',
+            ],
             'disc' => 'disc',
             'compilation' => 'compilation',
-            'encoder' => 'encoder',
-            'encoded_by' => 'encoded_by',
+            'encoder' => [
+                'encoder',
+                'ENCODERSETTINGS',
+                'ENCODER_SETTINGS',
+            ],
+            'encoded_by' => [
+                'encoded_by',
+                'encoder',
+            ],
             'genre' => 'genre',
             'language' => 'language',
-            'lyrics' => 'LYRICS',
-            'synopsis' => 'TDES',
+            'lyrics' => 'lyrics',
+            'synopsis' => [
+                'TDES',
+                'synopsis',
+            ],
             'title' => 'title',
             'track' => 'track',
             'date' => [
@@ -61,8 +81,14 @@ class FfmpegEngine extends AudioEngine
                 'TDAT',
                 'date',
             ],
-            'subtitle' => 'TIT3',
-            'publisher' => 'publisher',
+            'subtitle' => [
+                'TIT3',
+                'subtitle',
+            ],
+            'publisher' => [
+                'publisher',
+                'ORGANIZATION',
+            ],
             'asin' => 'ASIN',
             'isbn' => 'ISBN',
             'series' => 'SERIES',

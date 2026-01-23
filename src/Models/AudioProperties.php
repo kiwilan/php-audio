@@ -15,6 +15,9 @@ class AudioProperties
         protected ?int $sample_rate = null, // 48000
         protected ?int $channels = null, // 2
         protected ?string $channel_layout = null, // stereo
+        protected ?string $format_type = null, // mov,mp4,m4a,3gp,3g2,mj2
+        protected ?string $format_label = null, // QuickTime / MOV
+        protected ?float $start_time = null, // 0.000000
         protected ?array $streams = [],
         protected ?array $raw = [],
     ) {}
@@ -42,8 +45,13 @@ class AudioProperties
         $self->sample_rate = (int) $self->ek($audio, 'sample_rate');
         $self->channels = (int) $self->ek($audio, 'channels');
         $self->channel_layout = $self->ek($audio, 'channel_layout');
-        // $cover_dimensions = $video ? ['width' => $video['width'], 'height' => $video['height']] : null;
-        // $has_cover = $video !== null;
+
+        $format = $self->ek($data, 'format');
+        if ($format) {
+            $self->format_type = $self->ek($format, 'format_name');
+            $self->format_label = $self->ek($format, 'format_long_name');
+            $self->start_time = $self->ek($format, 'start_time');
+        }
 
         return $self;
 
@@ -133,6 +141,33 @@ class AudioProperties
         return $this->channel_layout;
     }
 
+    /**
+     * Get audio format type, like `mov,mp4,m4a,3gp,3g2,mj2`.
+     */
+    public function getFormatType(): ?string
+    {
+        return $this->format_type;
+    }
+
+    /**
+     * Get audio format label, like `QuickTime / MOV`.
+     */
+    public function getFormatLabel(): ?string
+    {
+        return $this->format_label;
+    }
+
+    /**
+     * Get audio start time, like `0.000000`
+     */
+    public function getStartTime(): ?float
+    {
+        return $this->start_time;
+    }
+
+    /**
+     * Get audio file streams.
+     */
     public function getStreams(): ?array
     {
         return $this->streams;
